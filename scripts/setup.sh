@@ -20,3 +20,13 @@ echo ""
 echo "$GREEN""Running pip install -r requirements.txt...""$COLOR_OFF"
 pip install -r requirements.txt || exit 1
 echo "$GREEN""[Success] pip install -r requirements.txt""$COLOR_OFF"
+
+echo ""
+echo "$GREEN""Creating migration files and running database migrations...""$COLOR_OFF"
+python manage.py makemigrations || exit 1
+python manage.py migrate || exit 1
+echo "$GREEN""[Success] django migration""$COLOR_OFF"
+
+echo ""
+echo "$GREEN""Done!""$COLOR_OFF"
+echo "$GREEN""Run 'python manage.py runserver' to start the Django webserver.""$COLOR_OFF"
