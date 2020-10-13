@@ -17,5 +17,6 @@ from django.contrib import admin
 from django.urls import path
 
 urlpatterns = [
+    path('accessible_restaurant/', include('accessible_restaurant.urls')),
     path('admin/', admin.site.urls),
 ]
