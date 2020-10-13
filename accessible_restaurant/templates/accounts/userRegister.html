@@ -1,0 +1,46 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/style.css' %}">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration Form</title>
+</head>
+<body>
+    <div class="warpper fl">
+        <div class="main">
+            <div class="head">
+                <p>User Registration Form</p>
+            </div>
+            <div class="form fl">
+                <form method="POST">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <p class="name">{{ field.label_tag }}</p>
+                        {{ field }}
+                        {{ field.errors }}
+                    {% endfor %}
+<!--                The following code is an example of how to access specific field of the form-->
+<!--                Feel free to use it if you want to customize each field differently-->
+<!--                <p class="name">{{ form.first_name.label }}</p>-->
+<!--                {{ form.first_name }}-->
+<!--                <p class="name">{{ form.last_name.label }}</p>-->
+<!--                {{ form.last_name }}-->
+<!--                <p class="name">{{ form.username.label }}</p>-->
+<!--                {{ form.username }}-->
+<!--                <p class="name">{{ form.email.label }}</P>-->
+<!--                {{ form.email }}-->
+<!--                <p class="name">{{ form.password1.label }}</p>-->
+<!--                {{ form.password1 }}-->
+<!--                <p class="name">{{ form.password2.label }}</p>-->
+<!--                {{ form.password2 }}-->
+                    <p><input type="submit" id="submit" name="sb" value="SUBMIT" class="sub"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
