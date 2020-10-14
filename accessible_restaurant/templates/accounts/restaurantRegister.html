@@ -15,14 +15,16 @@
             <div class="head">
                 <p>Restaurant Registration Form</p>
             </div>
+            {% load crispy_forms_tags %}
             <div class="form fl">
                 <form method="POST">
                     {% csrf_token %}
-                    {% for field in form %}
+                    <!-- {% for field in form %}
                         <p class="name">{{ field.label_tag }}</p>
                         {{ field }}
                         {{ field.errors }}
-                    {% endfor %}
+                    {% endfor %} -->
+                    {{ form|crispy }}
 <!--                The following code is an example of how to access specific field of the form-->
 <!--                Feel free to use it if you want to customize each field differently-->
 <!--                <p class="name">{{ form.username.label }}</p>-->
