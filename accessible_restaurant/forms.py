@@ -16,14 +16,7 @@ class UserSignUpForm(UserCreationForm):
             'password1',
             'password2'
         ]
-        widgets = {
-            'username': forms.TextInput(attrs={'class': 'username'}),
-            'email': forms.TextInput(attrs={'class': 'email'}),
-            'first_name': forms.TextInput(attrs={'class': 'first_name'}),
-            'last_name': forms.TextInput(attrs={'class': 'last_name'}),
-            'password1': forms.TextInput(attrs={'class': 'password1'}),
-            'password2': forms.TextInput(attrs={'class': 'password2'}),
-        }
+
 
     @transaction.atomic
     def save(self):
