@@ -16,19 +16,6 @@ class UserSignUpForm(UserCreationForm):
             'password1',
             'password2'
         ]
-        widgets = {
-            'username': forms.TextInput(attrs={'class': 'username'}),
-            'email': forms.TextInput(attrs={'class': 'email'}),
-            'first_name': forms.TextInput(attrs={'class': 'first_name'}),
-            'last_name': forms.TextInput(attrs={'class': 'last_name'}),
-            # 'password1': forms.PasswordInput(attrs={'class': 'password1'}),
-            # 'password2': forms.PasswordInput(attrs={'class': 'password2'}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super(UserSignUpForm, self).__init__(*args, **kwargs)
-        self.fields['password1'].widget = forms.PasswordInput(attrs={'class': 'password'})
-        self.fields['password2'].widget = forms.PasswordInput(attrs={'class': 'password'})
 
     @transaction.atomic
     def save(self):
@@ -53,17 +40,6 @@ class RestaurantSignUpForm(UserCreationForm):
             'password1',
             'password2'
         ]
-        widgets = {
-            'username': forms.TextInput(attrs={'class': 'username'}),
-            'email': forms.TextInput(attrs={'class': 'email'}),
-            'password1': forms.PasswordInput(attrs={'class': 'password1'}),
-            'password2': forms.PasswordInput(attrs={'class': 'password2'}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super(RestaurantSignUpForm, self).__init__(*args, **kwargs)
-        self.fields['password1'].widget = forms.PasswordInput(attrs={'class': 'password'})
-        self.fields['password2'].widget = forms.PasswordInput(attrs={'class': 'password'})
 
     @transaction.atomic
     def save(self):
