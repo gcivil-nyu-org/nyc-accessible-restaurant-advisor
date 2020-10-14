@@ -17,7 +17,6 @@ class UserSignUpForm(UserCreationForm):
             'password2'
         ]
 
-
     @transaction.atomic
     def save(self):
         user = super().save(commit=False)
@@ -27,6 +26,9 @@ class UserSignUpForm(UserCreationForm):
         # TODO: create a user_profile for newly registered user
 
         return user
+
+
+
 
 class RestaurantSignUpForm(UserCreationForm):
 
@@ -38,12 +40,6 @@ class RestaurantSignUpForm(UserCreationForm):
             'password1',
             'password2'
         ]
-        widgets = {
-            'username': forms.TextInput(attrs={'class': 'username'}),
-            'email': forms.TextInput(attrs={'class': 'email'}),
-            'password1': forms.TextInput(attrs={'class': 'password1'}),
-            'password2': forms.TextInput(attrs={'class': 'password2'}),
-        }
 
     @transaction.atomic
     def save(self):

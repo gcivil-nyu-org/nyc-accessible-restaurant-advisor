@@ -1,0 +1,10 @@
+{% autoescape off %}
+
+Hi {{ user.username }},
+
+Please click this link below to verify your account!
+http://{{ domain }}{% url 'accessible_restaurant:activate' uidb64=uid token=token %}
+
+Best,
+NYC Accessible Restaurant Advisor Team
+{% endautoescape %}

@@ -9,8 +9,9 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import django_heroku
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -123,4 +124,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'nyc.accessible.rest@gmail.com'
+EMAIL_HOST_PASSWORD = '6063team408'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+
+
+django_heroku.settings(locals())
