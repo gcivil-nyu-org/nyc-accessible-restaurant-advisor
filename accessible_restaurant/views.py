@@ -31,6 +31,13 @@ class UserSignUpView(CreateView):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
+        # check if user's email has already exist in the database
+        user_email = form.cleaned_data.get('email')
+        if User.objects.filter(email=user_email).exists():
+            return render(self.request, self.template_name, {
+                'error_message': "Email has already been registered.",
+                'form': form,
+            })
         user = form.save()
         login(self.request, user)
         return redirect('accessible_restaurant:login')
@@ -46,6 +53,13 @@ class RestaurantSignUpView(CreateView):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
+        # check if restaurant's email has already exist in the database
+        restaurant_email = form.cleaned_data.get('email')
+        if User.objects.filter(email=restaurant_email).exists():
+            return render(self.request, self.template_name, {
+                'error_message': "Email has already been registered.",
+                'form': form,
+            })
         restaurant = form.save()
         login(self.request, restaurant)
         return redirect('accessible_restaurant:login')
