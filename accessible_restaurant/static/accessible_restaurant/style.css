@@ -4,6 +4,7 @@
 }
 .fl{
     float: left;
+    /* margin-left: 70; */
 }
 .warpper{
     width: 100%;
@@ -13,8 +14,8 @@
     background-size: cover;
 }
 .main{
-    width: 30%;
-    height: 550px;
+    width: 20%;
+    height: 500px;
     background-color: rgba(7, 47, 79, 0.63);
     margin: 50px 35%;
     border-radius: 20px 20px 30px 30px;
@@ -37,9 +38,10 @@
     height: 500px;
 }
 .name{
-    font-size: 16px;
+    font-size: 20px;
     color: #fff;
-    margin: 15px 0 0 5%;
+    margin: 10px 0 0 10%;
+    /* margin-left: 70; */
 }
 .name-inp{
     width: 90%;

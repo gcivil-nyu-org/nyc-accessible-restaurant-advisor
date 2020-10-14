@@ -20,7 +20,7 @@
                     {% csrf_token %}
                     {% for field in form %}
                         <p class="name">{{ field.label_tag }}</p>
-                        {{ field }}
+                        <p class="name">{{ field }}</p>
                         {{ field.errors }}
                     {% endfor %}
 <!--                The following code is an example of how to access specific field of the form-->
