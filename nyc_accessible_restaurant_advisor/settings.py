@@ -135,3 +135,6 @@ EMAIL_PORT = 587
 
 
 django_heroku.settings(locals())
+
+LOGIN_REDIRECT_URL = '/accessible_restaurant/accounts/home'
+LOGIN_URL = '/accessible_restaurant/accounts/login'
