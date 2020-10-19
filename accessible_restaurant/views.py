@@ -3,7 +3,7 @@ from django.contrib.auth import login, authenticate
 from django.shortcuts import redirect
 # from django.contrib import messages
 from django.views.generic import CreateView
-
+from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -11,20 +11,27 @@ from django.utils.encoding import force_bytes, force_text
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 # from .token_generator import generate_token
 from django.core.mail import EmailMessage
-
-
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from .forms import UserSignUpForm, RestaurantSignUpForm
 from .models import User
 
 
 # Create your views here.
-
 def index_view(request):
     return render(request, 'index.html')
 
 
-def login_view(request):
-    return render(request, 'accounts/login.html')
+# For Test Only
+@login_required
+def user_profile(request):
+    return render(request,'profile/userProfile.html')
+
+
+# For Test Only
+@login_required
+def restaurant_profile(request):
+    return render(request,'profile/restaurantProfile.html')
 
 
 def logout_view(request):
@@ -123,11 +130,3 @@ class RestaurantSignUpView(CreateView):
         email = EmailMessage(email_subject, message, to=[to_email])
         email.send()
         return redirect('accessible_restaurant:emailsent')
-
-
-def userprofile_view(request):
-    return render(request, 'profile/userProfile.html')
-
-
-def restaurantprofile_view(request):
-    return render(request, 'profile/restaurantProfile.html')
