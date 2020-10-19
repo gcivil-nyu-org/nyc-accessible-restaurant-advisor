@@ -18,16 +18,25 @@ from .models import User
 
 
 # Create your views here.
-def home(request):
-    # return HttpResponse("You are the home page")
-    return render(request, 'accounts/home.html')
+def index_view(request):
+    return render(request, 'index.html')
 
-# def login_view(request):
-#     return render(request, 'accounts/login.html')
 
+# For Test Only
 @login_required
-def profile(request):
-    return render(request,'accounts/profile.html')
+def user_profile(request):
+    return render(request,'profile/userProfile.html')
+
+
+# For Test Only
+@login_required
+def restaurant_profile(request):
+    return render(request,'profile/restaurantProfile.html')
+
+
+def logout_view(request):
+    return render(request, 'accounts/logout.html')
+
 
 def signup_view(request):
     if request.method == 'GET':

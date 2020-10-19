@@ -25,7 +25,6 @@ class UserSignUpTest(TestCase):
     def test_can_register_user(self):
         response = self.client.post(self.usersignup_url, self.user, format='text/html')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'accounts/userRegister.html')
 
 
 class RestaurantSignUpTest(TestCase):
@@ -47,6 +46,5 @@ class RestaurantSignUpTest(TestCase):
     def test_can_register_user(self):
         response = self.client.post(self.restaurantsignup_url, self.restaurant, format='text/html', follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'accounts/restaurantRegister.html')
 
 
