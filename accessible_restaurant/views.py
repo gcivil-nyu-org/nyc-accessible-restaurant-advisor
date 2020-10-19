@@ -8,12 +8,14 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 # from .token_generator import generate_token
 from django.core.mail import EmailMessage
 
 
-from .forms import UserSignUpForm, RestaurantSignUpForm
+from .forms import UserSignUpForm, RestaurantSignUpForm, UserUpdateForm, UserProfileUpdateForm, RestaurantProfileUpdateForm
 from .models import User
 
 
@@ -116,3 +118,55 @@ class RestaurantSignUpView(CreateView):
         email = EmailMessage(email_subject, message, to=[to_email])
         email.send()
         return redirect('accessible_restaurant:emailsent')
+
+@login_required
+def user_profile_view(request):
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = UserProfileUpdateForm(request.POST,
+                                       request.FILES,
+                                       instance=request.user.user_profile)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, f'Your profile has been updated!')
+            return redirect('user_profile')
+
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = UserProfileUpdateForm(instance=request.user)
+
+    context = {
+        'user_form': u_form,
+        'profile_form': p_form
+    }
+    return render(request, 'accounts/user_profile.html', context)
+
+
+@login_required
+def restaurant_profile_view(request):
+    if request.method == 'POST':
+        user = request.user
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = RestaurantProfileUpdateForm(request.POST,
+                                             request.FILES,
+                                             instance=request.user)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, f'Your profile has been updated!')
+            return redirect('restaurant_profile')
+
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = RestaurantProfileUpdateForm(instance=request.user)
+
+    context = {
+        'user_form': u_form,
+        'profile_form': p_form,
+    }
+    return render(request, 'accounts/restaurant_profile.html', context)
+
+
+
+
