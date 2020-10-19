@@ -3,7 +3,7 @@ from django.contrib.auth import login, authenticate
 from django.shortcuts import redirect
 # from django.contrib import messages
 from django.views.generic import CreateView
-
+from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -11,18 +11,23 @@ from django.utils.encoding import force_bytes, force_text
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 # from .token_generator import generate_token
 from django.core.mail import EmailMessage
-
-
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from .forms import UserSignUpForm, RestaurantSignUpForm
 from .models import User
 
 
 # Create your views here.
+def home(request):
+    # return HttpResponse("You are the home page")
+    return render(request, 'accounts/home.html')
 
+# def login_view(request):
+#     return render(request, 'accounts/login.html')
 
-def login_view(request):
-    return render(request, 'accounts/login.html')
-
+@login_required
+def profile(request):
+    return render(request,'accounts/profile.html')
 
 def signup_view(request):
     if request.method == 'GET':
