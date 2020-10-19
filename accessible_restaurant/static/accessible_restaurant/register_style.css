@@ -1,0 +1,229 @@
+/* Background */
+
+    .fl{
+        float: left;
+    }
+
+    .wrapper{
+        width: 100%;
+        height: 100vh;
+        background-image: url("images/dining.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+/* Container */
+
+    .main {
+        width: 800px;
+        background-color: rgba(244, 253, 249, 0.63);
+        margin: 50px 25%;
+        border-radius: 20px 20px 30px 30px;
+        display: block;
+        justify-content: center;
+        align-items: center;
+    }
+
+        @media screen and (max-height: 1680px) {
+
+			.main {
+                height: 580px;
+			}
+
+		}
+
+		@media screen and (max-height: 1280px) {
+
+			.main {
+                height: 550px;
+			}
+
+		}
+
+		@media screen and (max-height: 736px) {
+
+			.main {
+                height: 430px;
+			}
+
+		}
+
+/* Form Head */
+
+    .head {
+        width: 100%;
+        background-color: #6cc091;
+        height: 40px;
+        border-radius: 20px 20px 0 0;
+    }
+
+        .head p {
+            line-height: 40px;
+            text-align: center;
+            font-size: 25px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+            @media screen and (max-height: 1680px), screen and (max-width: 1280px) {
+
+                .head p {
+                    font-size: 20pt;
+                }
+
+            }
+
+            @media screen and (max-height: 1280px), screen and (max-width: 736px) {
+
+                .head p {
+                    font-size: 16pt;
+                }
+
+            }
+
+            @media screen and (max-height: 736px), screen and (max-width: 480px) {
+
+                .head p {
+                    font-size: 12pt;
+                }
+
+            }
+
+/* Form Content */
+
+    .form div {
+        font-size: 12pt;
+    }
+
+    .form div div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .form input {
+        width: 90%;
+        height: 30px;
+        margin: 5px;
+        font-size: 16px;
+        padding: 2px;
+        color: rgb(114, 111, 111);
+        border: 1px solid rgb(17, 67, 107);
+        background-color: rgb(231, 232, 250);
+    }
+
+        @media screen and (max-height: 1680px), screen and (max-width: 1280px) {
+
+            .form div {
+                font-size: 14pt;
+            }
+
+            .form input {
+                height: 30px;
+                margin: 5px;
+                font-size: 16px;
+            }
+
+        }
+
+        @media screen and (max-height: 1280px), screen and (max-width: 736px) {
+
+            .form div {
+                font-size: 12pt;
+            }
+
+            .form input {
+                height: 28px;
+                margin: 4px;
+                font-size: 14px;
+            }
+
+        }
+
+        @media screen and (max-height: 736px), screen and (max-width: 480px) {
+
+            .form div {
+                font-size: 10pt;
+            }
+
+            .form input {
+                height: 25px;
+                margin: 3px;
+                font-size: 12px;
+            }
+
+        }
+
+    #hint_id_username {
+        display: none;
+    }
+
+    #hint_id_password1 {
+        display: none;
+    }
+
+    #hint_id_password2 {
+        display: none;
+    }
+
+    .form {
+        width: 100%;
+        height: 500px;
+        padding: 20px 20px 20px 20px;
+    }
+
+    .submit-wrap {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #submit {
+        width: 90%;
+        margin: 25px 15px;
+        font-size: 16px;
+        height: 40px;
+        background-color: #031c30;
+        border: 1px solid rgb(17, 67, 107);
+        border-radius: 4px;
+        color: #fff;
+        text-align: center;
+    }
+
+        @media screen and (max-height: 1680px), screen and (max-width: 1280px) {
+
+            #submit {
+                height: 40px;
+                margin: 25px 15px;
+                font-size: 16pt;
+            }
+
+        }
+
+        @media screen and (max-height: 1280px), screen and (max-width: 736px) {
+
+            #submit {
+                height: 35px;
+                margin: 20px 15px;
+                font-size: 14pt;
+            }
+
+        }
+
+        @media screen and (max-height: 736px), screen and (max-width: 480px) {
+
+            #submit {
+                height: 30px;
+                margin: 15px 15px;
+                font-size: 12pt;
+            }
+
+        }
+
+    #submit:hover{
+        background-color: #E94601;
+        color: #fff;
+    }
