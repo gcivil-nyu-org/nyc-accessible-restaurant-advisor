@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block staticlink %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/banner_style.css' %}">
+{% endblock %}
+
+{% block title %} Home Page {% endblock %}
+
+{% block content %}
+<section id="banner">
+    <div class="inner">
+        <header>
+            <h1>Welcome to NYC Accessible Restaurant Advisor</h1>
+        </header>
+    </div>
+</section>
+{% endblock %}

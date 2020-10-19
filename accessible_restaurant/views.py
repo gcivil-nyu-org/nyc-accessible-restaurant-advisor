@@ -19,9 +19,16 @@ from .models import User
 
 # Create your views here.
 
+def index_view(request):
+    return render(request, 'index.html')
+
 
 def login_view(request):
     return render(request, 'accounts/login.html')
+
+
+def logout_view(request):
+    return render(request, 'accounts/logout.html')
 
 
 def signup_view(request):
@@ -116,3 +123,11 @@ class RestaurantSignUpView(CreateView):
         email = EmailMessage(email_subject, message, to=[to_email])
         email.send()
         return redirect('accessible_restaurant:emailsent')
+
+
+def userprofile_view(request):
+    return render(request, 'profile/userProfile.html')
+
+
+def restaurantprofile_view(request):
+    return render(request, 'profile/restaurantProfile.html')
