@@ -129,3 +129,7 @@ db.sqlite3
 # Vim temporary files
 *.swp
 *logs
+
+# Specific profile images
+media/user_profile_pics/*
+media/restaurant_profile_pics/*

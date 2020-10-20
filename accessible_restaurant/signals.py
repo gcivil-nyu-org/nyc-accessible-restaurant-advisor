@@ -18,7 +18,7 @@ def create_profile(sender, instance, created, **kwargs):
 def save_profile(sender, instance, **kwargs):
     user = instance
     if user.is_user:
-        instance.user_profile.save()
+        instance.uprofile.save()
 
     elif user.is_restaurant:
-        instance.restaurant_profile.save()
+        instance.rprofile.save()

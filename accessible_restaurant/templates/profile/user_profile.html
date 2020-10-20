@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block staticlink %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/profile_style.css' %}">
+{% endblock %}
+
+{% block title %} User Account Profile {% endblock %}
+
+{% block body %}<body class="subpage">{% endblock %}
+
+{% block content %}
+    <div class="wrapper fl">
+        <div class="main">
+            <div class="head">
+                <p>User Account Profile</p>
+            </div>
+            <div class="media">
+                <img class="rounded-circle account-img" src="{{ user.uprofile.photo.url }}">
+                <div class="media-body">
+                  <h2 class="account-heading">{{ user.username }}</h2>
+                  <p class="text-secondary">{{ user.email }}</p>
+                </div>
+            </div>
+            <div class="form fl">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ user_form|crispy }}
+                    {{ profile_form|crispy }}
+                    <fieldset class="form-group">
+                        <legend class="border-bottom mb-4">Profile Info</legend>
+
+                    </fieldset>
+                    <div class="submit-wrap">
+                        <input type="submit" id="submit" name="sb" value="SUBMIT">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+
+{#{% extends "base.html" %}#}
+{#{% load crispy_forms_tags %}#}
+{#{% block body %}<body class="subpage">{% endblock %}#}
+{#{% block content %}#}
+{#    <div class="content-section">#}
+{#      <div class="media">#}
+{#        <img class="rounded-circle account-img" src="{{ user.uprofile.photo.url }}">#}
+{#        <div class="media-body">#}
+{#          <h2 class="account-heading">{{ user.username }}</h2>#}
+{#          <p class="text-secondary">{{ user.email }}</p>#}
+{#        </div>#}
+{#      </div>#}
+{#      <form method="POST" enctype="multipart/form-data">#}
+{#          {% csrf_token %}#}
+{#          <fieldset class="form-group">#}
+{#              <legend class="border-bottom mb-4">Profile Info</legend>#}
+{#              {{ user_form|crispy }}#}
+{#              {{ profile_form|crispy }}#}
+{#          </fieldset>#}
+{#          <div class="form-group">#}
+{#              <button class="btn btn-outline-info" type="submit">Update</button>#}
+{#          </div>#}
+{#      </form>#}
+{#    </div>#}
+{#{% endblock content %}#}

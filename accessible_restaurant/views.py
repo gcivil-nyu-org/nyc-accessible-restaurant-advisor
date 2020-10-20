@@ -140,47 +140,47 @@ def user_profile_view(request):
         u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = UserProfileUpdateForm(request.POST,
                                        request.FILES,
-                                       instance=request.user.user_profile)
+                                       instance=request.user.uprofile)
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
+            print('profile form successfully saved!')
             messages.success(request, f'Your profile has been updated!')
-            return redirect('user_profile')
+            return redirect('accessible_restaurant:user_profile')
 
     else:
         u_form = UserUpdateForm(instance=request.user)
-        p_form = UserProfileUpdateForm(instance=request.user)
+        p_form = UserProfileUpdateForm(instance=request.user.uprofile)
 
     context = {
         'user_form': u_form,
         'profile_form': p_form
     }
-    return render(request, 'accounts/user_profile.html', context)
+    return render(request, 'profile/user_profile.html', context)
 
 
 @login_required
 def restaurant_profile_view(request):
     if request.method == 'POST':
-        user = request.user
         u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = RestaurantProfileUpdateForm(request.POST,
                                              request.FILES,
-                                             instance=request.user)
+                                             instance=request.user.rprofile)
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
             messages.success(request, f'Your profile has been updated!')
-            return redirect('restaurant_profile')
+            return redirect('accessible_restaurant:restaurant_profile')
 
     else:
         u_form = UserUpdateForm(instance=request.user)
-        p_form = RestaurantProfileUpdateForm(instance=request.user)
+        p_form = RestaurantProfileUpdateForm(instance=request.user.rprofile)
 
     context = {
         'user_form': u_form,
         'profile_form': p_form,
     }
-    return render(request, 'accounts/restaurant_profile.html', context)
+    return render(request, 'profile/restaurant_profile.html', context)
 
 
 

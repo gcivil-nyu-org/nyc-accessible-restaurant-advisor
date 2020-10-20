@@ -17,5 +17,5 @@ urlpatterns = [
 
     # Profile urls
     path('accounts/user-pforile/', views.user_profile_view, name='user_profile'),
-    path('accounts/restaurant-pforile/', views.user_profile_view, name='restaurant_profile'),
+    path('accounts/restaurant-pforile/', views.restaurant_profile_view, name='restaurant_profile'),
 ]
