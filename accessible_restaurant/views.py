@@ -8,12 +8,15 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 # from .token_generator import generate_token
 from django.core.mail import EmailMessage
-from django.shortcuts import render
+
+from .forms import UserSignUpForm, RestaurantSignUpForm, UserUpdateForm, UserProfileUpdateForm, RestaurantProfileUpdateForm
 from django.contrib.auth.decorators import login_required
-from .forms import UserSignUpForm, RestaurantSignUpForm
+
 from .models import User
 
 
@@ -130,3 +133,55 @@ class RestaurantSignUpView(CreateView):
         email = EmailMessage(email_subject, message, to=[to_email])
         email.send()
         return redirect('accessible_restaurant:emailsent')
+
+@login_required
+def user_profile_view(request):
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = UserProfileUpdateForm(request.POST,
+                                       request.FILES,
+                                       instance=request.user.uprofile)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            print('profile form successfully saved!')
+            messages.success(request, f'Your profile has been updated!')
+            return redirect('accessible_restaurant:user_profile')
+
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = UserProfileUpdateForm(instance=request.user.uprofile)
+
+    context = {
+        'user_form': u_form,
+        'profile_form': p_form
+    }
+    return render(request, 'profile/user_profile.html', context)
+
+
+@login_required
+def restaurant_profile_view(request):
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = RestaurantProfileUpdateForm(request.POST,
+                                             request.FILES,
+                                             instance=request.user.rprofile)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, f'Your profile has been updated!')
+            return redirect('accessible_restaurant:restaurant_profile')
+
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = RestaurantProfileUpdateForm(instance=request.user.rprofile)
+
+    context = {
+        'user_form': u_form,
+        'profile_form': p_form,
+    }
+    return render(request, 'profile/restaurant_profile.html', context)
+
+
+
+

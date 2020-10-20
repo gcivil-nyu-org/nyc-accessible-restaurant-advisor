@@ -14,4 +14,8 @@ urlpatterns = [
     path('accounts/signup/restaurantsignup/', views.RestaurantSignUpView.as_view(), name='restaurant_signup'),
     path('accounts/signup/emailsent/', views.emailsent_view, name='emailsent'),
     path('accounts/<uidb64>/<token>', views.activate_account, name="activate"),
+
+    # Profile urls
+    path('accounts/user-pforile/', views.user_profile_view, name='user_profile'),
+    path('accounts/restaurant-pforile/', views.restaurant_profile_view, name='restaurant_profile'),
 ]
