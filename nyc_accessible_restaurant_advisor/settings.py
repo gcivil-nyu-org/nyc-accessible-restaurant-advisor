@@ -124,6 +124,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
@@ -135,3 +137,7 @@ EMAIL_PORT = 587
 
 
 django_heroku.settings(locals())
+
+LOGIN_REDIRECT_URL = '/accessible_restaurant/home'
+LOGIN_URL = '/accessible_restaurant/accounts/login'
+LOGOUT_REDIRECT_URL = '/accessible_restaurant/home'
