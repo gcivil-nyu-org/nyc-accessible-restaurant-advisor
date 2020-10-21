@@ -16,6 +16,6 @@ urlpatterns = [
     path('accounts/<uidb64>/<token>', views.activate_account, name="activate"),
 
     # Profile urls
-    path('accounts/user-pforile/', views.user_profile_view, name='user_profile'),
-    path('accounts/restaurant-pforile/', views.restaurant_profile_view, name='restaurant_profile'),
+    path('accounts/user-profile/', views.user_profile_view, name='user_profile'),
+    path('accounts/restaurant-profile/', views.restaurant_profile_view, name='restaurant_profile'),
 ]
