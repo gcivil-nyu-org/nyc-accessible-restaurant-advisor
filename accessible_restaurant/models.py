@@ -58,3 +58,16 @@ class Restaurant_Profile(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.photo.path)
+
+class Restaurant(models.Model):
+    business_id = models.CharField(max_length=50)
+    name = models.CharField(max_length=80)
+    rating = models.FloatField(blank=True, default=0)
+    address = models.CharField(max_length=128, blank=True)
+    city = models.CharField(max_length=64, blank=True)
+    zip_code = models.CharField(max_length=16, blank=True)
+    phone = models.CharField(max_length=32, blank=True)
+    compliant = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.name}'
