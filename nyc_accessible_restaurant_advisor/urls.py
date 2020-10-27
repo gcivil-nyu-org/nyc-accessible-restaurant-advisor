@@ -19,8 +19,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('accessible_restaurant/', include('accessible_restaurant.urls')),
-    path('admin/', admin.site.urls),
+    path("accessible_restaurant/", include("accessible_restaurant.urls")),
+    path("admin/", admin.site.urls),
 ]
 
 if settings.DEBUG:

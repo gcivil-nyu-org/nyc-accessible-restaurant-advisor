@@ -8,73 +8,87 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accessible_restaurant', '0001_initial'),
+        ("accessible_restaurant", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='restaurant_profile',
-            name='address',
+            model_name="restaurant_profile",
+            name="address",
             field=models.CharField(blank=True, max_length=128),
         ),
         migrations.AddField(
-            model_name='restaurant_profile',
-            name='city',
+            model_name="restaurant_profile",
+            name="city",
             field=models.CharField(blank=True, max_length=64),
         ),
         migrations.AddField(
-            model_name='restaurant_profile',
-            name='is_open',
+            model_name="restaurant_profile",
+            name="is_open",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='restaurant_profile',
-            name='photo',
-            field=models.ImageField(default='default.jpg', upload_to='restaurant_profile_pics'),
+            model_name="restaurant_profile",
+            name="photo",
+            field=models.ImageField(
+                default="default.jpg", upload_to="restaurant_profile_pics"
+            ),
         ),
         migrations.AddField(
-            model_name='restaurant_profile',
-            name='state',
+            model_name="restaurant_profile",
+            name="state",
             field=models.CharField(blank=True, max_length=32),
         ),
         migrations.AddField(
-            model_name='user_profile',
-            name='address',
+            model_name="user_profile",
+            name="address",
             field=models.CharField(blank=True, max_length=128),
         ),
         migrations.AddField(
-            model_name='user_profile',
-            name='city',
+            model_name="user_profile",
+            name="city",
             field=models.CharField(blank=True, max_length=64),
         ),
         migrations.AddField(
-            model_name='user_profile',
-            name='photo',
-            field=models.ImageField(default='default.jpg', upload_to='user_profile_pics'),
+            model_name="user_profile",
+            name="photo",
+            field=models.ImageField(
+                default="default.jpg", upload_to="user_profile_pics"
+            ),
         ),
         migrations.AddField(
-            model_name='user_profile',
-            name='state',
+            model_name="user_profile",
+            name="state",
             field=models.CharField(blank=True, max_length=32),
         ),
         migrations.AlterField(
-            model_name='restaurant_profile',
-            name='phone',
+            model_name="restaurant_profile",
+            name="phone",
             field=models.CharField(blank=True, max_length=32),
         ),
         migrations.AlterField(
-            model_name='restaurant_profile',
-            name='user',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='restaurant', to=settings.AUTH_USER_MODEL),
+            model_name="restaurant_profile",
+            name="user",
+            field=models.OneToOneField(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="restaurant",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='user_profile',
-            name='phone',
+            model_name="user_profile",
+            name="phone",
             field=models.CharField(blank=True, max_length=32),
         ),
         migrations.AlterField(
-            model_name='user_profile',
-            name='user',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='user', to=settings.AUTH_USER_MODEL),
+            model_name="user_profile",
+            name="user",
+            field=models.OneToOneField(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="user",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]
