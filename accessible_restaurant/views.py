@@ -183,5 +183,6 @@ def restaurant_profile_view(request):
     return render(request, 'profile/restaurant_profile.html', context)
 
 
-
+# def restaurant_list_view(request):
+    
 
