@@ -6,22 +6,30 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accessible_restaurant', '0004_auto_20201019_1741'),
+        ("accessible_restaurant", "0004_auto_20201019_1741"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Restaurant',
+            name="Restaurant",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('business_id', models.CharField(max_length=50)),
-                ('name', models.CharField(max_length=80)),
-                ('rating', models.FloatField(blank=True, default=0)),
-                ('address', models.CharField(blank=True, max_length=128)),
-                ('city', models.CharField(blank=True, max_length=64)),
-                ('zip_code', models.CharField(blank=True, max_length=16)),
-                ('phone', models.CharField(blank=True, max_length=32)),
-                ('compliant', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("business_id", models.CharField(max_length=50)),
+                ("name", models.CharField(max_length=80)),
+                ("rating", models.FloatField(blank=True, default=0)),
+                ("address", models.CharField(blank=True, max_length=128)),
+                ("city", models.CharField(blank=True, max_length=64)),
+                ("zip_code", models.CharField(blank=True, max_length=16)),
+                ("phone", models.CharField(blank=True, max_length=32)),
+                ("compliant", models.BooleanField(default=False)),
             ],
         ),
     ]

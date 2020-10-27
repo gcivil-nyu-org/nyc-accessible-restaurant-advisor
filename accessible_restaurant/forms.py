@@ -4,17 +4,17 @@ from django.db import transaction
 
 from accessible_restaurant.models import User, User_Profile, Restaurant_Profile
 
-class UserSignUpForm(UserCreationForm):
 
+class UserSignUpForm(UserCreationForm):
     class Meta(UserCreationForm):
         model = User
         fields = [
-            'username',
-            'email',
-            'first_name',
-            'last_name',
-            'password1',
-            'password2'
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "password1",
+            "password2",
         ]
 
     @transaction.atomic
@@ -28,18 +28,10 @@ class UserSignUpForm(UserCreationForm):
         return user
 
 
-
-
 class RestaurantSignUpForm(UserCreationForm):
-
     class Meta(UserCreationForm):
         model = User
-        fields = [
-            'username',
-            'email',
-            'password1',
-            'password2'
-        ]
+        fields = ["username", "email", "password1", "password2"]
 
     @transaction.atomic
     def save(self):
@@ -53,49 +45,42 @@ class RestaurantSignUpForm(UserCreationForm):
 
 
 class UserUpdateForm(forms.ModelForm):
-
     class Meta:
         model = User
-        fields = [
-            'username',
-            'first_name',
-            'last_name'
-        ]
+        fields = ["username", "first_name", "last_name"]
 
 
 class UserProfileUpdateForm(forms.ModelForm):
-
     class Meta:
         model = User_Profile
         fields = [
-            'photo',
-            'phone',
-            'address',
-            'city',
-            'zip_code',
-            'state',
+            "photo",
+            "phone",
+            "address",
+            "city",
+            "zip_code",
+            "state",
         ]
         labels = {
-            'zip_code': 'Zip Code',
+            "zip_code": "Zip Code",
         }
 
 
 class RestaurantProfileUpdateForm(forms.ModelForm):
-
     class Meta:
         model = Restaurant_Profile
         fields = [
-            'restaurant_name',
-            'photo',
-            'phone',
-            'address',
-            'city',
-            'zip_code',
-            'state',
-            'is_open',
+            "restaurant_name",
+            "photo",
+            "phone",
+            "address",
+            "city",
+            "zip_code",
+            "state",
+            "is_open",
         ]
         labels = {
-            'restaurant_name': 'Restaurant Name',
-            'zip_code': 'Zip Code',
-            'is_open': 'Is Open',
+            "restaurant_name": "Restaurant Name",
+            "zip_code": "Zip Code",
+            "is_open": "Is Open",
         }
