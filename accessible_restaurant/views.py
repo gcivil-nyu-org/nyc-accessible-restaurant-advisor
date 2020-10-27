@@ -189,3 +189,10 @@ def restaurant_profile_view(request):
         "profile_form": p_form,
     }
     return render(request, "profile/restaurant_profile.html", context)
+
+
+def browse_restaurants_view(request):
+    return render(request, "restaurants/browse.html")
+
+def restaurants_detail_view(request):
+    return render(request, "restaurants/detail.html")

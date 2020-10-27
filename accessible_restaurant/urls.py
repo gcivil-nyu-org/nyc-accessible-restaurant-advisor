@@ -35,4 +35,7 @@ urlpatterns = [
         views.restaurant_profile_view,
         name="restaurant_profile",
     ),
+    # Restaurant search and detail urls
+    path("restaurants/browse", views.browse_restaurants_view, name="browse"),
+    path("restaurants/detail", views.restaurants_detail_view, name="detail"),
 ]
