@@ -200,10 +200,4 @@ def restaurant_profile_view(request):
         "user_form": u_form,
         "profile_form": p_form,
     }
-    return render(request, 'profile/restaurant_profile.html', context)
-
-
-# def restaurant_list_view(request):
-    
-
-
+    return render(request, "profile/restaurant_profile.html", context)

@@ -73,7 +73,7 @@ class Restaurant(models.Model):
     img_url = models.URLField(
         max_length=250,
         blank=True,
-        default="https://i.pinimg.com/originals/4e/24/f5/4e24f523182e09376bfe8424d556610a.png"
+        default="https://i.pinimg.com/originals/4e/24/f5/4e24f523182e09376bfe8424d556610a.png",
     )
     rating = models.FloatField(blank=True, default=0)
     address = models.CharField(max_length=128, blank=True)
