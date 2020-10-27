@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 
 # from django.contrib import messages
 from django.views.generic import CreateView
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -25,7 +25,8 @@ from .forms import (
 )
 from django.contrib.auth.decorators import login_required
 
-from .models import User
+from .models import User, Restaurant
+from .utils import get_restaurant_list, get_restaurant
 
 
 # Create your views here.
@@ -201,3 +202,22 @@ def restaurant_profile_view(request):
         "profile_form": p_form,
     }
     return render(request, "profile/restaurant_profile.html", context)
+
+
+def restaurant_list_view(request, page):
+    restaurant_list = get_restaurant_list(page, 10)
+    context = {"restaurants": restaurant_list}
+    return render(request, "restaurants/browse.html", context)
+
+
+def restaurant_detail_view(request, business_id):
+    restaurant = Restaurant.objects.get(business_id=business_id)
+    if not restaurant:
+        return HttpResponseNotFound("Restaurant not found!")
+    response = get_restaurant(restaurant.business_id)
+    context = {
+        "restaurant": restaurant,
+        "restaurant_data": response["restaurant_data"],
+        "restaurant_review": response["restaurant_review"],
+    }
+    return render(request, "restaurants/detail.html", context)
