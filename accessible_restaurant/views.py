@@ -33,18 +33,6 @@ def index_view(request):
     return render(request, "index.html")
 
 
-# For Test Only
-@login_required
-def user_profile(request):
-    return render(request, "profile/userProfile.html")
-
-
-# For Test Only
-@login_required
-def restaurant_profile(request):
-    return render(request, "profile/restaurantProfile.html")
-
-
 def logout_view(request):
     return render(request, "accounts/logout.html")
 
