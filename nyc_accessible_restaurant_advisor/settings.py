@@ -136,7 +136,7 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 
 
-django_heroku.settings(locals())
+django_heroku.settings(locals(), test_runner=False)
 
 LOGIN_REDIRECT_URL = "/accessible_restaurant/home"
 LOGIN_URL = "/accessible_restaurant/accounts/login"
