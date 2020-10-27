@@ -168,7 +168,7 @@ def user_profile_view(request):
             u_form.save()
             p_form.save()
             print("profile form successfully saved!")
-            messages.success(request, f"Your profile has been updated!")
+            messages.success(request, f'{"Your profile has been updated!"}')
             return redirect("accessible_restaurant:user_profile")
 
     else:
@@ -189,7 +189,7 @@ def restaurant_profile_view(request):
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
-            messages.success(request, f"Your profile has been updated!")
+            messages.success(request, f'{"Your profile has been updated!"}')
             return redirect("accessible_restaurant:restaurant_profile")
 
     else:
