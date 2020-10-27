@@ -36,7 +36,7 @@ def get_restaurant(business_id):
 
 def get_restaurant_list(page, size):
     offset = int(page) * int(size)
-    restaurants = Restaurant.objects.all()[offset:offset + size]
+    restaurants = Restaurant.objects.all()[offset : offset + size]
     response = []
     for restaurant in restaurants:
         response.append(restaurant.__dict__)
