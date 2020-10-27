@@ -70,6 +70,11 @@ class Restaurant_Profile(models.Model):
 class Restaurant(models.Model):
     business_id = models.CharField(max_length=50)
     name = models.CharField(max_length=80)
+    img_url = models.URLField(
+        max_length=250,
+        blank=True,
+        default="https://i.pinimg.com/originals/4e/24/f5/4e24f523182e09376bfe8424d556610a.png"
+    )
     rating = models.FloatField(blank=True, default=0)
     address = models.CharField(max_length=128, blank=True)
     city = models.CharField(max_length=64, blank=True)
