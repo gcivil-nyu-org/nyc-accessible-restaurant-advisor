@@ -102,17 +102,17 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, "restaurants/browse.html")
 
     def test_detail_view_GET(self):
-        # Restaurant.objects.create(
-        #     business_id="FaPtColHYcTnZAxtoM33cA",
-        #     name = "name",
-        #     img_url = "https://i.pinimg.com/originals/4e/24/f5/4e24f523182e09376bfe8424d556610a.png",
-        #     rating = "4.5",
-        #     address = "50 W 34th street",
-        #     city = "New York",
-        #     zip_code = "10001",
-        #     phone = "3472692389",
-        #     compliant = "1"
-        # )
+        Restaurant.objects.create(
+            business_id="FaPtColHYcTnZAxtoM33cA",
+            name = "name",
+            img_url = "https://i.pinimg.com/originals/4e/24/f5/4e24f523182e09376bfe8424d556610a.png",
+            rating = "4.5",
+            address = "50 W 34th street",
+            city = "New York",
+            zip_code = "10001",
+            phone = "3472692389",
+            compliant = "1"
+        )
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "restaurants/detail.html")
