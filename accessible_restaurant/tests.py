@@ -24,8 +24,10 @@ class TestViews(TestCase):
         )
         self.userprofile_url = reverse("accessible_restaurant:user_profile")
         self.resprofile_url = reverse("accessible_restaurant:restaurant_profile")
-        self.browse_url = reverse("accessible_restaurant:browse", args=["page"])
-        self.detail_url = reverse("accessible_restaurant:detail", args=["business_id"])
+        self.browse_url = reverse("accessible_restaurant:browse", args=[10])
+        self.detail_url = reverse(
+            "accessible_restaurant:detail", args=["FaPtColHYcTnZAxtoM33cA"]
+        )
 
     def test_index_view_GET(self):
         response = self.client.get(self.index_url)
@@ -34,8 +36,7 @@ class TestViews(TestCase):
 
     def test_logout_view_GET(self):
         response = self.client.get(self.logout_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/logout.html")
+        self.assertEqual(response.status_code, 302)
 
     def test_signup_view_GET(self):
         response = self.client.get(self.signup_url)
