@@ -93,8 +93,16 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "accounts/emailSent.html")
 
-    #    def test_activate_view_GET(self):
-    #        response = self.client.get(self.activate_url)
+    # def test_activate_view_GET(self):
+    #     User.objects.create(
+    #         username="username",
+    #         first_name="first",
+    #         last_name="last"
+    #     )
+    #     response = self.client.get(self.activate_url)
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, "accountss/activate_account.html")
+
 
     def test_browse_view_GET(self):
         response = self.client.get(self.browse_url)
@@ -117,23 +125,38 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "restaurants/detail.html")
 
-    # def test_user_profile_view_POST(self):
-    #     User.objects.create(
-    #         username = "username",
-    #         first_name = "first",
-    #         last_name = "last"
-    #     )
-    #     User_Profile.objects.create(
-    #         photo = "photo",
-    #         phone = "phone",
-    #         address = "50 W 34th Street",
-    #         city = "New York",
-    #         zip_code = "10001",
-    #         state = "NY",
-    #     )
-    #     response = self.client.post(self.userprofile_url)
-    #     self.assertEqual(response.status_code, 200)
-    #
-    # def test_res_profile_view_POST(self):
-    #     response = self.client.get(self.resprofile_url)
-    #     self.assertEqual(response.status_code, 200)
+    def test_user_profile_view_POST(self):
+        User.objects.create(
+            username = "huanjin",
+            first_name = "Huanjin",
+            last_name = "Zhang"
+        )
+        User_Profile.objects.create(
+            photo = "default.jpg",
+            phone = "3474223609",
+            address = "35 River Drive South",
+            city = "Jersey City",
+            zip_code = "07310",
+            state = "NJ",
+        )
+        response = self.client.post(self.userprofile_url)
+        self.assertEqual(response.status_code, 302)
+
+    def test_res_profile_view_POST(self):
+        User.objects.create(
+            username = "huanjin",
+            first_name = "Huanjin",
+            last_name = "Zhang"
+        )
+        Restaurant_Profile.objects.create(
+            restaurant_name = "name",
+            photo = "default.jpg",
+            phone = "3474223609",
+            address = "35 River Drive South",
+            city = "Jersey City",
+            zip_code = "07310",
+            state = "NJ",
+            is_open = True
+        )
+        response = self.client.post(self.resprofile_url)
+        self.assertEqual(response.status_code, 302)
