@@ -23,6 +23,7 @@ from accessible_restaurant.forms import (
     RestaurantProfileUpdateForm,
 )
 
+
 # Create your tests here.
 class TestForms(TestCase):
     def test_userSignUpForm_is_valid(self):
