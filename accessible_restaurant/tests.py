@@ -1,66 +1,7 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.urls import reverse
-from accessible_restaurant.models import (
-    User,
-    User_Profile,
-    Restaurant_Profile,
-    Restaurant,
-)
-import json
 
 # Create your tests here.
-
-
-# Test views.py
-class TestViews(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.index_url = reverse("accessible_restaurant:index")
-        self.logout_url = reverse("accessible_restaurant:logout")
-        self.signup_url = reverse("accessible_restaurant:signup")
-        self.emailsent_url = reverse("accessible_restaurant:emailsent")
-        self.activate_url = reverse(
-            "accessible_restaurant:activate", args=["uid", "token"]
-        )
-        self.userprofile_url = reverse("accessible_restaurant:user_profile")
-        self.resprofile_url = reverse("accessible_restaurant:restaurant_profile")
-        self.browse_url = reverse("accessible_restaurant:browse", args=[10])
-        self.detail_url = reverse(
-            "accessible_restaurant:detail", args=["FaPtColHYcTnZAxtoM33cA"]
-        )
-
-    def test_index_view_GET(self):
-        response = self.client.get(self.index_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "index.html")
-
-    def test_logout_view_GET(self):
-        response = self.client.get(self.logout_url)
-        self.assertEqual(response.status_code, 302)
-
-    def test_signup_view_GET(self):
-        response = self.client.get(self.signup_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/register.html")
-
-    def test_email_sent_view_GET(self):
-        response = self.client.get(self.emailsent_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/emailSent.html")
-
-    #    def test_activate_view_GET(self):
-    #        response = self.client.get(self.activate_url)
-
-    def test_browse_view_GET(self):
-        response = self.client.get(self.browse_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "restaurants/browse.html")
-
-    def test_detail_view_GET(self):
-        response = self.client.get(self.detail_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "restaurants/detail.html")
-
 
 class UserSignUpTest(TestCase):
     def setUp(self):
