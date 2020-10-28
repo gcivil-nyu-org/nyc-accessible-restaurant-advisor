@@ -18,6 +18,7 @@ from accessible_restaurant.views import (
 from django.contrib.auth import views as auth_views
 from accessible_restaurant.forms import (
     UserSignUpForm,
+    RestaurantSignUpForm,
     UserProfileUpdateForm,
     UserUpdateForm,
     RestaurantProfileUpdateForm,
@@ -40,12 +41,29 @@ class TestForms(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_userSignUpForm_no_data(self):
-        form = UserSignUpForm(data={})
+        form = UserSignUpForm(
+            data={
+                "username": "test1",
+                "email": "test@test.com",
+            }
+        )
         self.assertFalse(form.is_valid())
-        self.assertEquals(len(form.errors), 3)
+        self.assertEquals(len(form.errors), 2)
+
+    def test_userSignUpForm_no_data_4(self):
+        form = UserSignUpForm(
+            data={
+                "username": "test1",
+                "email": "test@test.com",
+                "first_name": "test",
+                "last_name": "user",
+            }
+        )
+        self.assertFalse(form.is_valid())
+        self.assertEquals(len(form.errors), 2)
 
     def test_RestaurantSignUpForm_is_valid(self):
-        form = UserSignUpForm(
+        form = RestaurantSignUpForm(
             data={
                 "username": "test1",
                 "email": "test@test.com",
@@ -56,9 +74,26 @@ class TestForms(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_RestaurantSignUpForm_no_data(self):
-        form = UserSignUpForm(data={})
+        form = RestaurantSignUpForm(
+            data={
+                "username": "test1",
+                "email": "test@test.com",
+            }
+        )
         self.assertFalse(form.is_valid())
-        self.assertEquals(len(form.errors), 3)
+        self.assertEquals(len(form.errors), 2)
+
+    def test_RestaurantSignUpForm_no_data_4(self):
+        form = RestaurantSignUpForm(
+            data={
+                "username": "test1",
+                "email": "test@test.com",
+                "first_name": "test",
+                "last_name": "user",
+            }
+        )
+        self.assertFalse(form.is_valid())
+        self.assertEquals(len(form.errors), 2)
 
     def test_UserProfileUpdateForm_is_valid(self):
         form = UserProfileUpdateForm(
