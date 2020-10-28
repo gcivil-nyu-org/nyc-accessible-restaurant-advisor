@@ -207,11 +207,10 @@ def restaurant_list_view(request, page):
 
     # Previous and next page numbers
     page_range = get_page_range(int(total_page), int(page)+1)
-
     context = {
         "restaurants": restaurant_list,
         "star_list": star_list,
-        "page_num": page,
+        "page_num": int(page),
         "total_page": total_page,
         "page_range": page_range,
     }

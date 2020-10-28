@@ -14,10 +14,10 @@
     <section id="main" class="wrapper">
         <div class="inner">
             <header class="align-center">
-                <h2><strong>Best Restaurants</strong></h2>
+                <h2><strong>Browse Restaurants</strong></h2>
             </header>
             <div class="row 200%">
-                <div class="12u 12u$(medium)" style="align-content:center;">
+                <div class="12u 12u$(medium)">
                     <form method="post" action="#">
                         <div class="row uniform">
                             <div class="9u 12u$(small)">
@@ -68,16 +68,35 @@
                             </div>
                         </a>
                     {% endfor %}
-
-                    <div class="row">
+                    <div class="row uniform">
+                    <div class="4u 12u$(medium)">
+                    </div>
+                    <div class="4u 12u$(medium)">
                         <ul class="icons">
-                            <a href="0">First Page</a>
+                            {% if page_num == 0 %}
+                                First Page
+                            {% else %}
+                                <a href="0">First Page</a>
+                            {% endif %}
+                            &emsp;
                             {% for pnum in page_range %}
-                                <li><a href="{{ pnum }}">{{ pnum|add:"1" }}</a></li>
+                                {% if pnum == page_num %}
+                                    <li>{{ pnum|add:"1" }}</li>
+                                {% else %}
+                                    <li><a href="{{ pnum }}">{{ pnum|add:"1" }}</a></li>
+                                {% endif %}
+                            &emsp;
                             {% endfor %}
-                            <a href="{{ total_page }}">Last Page</a>
+                            {% if total_page == page_num %}
+                                Last Page
+                            {% else %}
+                                <a href="{{ total_page }}">Last Page</a>
+                            {% endif %}
                         </ul>
                     </div>
+                    <div class="4u 12u$(medium)">
+                    </div>
+                        </div>
                 </div>
             </div>
         </div>

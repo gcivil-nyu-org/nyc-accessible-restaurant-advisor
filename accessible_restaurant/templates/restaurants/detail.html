@@ -75,10 +75,10 @@
 					</div>
 					<div class="row uniform">
 						<div class="4u 12u$(small)">
-							<i class="icon fas fa-times-circle" id="checklist4"></i>Accessible 36-inch wide path
-						</div>
-						<div class="4u 12u$(small)">
 							<i class="icon fas fa-check-square" id="checklist5"></i>Accessible restroom
+						</div>
+						<div class="6u 12u$(small)">
+							<i class="icon fas fa-times-circle" id="checklist4"></i>Accessible 36-inch wide path
 						</div>
 					</div>
 
@@ -110,7 +110,7 @@
 									</ul>
 								</div>
 								<div class="row uniform">
-									<p>{{ review.text }}</p>
+									<p><a href="{{ review.url }}">{{ review.text }}</a></p>
 								</div>
 <!--								<div class="row uniform">-->
 <!--									<span class="image fit"><img src="{{ review.user.image_url }}" alt="" /></span>-->
