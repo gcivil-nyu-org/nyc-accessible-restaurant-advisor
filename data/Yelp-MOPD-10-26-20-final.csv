@@ -1,4 +1,4 @@
-id,business_id,name,image_url,rating,address,city,zip_code,phone,compliant
+id,business_id,name,img_url,rating,address,city,zip_code,phone,compliant
 ,14BLy22t6EKuPO5aAQ6R8g,Just Salad,https://s3-media2.fl.yelpcdn.com/bphoto/NHTe_4NV0WJNw-Uwt-C50A/o.jpg,3.5,233 Broadway,New York,10279,12122441111,1
 ,ejZjFbR_Z3He5pi699eJKg,Birch Coffee,https://s3-media2.fl.yelpcdn.com/bphoto/prVCcWpWBsU657KVbKhr2w/o.jpg,4,8 Spruce St,New York,10038,12126861444,1
 ,K7c1bkgmmdiTcsQ5afGFNQ,W XYZ Bar,https://s3-media1.fl.yelpcdn.com/bphoto/lgOsvjndmAscI3J3MuD3zw/o.jpg,5,49-53 Ann St,New York,10038,12125130003,1
@@ -45,7 +45,6 @@ id,business_id,name,image_url,rating,address,city,zip_code,phone,compliant
 ,A5YzhzVxX7JigLl5kmYbGg,Adventure Cafe,https://s3-media2.fl.yelpcdn.com/bphoto/p_WU9MBfCLeSzFEAAr2A7A/o.jpg,4.5,85 Delancey St,New York,10002,16468472367,1
 ,D0o9SbOrPkvJ5H2sxzxyig,Max Fish,https://s3-media4.fl.yelpcdn.com/bphoto/rdM0F_a5ULRqJDcdYds08A/o.jpg,3.5,120 Orchard St,New York,10002,12125293959,0
 ,0rQz8mkleT62eUkiAVs4UA,Russ & Daughters Cafe,https://s3-media2.fl.yelpcdn.com/bphoto/fo29fVS_dXcu9pFQDzS3_A/o.jpg,4,127 Orchard St,New York,10002,12124754881,1
-,#NAME?,General Store by Char Sue,https://s3-media1.fl.yelpcdn.com/bphoto/UcdWcwJ5Ik3s0HhrM83g8A/o.jpg,4.5,119 Essex St,New York,10002,16464849241,1
 ,zGH7ZoOvLfZhuYAAKDbCKA,Retro Bar and Grill,https://s3-media2.fl.yelpcdn.com/bphoto/RNbrHhvX6UnWTS8-2DZrJg/o.jpg,2.5,150 Delancey St,New York,10002,12122288379,0
 ,7qtIemPU3LlNix8CVWdhwA,Clancey,https://s3-media1.fl.yelpcdn.com/bphoto/V5uFH1LIPkHyxZ3l2FV9iw/o.jpg,4.5,79 Clinton St,New York,10002,19173883575,0
 ,oB4nOEmkpgJ7Z3JZC0qqBw,Black Crescent,https://s3-media2.fl.yelpcdn.com/bphoto/FD9EGd_i1VTquAA6BUlj1A/o.jpg,4,76 Clinton St,New York,10002,12124771771,0
@@ -163,7 +162,6 @@ id,business_id,name,image_url,rating,address,city,zip_code,phone,compliant
 ,gNuIdQMEddQUHUTiFXxZGg,Brownstone Bagel & Bread,https://s3-media2.fl.yelpcdn.com/bphoto/ueiwz3BOw-91RswY5zBMKQ/o.jpg,3.5,671 Union St,Brooklyn,11215,17186226030,1
 ,lufZs3ZJuJHDXWA362DYng,Colony 274,https://s3-media1.fl.yelpcdn.com/bphoto/d9mjcEjcXzaDFZXbaiUA8w/o.jpg,3.5,274 4th Ave,Brooklyn,11215,17188675309,1
 ,J99VVAUid72FNwEqiSEnHg,Givers and Takers,https://s3-media1.fl.yelpcdn.com/bphoto/BnhUXnjxmb2-42IlRgRs4w/o.jpg,4.5,286 3rd Ave,Brooklyn,11215,13479874306,1
-,#NAME?,Dirty Precious,https://s3-media2.fl.yelpcdn.com/bphoto/-vkJMYaohZcYttoJLVaQvw/o.jpg,4.5,317 3rd Ave,Brooklyn,11215,16466854481,1
 ,DyPK6IyY-8xIqQWT4HqJNw,Gristmill,https://s3-media1.fl.yelpcdn.com/bphoto/rH7CDkAWn0jHUyyEnXH3sQ/o.jpg,4.5,289 5th Ave,Brooklyn,11215,17184992424,0
 ,AEKnbImOQWMOL7bS9lQ2wQ,Cooks & Captains,https://s3-media3.fl.yelpcdn.com/bphoto/G0eeV2PLI0h9M-O4uloyRA/o.jpg,4.5,254 5th Ave,Brooklyn,11215,13477213801,0
 ,UvQr8V1dD_d6yRsMJi04wA,Shaking Crab- Brooklyn,https://s3-media1.fl.yelpcdn.com/bphoto/cvhgQU_UDdG-MYe9MZCwag/o.jpg,3.5,230 5th Ave,Brooklyn,11215,19293376140,1
