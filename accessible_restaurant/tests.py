@@ -6,11 +6,6 @@ from accessible_restaurant.models import (
     Restaurant_Profile,
     Restaurant,
 )
-from accessible_restaurant.forms import (
-    UserUpdateForm,
-    UserProfileUpdateForm,
-    RestaurantProfileUpdateForm,
-)
 import json
 
 # Create your tests here.
@@ -130,23 +125,16 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, "restaurants/detail.html")
 
     def test_user_profile_view_POST(self):
-        userform = UserUpdateForm.form_data = {
-            "username": "huanjin",
-            "first_name": "Huanjin",
-            "last_name": "Zhang",
-        }
-
-        # UserProfileUpdateForm.form_data = {
-        #     "photo" = "default.jpg",
-        #     "phone "= "3474223609",
-        #     "address" = "35 River Drive South",
-        #     "city" = "Jersey City",
-        #     "zip_code" = "07310",
-        #     "state" = "NJ"
-        # }
-        # # form = MyForm(data=form_data)
-        # self.assertTrue(form.is_valid())
-        response = self.client.get(self.userprofile_url)
+        User.objects.create(username="huanjin", first_name="Huanjin", last_name="Zhang")
+        User_Profile.objects.create(
+            photo="default.jpg",
+            phone="3474223609",
+            address="35 River Drive South",
+            city="Jersey City",
+            zip_code="07310",
+            state="NJ",
+        )
+        response = self.client.post(self.userprofile_url)
         self.assertEqual(response.status_code, 302)
 
     def test_res_profile_view_POST(self):
@@ -161,5 +149,5 @@ class TestViews(TestCase):
             state="NJ",
             is_open=True,
         )
-        response = self.client.get(self.resprofile_url)
+        response = self.client.post(self.resprofile_url)
         self.assertEqual(response.status_code, 302)
