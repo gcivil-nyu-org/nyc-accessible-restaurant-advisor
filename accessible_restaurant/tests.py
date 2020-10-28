@@ -1,5 +1,12 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse
+from accessible_restaurant.models import (
+    User,
+    User_Profile,
+    Restaurant_Profile,
+    Restaurant,
+)
+import json
 
 # Create your tests here.
 
@@ -48,3 +55,86 @@ class RestaurantSignUpTest(TestCase):
             self.restaurantsignup_url, self.restaurant, format="text/html", follow=True
         )
         self.assertEqual(response.status_code, 200)
+
+
+
+class TestViews(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.index_url = reverse("accessible_restaurant:index")
+        self.logout_url = reverse("accessible_restaurant:logout")
+        self.signup_url = reverse("accessible_restaurant:signup")
+        self.emailsent_url = reverse("accessible_restaurant:emailsent")
+        self.activate_url = reverse(
+            "accessible_restaurant:activate", args=["uid", "token"]
+        )
+        self.userprofile_url = reverse("accessible_restaurant:user_profile")
+        self.resprofile_url = reverse("accessible_restaurant:restaurant_profile")
+        self.browse_url = reverse("accessible_restaurant:browse", args=[10])
+        self.detail_url = reverse(
+            "accessible_restaurant:detail", args=["FaPtColHYcTnZAxtoM33cA"]
+        )
+
+    def test_index_view_GET(self):
+        response = self.client.get(self.index_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "index.html")
+
+    def test_logout_view_GET(self):
+        response = self.client.get(self.logout_url)
+        self.assertEqual(response.status_code, 302)
+
+    def test_signup_view_GET(self):
+        response = self.client.get(self.signup_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/register.html")
+
+    def test_email_sent_view_GET(self):
+        response = self.client.get(self.emailsent_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/emailSent.html")
+
+    #    def test_activate_view_GET(self):
+    #        response = self.client.get(self.activate_url)
+
+    def test_browse_view_GET(self):
+        response = self.client.get(self.browse_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "restaurants/browse.html")
+
+    # def test_detail_view_GET(self):
+    #     Restaurant.objects.create(
+    #         business_id="FaPtColHYcTnZAxtoM33cA",
+    #         name = "name",
+    #         img_url = "https://i.pinimg.com/originals/4e/24/f5/4e24f523182e09376bfe8424d556610a.png",
+    #         rating = "4.5",
+    #         address = "50 W 34th street",
+    #         city = "New York",
+    #         zip_code = "10001",
+    #         phone = "3472692389",
+    #         compliant = "1"
+    #     )
+    #     response = self.client.get(self.detail_url)
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, "restaurants/detail.html")
+    #
+    # def test_user_profile_view_POST(self):
+    #     User.objects.create(
+    #         username = "username",
+    #         first_name = "first",
+    #         last_name = "last"
+    #     )
+    #     User_Profile.objects.create(
+    #         photo = "photo",
+    #         phone = "phone",
+    #         address = "50 W 34th Street",
+    #         city = "New York",
+    #         zip_code = "10001",
+    #         state = "NY",
+    #     )
+    #     response = self.client.post(self.userprofile_url)
+    #     self.assertEqual(response.status_code, 200)
+    #
+    # def test_res_profile_view_POST(self):
+    #     response = self.client.get(self.resprofile_url)
+    #     self.assertEqual(response.status_code, 200)
