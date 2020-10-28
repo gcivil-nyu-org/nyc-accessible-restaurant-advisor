@@ -16,8 +16,82 @@ from accessible_restaurant.views import (
     restaurant_list_view,
 )
 from django.contrib.auth import views as auth_views
+from accessible_restaurant.forms import (
+    UserSignUpForm,
+    UserProfileUpdateForm,
+    UserUpdateForm,
+    RestaurantProfileUpdateForm,
+)
 
 # Create your tests here.
+class TestForms(TestCase):
+    def test_userSignUpForm_is_valid(self):
+        form = UserSignUpForm(
+            data={
+                "username": "test1",
+                "email": "test@test.com",
+                "first_name": "test",
+                "last_name": "user",
+                "password1": "Password123#",
+                "password2": "Password123#",
+            }
+        )
+        self.assertTrue(form.is_valid())
+
+    def test_userSignUpForm_no_data(self):
+        form = UserSignUpForm(data={})
+        self.assertFalse(form.is_valid())
+        self.assertEquals(len(form.errors), 3)
+
+    def test_RestaurantSignUpForm_is_valid(self):
+        form = UserSignUpForm(
+            data={
+                "username": "test1",
+                "email": "test@test.com",
+                "password1": "Password123#",
+                "password2": "Password123#",
+            }
+        )
+        self.assertTrue(form.is_valid())
+
+    def test_RestaurantSignUpForm_no_data(self):
+        form = UserSignUpForm(data={})
+        self.assertFalse(form.is_valid())
+        self.assertEquals(len(form.errors), 3)
+
+    def test_UserProfileUpdateForm_is_valid(self):
+        form = UserProfileUpdateForm(
+            data={
+                "photo": "photo",
+                "phone": "1234567889",
+                "address": "123 New York",
+                "city": "New York",
+                "Zip Code": "11220",
+                "state": "NY",
+            }
+        )
+        self.assertTrue(form.is_valid())
+
+    def test_RestaurantProfileUpdateForm_is_valid(self):
+        form = RestaurantProfileUpdateForm(
+            data={
+                "restaurant_name": "Pizza",
+                "photo": "Photo",
+                "phone": "1234567889",
+                "address": "345 NY",
+                "city": "Manhattan",
+                "zip_code": "11220",
+                "state": "NY",
+                "is_open": "True",
+            }
+        )
+        self.assertTrue(form.is_valid())
+
+    def test_UserUpdateForm_is_valid(self):
+        form = UserUpdateForm(
+            data={"username": "testuser", "first_name": "test", "last_name": "user"}
+        )
+        self.assertTrue(form.is_valid())
 
 
 class TestUrls(SimpleTestCase):
