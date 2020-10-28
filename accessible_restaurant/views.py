@@ -197,10 +197,10 @@ def restaurant_list_view(request, page):
     restaurant_list = get_restaurant_list(page, 10)
     star_list = get_star_list()
     for restaurant in restaurant_list:
-        full, half, null = star_list[restaurant['rating']]
-        restaurant['full'] = full
-        restaurant['half'] = half
-        restaurant['null'] = null
+        full, half, null = star_list[restaurant["rating"]]
+        restaurant["full"] = full
+        restaurant["half"] = half
+        restaurant["null"] = null
 
     # Page count
     total_restaurant = Restaurant.objects.count()
@@ -209,8 +209,10 @@ def restaurant_list_view(request, page):
         total_page -= 1
 
     # Previous and next page numbers
-    page_range = get_page_range(int(total_page), page+1)
-    page_exceed_error = "page number exceeds maximum page number, please choose valid page"
+    page_range = get_page_range(int(total_page), page + 1)
+    page_exceed_error = (
+        "page number exceeds maximum page number, please choose valid page"
+    )
     context = {
         "restaurants": restaurant_list,
         "star_list": star_list,
@@ -226,10 +228,14 @@ def restaurant_detail_view(request, business_id):
     try:
         restaurant = Restaurant.objects.get(business_id=business_id)
     except (KeyError, Restaurant.DoesNotExist):
-        return render(request, "restaurants/error.html", {
-            'business_id': business_id,
-            'error_message': "Restaurant not found!",
-        })
+        return render(
+            request,
+            "restaurants/error.html",
+            {
+                "business_id": business_id,
+                "error_message": "Restaurant not found!",
+            },
+        )
     else:
         response = get_restaurant(restaurant.business_id)
         star_list = get_star_list()
@@ -240,10 +246,10 @@ def restaurant_detail_view(request, business_id):
 
         # Rating stars
         for review in restaurant_reviews["reviews"]:
-            r_full, r_half, r_null = star_list[float(review['rating'])]
-            review['full'] = r_full
-            review['half'] = r_half
-            review['null'] = r_null
+            r_full, r_half, r_null = star_list[float(review["rating"])]
+            review["full"] = r_full
+            review["half"] = r_half
+            review["null"] = r_null
 
         # Get open hours and is_open status
         hours = []

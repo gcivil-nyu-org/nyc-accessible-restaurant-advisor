@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accessible_restaurant', '0006_restaurant_img_url'),
+        ("accessible_restaurant", "0006_restaurant_img_url"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='restaurant',
-            name='img_url',
+            model_name="restaurant",
+            name="img_url",
             field=models.URLField(blank=True, max_length=250),
         ),
     ]
