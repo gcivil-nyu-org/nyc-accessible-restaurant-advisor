@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block staticlink %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/browse_style.css' %}">
+	<script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block title %} Restaurant List Page {% endblock %}
+
+{% block body %}<body class="subpage">{% endblock %}
+
+{% block content %}
+    <section id="main" class="wrapper">
+        <div class="inner">
+            <header class="align-center">
+                <h2><strong>Best Restaurants</strong></h2>
+            </header>
+            <div class="row 200%">
+                <div class="12u 12u$(medium)">
+                    <form method="post" action="#">
+                        <div class="row uniform">
+                            <div class="9u 12u$(small)">
+                                <input type="text" name="query" id="query" value="" placeholder="Restaurants" />
+                            </div>
+                            <div class="3u$ 12u$(small)">
+                                <input type="submit" value="Search" class="fit" />
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="box">
+                        <div class="4u 12u$(medium)">
+                            {% for restaurant in restaurants %}
+                                {{ restaurant.img_url }}
+                            {% endfor %}
+                        </div>
+                        <div class="8u 12u$(medium)">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

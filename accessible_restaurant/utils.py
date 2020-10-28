@@ -10,8 +10,8 @@ def get_restaurant_data(business_id):
     token = settings.YELP_TOKEN
     headers = {"Authorization": "bearer %s" % token}
     url = settings.YELP_REST_ENDPOINT + business_id
-    response = requests.request(url, headers=headers)
-    return json.load(response.text)
+    response = requests.get(url, headers=headers)
+    return json.loads(response.text)
 
 
 def get_restaurant_reviews(business_id):
@@ -20,8 +20,8 @@ def get_restaurant_reviews(business_id):
     token = settings.YELP_TOKEN
     headers = {"Authorization": "bearer %s" % token}
     url = settings.YELP_REST_ENDPOINT + business_id + "/reviews"
-    response = requests.request(url, headers=headers)
-    return json.load(response.text)
+    response = requests.get(url, headers=headers)
+    return json.loads(response.text)
 
 
 def get_restaurant(business_id):

@@ -194,7 +194,17 @@ def restaurant_profile_view(request):
 
 def restaurant_list_view(request, page):
     restaurant_list = get_restaurant_list(page, 10)
-    context = {"restaurants": restaurant_list}
+    star_list = get_star_list()
+    for restaurant in restaurant_list:
+        full, half, null = star_list[restaurant['rating']]
+        restaurant['full'] = full
+        restaurant['half'] = half
+        restaurant['null'] = null
+
+    context = {
+        "restaurants": restaurant_list,
+        "star_list": star_list,
+    }
     return render(request, "restaurants/browse.html", context)
 
 
@@ -203,10 +213,52 @@ def restaurant_detail_view(request, business_id):
     if not restaurant:
         return HttpResponseNotFound("Restaurant not found!")
     response = get_restaurant(restaurant.business_id)
+    star_list = get_star_list()
+    full, half, null = star_list[restaurant.rating]
+
+    restaurant_data = response["restaurant_data"]
+    restaurant_reviews = response["restaurant_reviews"]
+
+    # Rating stars
+    for review in restaurant_reviews["reviews"]:
+        r_full, r_half, r_null = star_list[float(review['rating'])]
+        review['full'] = r_full
+        review['half'] = r_half
+        review['null'] = r_null
+
+    # Get open hours and is_open status
+    hours = []
+    is_open_now = restaurant_data["hours"][0]["is_open_now"]
+    weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    index = 0
+    for day in restaurant_data["hours"][0]["open"]:
+        day["weekday"] = weekdays[index]
+        start = day["start"]
+        end = day["end"]
+        day["start"] = start[:2] + ":" + start[2:]
+        day["end"] = end[:2] + ":" + end[2:]
+        hours.append(day)
+        index += 1
+
     context = {
         "restaurant": restaurant,
-        "restaurant_data": response["restaurant_data"],
-        "restaurant_review": response["restaurant_review"],
+        "restaurant_data": restaurant_data,
+        "restaurant_review": restaurant_reviews,
+        "full": full,
+        "half": half,
+        "null": null,
+        "hours": hours,
+        "is_open_now": is_open_now,
     }
     return render(request, "restaurants/detail.html", context)
+
+def get_star_list():
+    nums = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
+    result = {}
+    for num in nums:
+        full = num - (num % 1)
+        half = 1 if num % 1 != 0 else 0
+        null = 5 - full - half
+        result[num] = [range(int(full)), range(int(half)), range(int(null))]
+    return result
 

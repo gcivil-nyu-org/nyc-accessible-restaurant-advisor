@@ -17,15 +17,23 @@
 				<div class="8u 12u$(medium)">
 					<header>
 						<ul class="actions">
-							<li><h2><strong>Just Salad</strong></h2></li>
-							<li><h4><i class="icon far fa-check-circle"></i>compliant</h4></li>
+							<li><h2><strong>{{ restaurant.name }}</strong></h2></li>
+							{% if restaurant.compliant %}
+								<li><h4><i class="icon far fa-check-circle"></i>compliant</h4></li>
+							{% else %}
+								<li><h4><i class="far fa-times-circle"></i>compliant</h4></li>
+							{% endif %}
 						</ul>
 						<ul class="icons">
-							<li><i class="icon fas fa-star"></i></li>
-							<li><i class="icon fas fa-star"></i></li>
-							<li><i class="icon fas fa-star"></i></li>
-							<li><i class="icon fas fa-star-half-alt"></i></li>
-							<li><i class="icon far fa-star"></i></li>
+							{% for _ in full %}
+								<li><i class="icon fas fa-star"></i></li>
+							{% endfor %}
+							{% for _ in half %}
+								<li><i class="icon fas a-star-half-alt"></i></li>
+							{% endfor %}
+							{% for _ in null %}
+								<li><i class="icon far fa-star"></i></li>
+							{% endfor %}
 							<li><h4>115 Reviews</h4></li>
 						</ul>
 						<ul class="actions">
@@ -36,8 +44,19 @@
 					<hr />
 					<h3>About the restaurant</h3>
 					<ul>
-						<li><p><strong>Price:</strong> $$</p></li>
-						<li><p><strong>Categories:</strong> Salad Vegetarian Grocery</p></li>
+						<li><p><strong>Price:</strong> {{ restaurant_data.price }}</p></li>
+						<li>
+							<p>
+								<strong>Categories:</strong>
+								{% for category in restaurant_data.categories %}
+								 	{% if forloop.counter == restaurant_data.categories|length %}
+										{{ category.title }}
+									{% else %}
+										{{ category.title }},
+									{% endif %}
+								{% endfor %}
+							</p>
+						</li>
 					</ul>
 					<hr />
 
@@ -64,82 +83,56 @@
 
 					<hr />
 					<h3>Recommended Reviews</h3>
-					<div class="row uniform">
-						<div class="3u 12u$(medium)">
-							<div class="row uniform">
-								<span class="image fit"><img src="https://s3-media3.fl.yelpcdn.com/photo/0KTs4CmyReYrF0K3jVSQhQ/o.jpg" alt="" /></span>
+					{% for review in restaurant_review.reviews %}
+						<div class="row uniform">
+							<div class="3u 12u$(medium)">
+								<div class="row uniform">
+									<span class="image fit"><img src="{{ review.user.image_url }}" alt="" /></span>
+								</div>
+								<div class="row">
+									<h4>{{ review.user.name }}</h4>
+								</div>
 							</div>
-							<div class="row">
-								<h4>Kenny C.</h4>
-							</div>
-						</div>
-						<div class="9u 12u$(medium)">
-							<div class="row uniform">
-								<ul class="icons">
-									<li><i class="ratingIcon fas fa-star"></i></li>
-									<li><i class="ratingIcon fas fa-star"></i></li>
-									<li><i class="ratingIcon fas fa-star"></i></li>
-									<li><i class="ratingIcon fas fa-star-half-alt"></i></li>
-									<li><i class="ratingIcon far fa-star"></i></li>
-									<li><h4>2020-03-04 11:45:35</h4></li>
-								</ul>
-							</div>
-							<div class="row uniform">
-								<p>Got the chicken shawarma salad. It was fine. Portion size was just enough for weekday lunch. The Sriracha drizzle could've been spicier, but overall pretty...</p>
-							</div>
-							<div class="row uniform">
-								<span class="image fit"><img src="https://s3-media3.fl.yelpcdn.com/photo/0KTs4CmyReYrF0K3jVSQhQ/o.jpg" alt="" /></span>
-							</div>
-						</div>
-					</div>
-					<div class="row uniform">
-						<div class="3u 12u$(medium)">
-							<div class="row uniform">
-								<span class="image fit"><img src="https://s3-media3.fl.yelpcdn.com/photo/vEWLyNqG-aQYzIwmWVH7Sw/o.jpg" alt="" /></span>
-							</div>
-							<div class="row">
-								<h4>Lili R.</h4>
+							<div class="9u 12u$(medium)">
+								<div class="row uniform">
+									<ul class="icons">
+										{% for _ in review.full %}
+											<li><i class="icon fas fa-star"></i></li>
+										{% endfor %}
+										{% for _ in review.half %}
+											<li><i class="icon fas a-star-half-alt"></i></li>
+										{% endfor %}
+										{% for _ in review.null %}
+											<li><i class="icon far fa-star"></i></li>
+										{% endfor %}
+										<li><h4>{{ review.time_created }}</h4></li>
+									</ul>
+								</div>
+								<div class="row uniform">
+									<p>{{ review.text }}</p>
+								</div>
+<!--								<div class="row uniform">-->
+<!--									<span class="image fit"><img src="{{ review.user.image_url }}" alt="" /></span>-->
+<!--								</div>-->
 							</div>
 						</div>
-						<div class="9u 12u$(medium)">
-							<div class="row uniform">
-								<ul class="icons">
-									<li><i class="ratingIcon fas fa-star"></i></li>
-									<li><i class="ratingIcon fas fa-star"></i></li>
-									<li><i class="ratingIcon fas fa-star"></i></li>
-									<li><i class="ratingIcon fas fa-star-half-alt"></i></li>
-									<li><i class="ratingIcon far fa-star"></i></li>
-									<li><h4>2019-10-07 04:49:29</h4></li>
-								</ul>
-							</div>
-							<div class="row uniform">
-								<p>Salad spot where you can bring your own bowl, as long as it's their bowl. Just Salad's menu is diverse for all meat and veggie lovers.</p>
-							</div>
-							<div class="row uniform">
-								<span class="image fit"><img src="https://s3-media3.fl.yelpcdn.com/photo/vEWLyNqG-aQYzIwmWVH7Sw/o.jpg" alt="" /></span>
-							</div>
-						</div>
-					</div>
+					{% endfor %}
 				</div>
 
 				<div class="4u$ 12u$(medium)">
 					<h3>Open Hours</h3>
 					<ul>
-						<li>Mon 5:00 PM - 9:00 PM</li>
-						<li>Tue 5:00 PM - 10:00 PM</li>
-						<li>Wed 5:00 PM - 10:00 PM</li>
-						<li>Thu 5:00 PM - 10:00 PM</li>
-						<li>Fri 5:00 PM - 10:00 PM</li>
-						<li>Sat 10:30 AM - 2:30 PM</li>
-						<li>Sun 10:30 AM - 3:00 PM</li>
+						{% for hour_data in hours %}
+							<li>{{ hour_data.weekday }} &emsp; {{ hour_data.start }}-{{ hour_data.end }}</li>
+						{% endfor %}
 					</ul>
 					<h3>Contact Info</h3>
 					<ul class="alt">
-						<li><i class="icon fas fa-phone-square-alt"></i>12122441111</li>
-						<li><i class="icon fas fa-map-marker-alt"></i>233 Broadway, New York, NY 10279</li>
+						<li><i class="icon fas fa-phone-square-alt"></i>{{ restaurant_data.display_phone }}</li>
+						<li><i class="icon fas fa-map-marker-alt"></i>{{ restaurant_data.location.address1 }}, {{ restaurant_data.location.city }}, {{ restaurant_data.location.state }} {{ restaurant_data.location.zip_code }}</li>
 					</ul>
 					<h3>Pictures</h3>
-					<span class="image fit"><img src="https://s3-media2.fl.yelpcdn.com/bphoto/NHTe_4NV0WJNw-Uwt-C50A/o.jpg" alt="" /></span>
+					<span class="image fit"><img src="{{ restaurant.image_url }}" alt="" /></span>
 				</div>
 			</div>
 		</div>
