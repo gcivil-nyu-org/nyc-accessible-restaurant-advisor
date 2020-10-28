@@ -13,7 +13,7 @@ import json
 
 # Test views.py
 class TestViews(TestCase):
-    def setup(self):
+    def setUp(self):
         self.client = Client()
         self.index_url = reverse("accessible_restaurant:index")
         self.logout_url = reverse("accessible_restaurant:logout")
