@@ -19,31 +19,13 @@ class TestViews(TestCase):
         self.logout_url = reverse("accessible_restaurant:logout")
         self.signup_url = reverse("accessible_restaurant:signup")
         self.emailsent_url = reverse("accessible_restaurant:emailsent")
-        self.activate_url = reverse("accessible_restaurant:activate", args=["uid","token"])
+        self.activate_url = reverse(
+            "accessible_restaurant:activate", args=["uid", "token"]
+        )
         self.userprofile_url = reverse("accessible_restaurant:user_profile")
         self.resprofile_url = reverse("accessible_restaurant:restaurant_profile")
         self.browse_url = reverse("accessible_restaurant:browse", args=["page"])
         self.detail_url = reverse("accessible_restaurant:detail", args=["business_id"])
-
-        self.usersignup_url = reverse("accessible_restaurant:user_signup")
-        self.restaurantsignup_url = reverse("accessible_restaurant:restaurant_signup")
-
-        self.user_test = User.objects.create(
-            username="username",
-            email="testemail@gmail.com",
-            first_name="first",
-            last_name="last",
-            password1="password123",
-            password2="password123",
-        )
-        self.resuser_test = User.objects.create(
-            username="username",
-            email="testemail@gmail.com",
-            password1="password123",
-            password2="password123",
-        )
-
-        return super().setUp()
 
     def test_index_view_GET(self):
         response = self.client.get(self.index_url)
@@ -77,32 +59,6 @@ class TestViews(TestCase):
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "restaurants/detail.html")
-
-    # copy from previous code
-    def test_can_view_page_correctly(self):
-        response = self.client.get(self.usersignup_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/userRegister.html")
-
-    def test_can_register_user(self):
-        response = self.client.post(
-            self.usersignup_url, self.user_test, format="text/html"
-        )
-        self.assertEqual(response.status_code, 200)
-
-    def test_can_view_page_correctly(self):
-        response = self.client.get(self.restaurantsignup_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/restaurantRegister.html")
-
-    def test_can_register_user(self):
-        response = self.client.post(
-            self.restaurantsignup_url,
-            self.resuser_test,
-            format="text/html",
-            follow=True,
-        )
-        self.assertEqual(response.status_code, 200)
 
 
 class UserSignUpTest(TestCase):
