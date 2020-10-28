@@ -64,9 +64,9 @@ class TestViews(TestCase):
         self.logout_url = reverse("accessible_restaurant:logout")
         self.signup_url = reverse("accessible_restaurant:signup")
         self.emailsent_url = reverse("accessible_restaurant:emailsent")
-        self.activate_url = reverse(
-            "accessible_restaurant:activate", args=["uid", "token"]
-        )
+        # self.activate_url = reverse(
+        #     "accessible_restaurant:activate", args=["uid", "token"]
+        # )
         self.userprofile_url = reverse("accessible_restaurant:user_profile")
         self.resprofile_url = reverse("accessible_restaurant:restaurant_profile")
         self.browse_url = reverse("accessible_restaurant:browse", args=[10])
@@ -74,9 +74,7 @@ class TestViews(TestCase):
             "accessible_restaurant:detail", args=["FaPtColHYcTnZAxtoM33cA"]
         )
 
-        self.usertest = User.objects.create(
-            username="huanjin", first_name="Huanjin", last_name="Zhang"
-        )
+        self.usertest = self.client.login(username="username", password="test123456")
 
     def test_index_view_GET(self):
         response = self.client.get(self.index_url)
@@ -128,8 +126,10 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "restaurants/detail.html")
 
+
     def test_user_profile_view_POST(self):
-        self.client.login(username="huanjin", password="test123456")
+        #response = self.client.post(self.userprofile_url, self.usertest, format="text/html", follow=True)
+        response = self.client.post(self.userprofile_url)
         User_Profile.objects.create(
             photo="default.jpg",
             phone="3474223609",
@@ -138,11 +138,9 @@ class TestViews(TestCase):
             zip_code="07310",
             state="NJ",
         )
-        response = self.client.post(self.userprofile_url)
         self.assertEqual(response.status_code, 302)
 
     def test_res_profile_view_POST(self):
-        self.client.login(username="huanjin", password="test123456")
         Restaurant_Profile.objects.create(
             restaurant_name="name",
             photo="default.jpg",
@@ -153,5 +151,6 @@ class TestViews(TestCase):
             state="NJ",
             is_open=True,
         )
+        #response = self.client.post(self.resprofile_url, self.usertest, format="text/html",follow=True)
         response = self.client.post(self.resprofile_url)
         self.assertEqual(response.status_code, 302)
