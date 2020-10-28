@@ -43,6 +43,8 @@ class TestViews(TestCase):
             password2="password123",
         )
 
+        return super().setUp()
+
     def test_index_view_GET(self):
         response = self.client.get(self.index_url)
         self.assertEqual(response.status_code, 200)
