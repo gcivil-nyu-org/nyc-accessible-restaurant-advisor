@@ -74,6 +74,10 @@ class TestViews(TestCase):
             "accessible_restaurant:detail", args=["FaPtColHYcTnZAxtoM33cA"]
         )
 
+        self.usertest = User.objects.create(
+            username="huanjin", first_name="Huanjin", last_name="Zhang"
+        )
+
     def test_index_view_GET(self):
         response = self.client.get(self.index_url)
         self.assertEqual(response.status_code, 200)
@@ -125,7 +129,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, "restaurants/detail.html")
 
     def test_user_profile_view_POST(self):
-        User.objects.create(username="huanjin", first_name="Huanjin", last_name="Zhang")
+        self.client.login(username="huanjin", password="test123456")
         User_Profile.objects.create(
             photo="default.jpg",
             phone="3474223609",
@@ -138,7 +142,7 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_res_profile_view_POST(self):
-        User.objects.create(username="huanjin", first_name="Huanjin", last_name="Zhang")
+        self.client.login(username="huanjin", password="test123456")
         Restaurant_Profile.objects.create(
             restaurant_name="name",
             photo="default.jpg",
