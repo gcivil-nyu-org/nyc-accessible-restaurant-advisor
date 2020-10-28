@@ -126,9 +126,8 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "restaurants/detail.html")
 
-
     def test_user_profile_view_POST(self):
-        #response = self.client.post(self.userprofile_url, self.usertest, format="text/html", follow=True)
+        # response = self.client.post(self.userprofile_url, self.usertest, format="text/html", follow=True)
         response = self.client.post(self.userprofile_url)
         User_Profile.objects.create(
             photo="default.jpg",
@@ -151,6 +150,6 @@ class TestViews(TestCase):
             state="NJ",
             is_open=True,
         )
-        #response = self.client.post(self.resprofile_url, self.usertest, format="text/html",follow=True)
+        # response = self.client.post(self.resprofile_url, self.usertest, format="text/html",follow=True)
         response = self.client.post(self.resprofile_url)
         self.assertEqual(response.status_code, 302)
