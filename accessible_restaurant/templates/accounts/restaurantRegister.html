@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block staticlink %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/register_style.css' %}">
+{% endblock %}
+
+{% block title %} Restaurant Registration Form {% endblock %}
+
+{% block body %}<body class="subpage">{% endblock %}
+
+{% block content %}
+    <div class="wrapper fl">
+        <div class="main">
+            <div class="head">
+                <p>Restaurant Registration Form</p>
+            </div>
+            {% load crispy_forms_tags %}
+            <div class="form fl">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="submit-wrap">
+                        <input type="submit" id="submit" name="sb" value="SUBMIT">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

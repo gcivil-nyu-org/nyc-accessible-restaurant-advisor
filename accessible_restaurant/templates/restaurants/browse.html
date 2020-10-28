@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block staticlink %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/detail_style.css' %}">
+	<script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block title %} Restaurant List Page {% endblock %}
+
+{% block body %}<body class="subpage">{% endblock %}
+
+{% block content %}
+    <section id="main" class="wrapper">
+        <div class="inner">
+            <header class="align-center">
+                <h2><strong>Browse Restaurants</strong></h2>
+            </header>
+            <div class="row 200%">
+                <div class="12u 12u$(medium)">
+                    <form method="post" action="#">
+                        <div class="row uniform">
+                            <div class="9u 12u$(small)">
+                                <input type="text" name="query" id="query" value="" placeholder="Restaurants" />
+                            </div>
+                            <div class="3u$ 12u$(small)">
+                                <input type="submit" value="Search" class="fit" />
+                            </div>
+                        </div>
+                    </form>
+
+                    {% if page_num > total_page %}
+                        <h2><center>{{ page_exceed_error }}</center></h2>
+                    {% endif %}
+
+                    {% for restaurant in restaurants %}
+                        <a href = '{% url "accessible_restaurant:detail" restaurant.business_id %}'>
+                            <div class="box">
+                                <div class="row">
+                                    <div class="4u 12u$(medium)">
+                                        <span class="image fit"><img src="{{ restaurant.img_url }}" alt="" /></span>
+                                    </div>
+                                    <div class="8u 12u$(medium)">
+                                        <header>
+                                            <ul class="actions">
+                                                <li><h2><strong>{{ restaurant.name }}</strong></h2></li>
+                                                {% if restaurant.compliant %}
+                                                    <li><h4><i class="icon far fa-check-circle"></i>compliant</h4></li>
+                                                {% else %}
+                                                    <li><h4><i class="icon far fa-times-circle"></i>compliant</h4></li>
+                                                {% endif %}
+                                            </ul>
+                                            <ul class="icons">
+                                                {% for _ in restaurant.full %}
+                                                    <li><i class="icon fas fa-star"></i></li>
+                                                {% endfor %}
+                                                {% for _ in restaurant.half %}
+                                                    <li><i class="icon fas fa-star-half-alt"></i></li>
+                                                {% endfor %}
+                                                {% for _ in restaurant.null %}
+                                                    <li><i class="icon far fa-star"></i></li>
+                                                {% endfor %}
+                                            </ul>
+                                        </header>
+                                        <ul class="alt">
+                                            <li><i class="icon fas fa-phone-square-alt"></i>{{ restaurant.phone }}</li>
+                                            <li><i class="icon fas fa-map-marker-alt"></i>{{ restaurant.address }}, {{ restaurant.city }}, {{ restaurant.zip_code }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                    <div class="row uniform">
+                    <div class="4u 12u$(medium)">
+                    </div>
+                    <div class="4u 12u$(medium)">
+                        <ul class="icons">
+                            {% if page_num == 0 %}
+                                First Page
+                            {% else %}
+                                <a href="0">First Page</a>
+                            {% endif %}
+                            &emsp;
+                            {% for pnum in page_range %}
+                                {% if pnum == page_num %}
+                                    <li>{{ pnum|add:"1" }}</li>
+                                {% else %}
+                                    <li><a href="{{ pnum }}">{{ pnum|add:"1" }}</a></li>
+                                {% endif %}
+                            &emsp;
+                            {% endfor %}
+                            {% if total_page == page_num %}
+                                Last Page
+                            {% else %}
+                                <a href="{{ total_page }}">Last Page</a>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="4u 12u$(medium)">
+                    </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

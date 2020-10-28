@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'accessible_restaurant/base_style.css' %}" />
+    {% block staticlink %} {% endblock %}
+    <title>{% block title %} NYC Accessible Restaurant Advisor {% endblock %}</title>
+</head>
+{% block body %}<body>{% endblock %}
+<!--    Header of the page-->
+<!--    For home page, it's transparent background, word with white color-->
+<!--    For other page, it's green background, word with white color-->
+    <header id="header">
+        <div class="inner">
+            <a href="{% url 'accessible_restaurant:index' %}" class="logo"><strong>NYC Accessible Restaurant Advisor</strong></a>
+            <nav id="nav">
+                <a href="{% url 'accessible_restaurant:browse' 0 %}">Browse</a>
+                {% if user.is_authenticated %}
+                    {% if user.is_user %}
+                        <a href="{% url 'accessible_restaurant:user_profile' %}">Profile</a>
+                    {% elif user.is_restaurant %}
+                        <a href="{% url 'accessible_restaurant:restaurant_profile' %}">Profile</a>
+                    {% endif %}
+                    <a href="{% url 'accessible_restaurant:logout' %}">Logout</a>
+                {% else %}
+                    <a href="{% url 'accessible_restaurant:login' %}">Login</a>
+                    <a href="{% url 'accessible_restaurant:signup' %}">Register</a>
+                {% endif %}
+            </nav>
+            <a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+        </div>
+    </header>
+
+    {% block content %}
+    {% endblock %}
+</body>
+</html>
