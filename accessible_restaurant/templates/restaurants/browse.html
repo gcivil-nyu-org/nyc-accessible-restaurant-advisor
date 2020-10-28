@@ -29,6 +29,9 @@
                         </div>
                     </form>
 
+                    {% if page_num > total_page %}
+                        <h2><center>{{ page_exceed_error }}</center></h2>
+                    {% endif %}
 
                     {% for restaurant in restaurants %}
                         <a href = '{% url "accessible_restaurant:detail" restaurant.business_id %}'>

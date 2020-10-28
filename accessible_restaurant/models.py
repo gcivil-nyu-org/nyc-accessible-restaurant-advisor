@@ -68,7 +68,7 @@ class Restaurant_Profile(models.Model):
 
 
 class Restaurant(models.Model):
-    business_id = models.CharField(max_length=50)
+    business_id = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=80)
     img_url = models.URLField(
         max_length=250,

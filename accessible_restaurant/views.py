@@ -205,61 +205,69 @@ def restaurant_list_view(request, page):
     # Page count
     total_restaurant = Restaurant.objects.count()
     total_page = total_restaurant // 10
+    if total_restaurant % 10 == 0:
+        total_page -= 1
 
     # Previous and next page numbers
     page_range = get_page_range(int(total_page), page+1)
+    page_exceed_error = "page number exceeds maximum page number, please choose valid page"
     context = {
         "restaurants": restaurant_list,
         "star_list": star_list,
         "page_num": page,
         "total_page": total_page,
         "page_range": page_range,
+        "page_exceed_error": page_exceed_error,
     }
     return render(request, "restaurants/browse.html", context)
 
 
 def restaurant_detail_view(request, business_id):
-    restaurant = Restaurant.objects.get(business_id=business_id)
-    if not restaurant:
-        return HttpResponseNotFound("Restaurant not found!")
-    response = get_restaurant(restaurant.business_id)
-    star_list = get_star_list()
-    full, half, null = star_list[restaurant.rating]
+    try:
+        restaurant = Restaurant.objects.get(business_id=business_id)
+    except (KeyError, Restaurant.DoesNotExist):
+        return render(request, "restaurants/error.html", {
+            'business_id': business_id,
+            'error_message': "Restaurant not found!",
+        })
+    else:
+        response = get_restaurant(restaurant.business_id)
+        star_list = get_star_list()
+        full, half, null = star_list[restaurant.rating]
 
-    restaurant_data = response["restaurant_data"]
-    restaurant_reviews = response["restaurant_reviews"]
+        restaurant_data = response["restaurant_data"]
+        restaurant_reviews = response["restaurant_reviews"]
 
-    # Rating stars
-    for review in restaurant_reviews["reviews"]:
-        r_full, r_half, r_null = star_list[float(review['rating'])]
-        review['full'] = r_full
-        review['half'] = r_half
-        review['null'] = r_null
+        # Rating stars
+        for review in restaurant_reviews["reviews"]:
+            r_full, r_half, r_null = star_list[float(review['rating'])]
+            review['full'] = r_full
+            review['half'] = r_half
+            review['null'] = r_null
 
-    # Get open hours and is_open status
-    hours = []
-    is_open_now = False
-    weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-    index = 0
-    if restaurant_data["hours"]:
-        is_open_now = restaurant_data["hours"][0]["is_open_now"]
-        for day in restaurant_data["hours"][0]["open"]:
-            day["weekday"] = weekdays[index]
-            start = day["start"]
-            end = day["end"]
-            day["start"] = start[:2] + ":" + start[2:]
-            day["end"] = end[:2] + ":" + end[2:]
-            hours.append(day)
-            index += 1
+        # Get open hours and is_open status
+        hours = []
+        is_open_now = False
+        weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        if restaurant_data["hours"]:
+            is_open_now = restaurant_data["hours"][0]["is_open_now"]
+            for day in restaurant_data["hours"][0]["open"]:
+                index = int(day["day"])
+                day["weekday"] = weekdays[index]
+                start = day["start"]
+                end = day["end"]
+                day["start"] = start[:2] + ":" + start[2:]
+                day["end"] = end[:2] + ":" + end[2:]
+                hours.append(day)
 
-    context = {
-        "restaurant": restaurant,
-        "restaurant_data": restaurant_data,
-        "restaurant_review": restaurant_reviews,
-        "full": full,
-        "half": half,
-        "null": null,
-        "hours": hours,
-        "is_open_now": is_open_now,
-    }
-    return render(request, "restaurants/detail.html", context)
+        context = {
+            "restaurant": restaurant,
+            "restaurant_data": restaurant_data,
+            "restaurant_review": restaurant_reviews,
+            "full": full,
+            "half": half,
+            "null": null,
+            "hours": hours,
+            "is_open_now": is_open_now,
+        }
+        return render(request, "restaurants/detail.html", context)
