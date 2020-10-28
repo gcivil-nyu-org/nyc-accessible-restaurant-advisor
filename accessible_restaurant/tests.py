@@ -57,7 +57,6 @@ class RestaurantSignUpTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-
 class TestViews(TestCase):
     def setUp(self):
         self.client = Client()
