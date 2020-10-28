@@ -3,6 +3,7 @@ from django.urls import reverse
 
 # Create your tests here.
 
+
 class UserSignUpTest(TestCase):
     def setUp(self):
         self.usersignup_url = reverse("accessible_restaurant:user_signup")
