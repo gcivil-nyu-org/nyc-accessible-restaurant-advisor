@@ -1,8 +1,18 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse
+from accessible_restaurant.models import User, User_Profile, Restaurant_Profile, Restaurant
+import json
 
 # Create your tests here.
 
+
+# Test views.py
+class TestViews(TestCase):
+    def test_index_view_GET(self):
+        client = Client()
+        response = client.get(reverse("index"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "index.html")
 
 class UserSignUpTest(TestCase):
     def setUp(self):
