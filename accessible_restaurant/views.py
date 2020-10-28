@@ -193,6 +193,7 @@ def restaurant_profile_view(request):
 
 
 def restaurant_list_view(request, page):
+    page = int(page)
     restaurant_list = get_restaurant_list(page, 10)
     star_list = get_star_list()
     for restaurant in restaurant_list:
@@ -206,11 +207,11 @@ def restaurant_list_view(request, page):
     total_page = total_restaurant // 10
 
     # Previous and next page numbers
-    page_range = get_page_range(int(total_page), int(page)+1)
+    page_range = get_page_range(int(total_page), page+1)
     context = {
         "restaurants": restaurant_list,
         "star_list": star_list,
-        "page_num": int(page),
+        "page_num": page,
         "total_page": total_page,
         "page_range": page_range,
     }
