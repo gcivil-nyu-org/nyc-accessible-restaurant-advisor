@@ -1,4 +1,4 @@
-id,business_id,name,image_url,rating,address,city,zip_code,phone,compliant
+id,business_id,name,img_url,rating,address,city,zip_code,phone,compliant
 ,14BLy22t6EKuPO5aAQ6R8g,Just Salad,https://s3-media2.fl.yelpcdn.com/bphoto/NHTe_4NV0WJNw-Uwt-C50A/o.jpg,3.5,233 Broadway,New York,10279,12122441111,1
 ,ejZjFbR_Z3He5pi699eJKg,Birch Coffee,https://s3-media2.fl.yelpcdn.com/bphoto/prVCcWpWBsU657KVbKhr2w/o.jpg,4,8 Spruce St,New York,10038,12126861444,1
 ,K7c1bkgmmdiTcsQ5afGFNQ,W XYZ Bar,https://s3-media1.fl.yelpcdn.com/bphoto/lgOsvjndmAscI3J3MuD3zw/o.jpg,5,49-53 Ann St,New York,10038,12125130003,1

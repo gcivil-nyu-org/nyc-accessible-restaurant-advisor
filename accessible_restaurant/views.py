@@ -26,7 +26,7 @@ from .forms import (
 from django.contrib.auth.decorators import login_required
 
 from .models import User, Restaurant
-from .utils import get_restaurant_list, get_restaurant
+from .utils import get_restaurant_list, get_restaurant, get_page_range, get_star_list
 
 
 # Create your views here.
@@ -201,9 +201,19 @@ def restaurant_list_view(request, page):
         restaurant['half'] = half
         restaurant['null'] = null
 
+    # Page count
+    total_restaurant = Restaurant.objects.count()
+    total_page = total_restaurant // 10
+
+    # Previous and next page numbers
+    page_range = get_page_range(int(total_page), int(page)+1)
+
     context = {
         "restaurants": restaurant_list,
         "star_list": star_list,
+        "page_num": page,
+        "total_page": total_page,
+        "page_range": page_range,
     }
     return render(request, "restaurants/browse.html", context)
 
@@ -228,17 +238,19 @@ def restaurant_detail_view(request, business_id):
 
     # Get open hours and is_open status
     hours = []
-    is_open_now = restaurant_data["hours"][0]["is_open_now"]
+    is_open_now = False
     weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
     index = 0
-    for day in restaurant_data["hours"][0]["open"]:
-        day["weekday"] = weekdays[index]
-        start = day["start"]
-        end = day["end"]
-        day["start"] = start[:2] + ":" + start[2:]
-        day["end"] = end[:2] + ":" + end[2:]
-        hours.append(day)
-        index += 1
+    if restaurant_data["hours"]:
+        is_open_now = restaurant_data["hours"][0]["is_open_now"]
+        for day in restaurant_data["hours"][0]["open"]:
+            day["weekday"] = weekdays[index]
+            start = day["start"]
+            end = day["end"]
+            day["start"] = start[:2] + ":" + start[2:]
+            day["end"] = end[:2] + ":" + end[2:]
+            hours.append(day)
+            index += 1
 
     context = {
         "restaurant": restaurant,
@@ -251,14 +263,3 @@ def restaurant_detail_view(request, business_id):
         "is_open_now": is_open_now,
     }
     return render(request, "restaurants/detail.html", context)
-
-def get_star_list():
-    nums = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
-    result = {}
-    for num in nums:
-        full = num - (num % 1)
-        half = 1 if num % 1 != 0 else 0
-        null = 5 - full - half
-        result[num] = [range(int(full)), range(int(half)), range(int(null))]
-    return result
-

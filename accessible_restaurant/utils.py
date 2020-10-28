@@ -42,3 +42,27 @@ def get_restaurant_list(page, size):
         response.append(restaurant.__dict__)
 
     return response
+
+
+def get_page_range(total_page, curr_page):
+    page_range = []
+    lower = max(0, curr_page - 2)
+    upper = min(total_page, curr_page + 2)
+    if curr_page < 2:
+        upper = min(lower + 4, total_page)
+    if curr_page > total_page - 2:
+        lower = max(0, upper - 4)
+    for num in range(lower, upper + 1):
+        page_range.append(num)
+    return page_range
+
+
+def get_star_list():
+    nums = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
+    result = {}
+    for num in nums:
+        full = num - (num % 1)
+        half = 1 if num % 1 != 0 else 0
+        null = 5 - full - half
+        result[num] = [range(int(full)), range(int(half)), range(int(null))]
+    return result
