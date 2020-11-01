@@ -78,8 +78,12 @@ class Restaurant(models.Model):
     )
     rating = models.FloatField(blank=True, default=0)
     price = models.CharField(max_length=5, blank=True)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, default=0)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, default=0)
+    latitude = models.DecimalField(
+        max_digits=9, decimal_places=6, blank=True, default=0
+    )
+    longitude = models.DecimalField(
+        max_digits=9, decimal_places=6, blank=True, default=0
+    )
     address = models.CharField(max_length=128, blank=True)
     city = models.CharField(max_length=64, blank=True)
     zip_code = models.CharField(max_length=16, blank=True)

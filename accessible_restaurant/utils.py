@@ -38,23 +38,28 @@ def get_restaurant(business_id):
 
 
 def get_restaurant_list(page, size, sort_property, client_ip):
-    if sort_property == 'lowestPrice':
-        restaurants = Restaurant.objects.order_by('price')
-    elif sort_property == 'highestPrice':
-        restaurants = Restaurant.objects.order_by('-price')
-    elif sort_property == 'nearest':
+    if sort_property == "lowestPrice":
+        restaurants = Restaurant.objects.order_by("price")
+    elif sort_property == "highestPrice":
+        restaurants = Restaurant.objects.order_by("-price")
+    elif sort_property == "nearest":
         g = GeoIP2()
         try:
             client_position = g.lat_lon(client_ip)
         except:
-            client_ip = '207.172.171.222'
+            client_ip = "207.172.171.222"
             client_position = g.lat_lon(client_ip)
         restaurants = Restaurant.objects.all()
-        restaurants = sorted(restaurants, key=lambda x: math.sqrt(client_position[0] - float(x.latitude))+math.sqrt(client_position[1] - float(x.longitude)), reverse=False)
+        restaurants = sorted(
+            restaurants,
+            key=lambda x: math.sqrt(client_position[0] - float(x.latitude))
+            + math.sqrt(client_position[1] - float(x.longitude)),
+            reverse=False,
+        )
     else:
         restaurants = Restaurant.objects.all()
     offset = page * int(size)
-    restaurant_list = restaurants[offset: offset + size]
+    restaurant_list = restaurants[offset : offset + size]
     response = []
     for restaurant in restaurant_list:
         response.append(restaurant.__dict__)
