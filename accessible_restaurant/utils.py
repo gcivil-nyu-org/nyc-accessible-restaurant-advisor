@@ -5,6 +5,7 @@ import json
 import math
 
 from django.contrib.gis.geoip2 import GeoIP2
+from geoip2.errors import AddressNotFoundError
 
 
 def get_restaurant_data(business_id):
@@ -46,7 +47,7 @@ def get_restaurant_list(page, size, sort_property, client_ip):
         g = GeoIP2()
         try:
             client_position = g.lat_lon(client_ip)
-        except:
+        except AddressNotFoundError:
             client_ip = "207.172.171.222"
             client_position = g.lat_lon(client_ip)
         restaurants = Restaurant.objects.all()
