@@ -43,47 +43,45 @@
 					</header>
 
 					<hr />
-					<h3>About the restaurant</h3>
+					<h2>About the restaurant</h2>
 					<ul>
-						<li><p><strong>Price:</strong> {{ restaurant_data.price }}</p></li>
+						<li><strong>Price:</strong> {{ restaurant_data.price }}</li>
 						<li>
-							<p>
-								<strong>Categories:</strong>
-								{% for category in restaurant_data.categories %}
-								 	{% if forloop.counter == restaurant_data.categories|length %}
-										{{ category.title }}
-									{% else %}
-										{{ category.title }},
-									{% endif %}
-								{% endfor %}
-							</p>
+							<strong>Categories:</strong>
+							{% for category in restaurant_data.categories %}
+								{% if forloop.counter == restaurant_data.categories|length %}
+									{{ category.title }}
+								{% else %}
+									{{ category.title }},
+								{% endif %}
+							{% endfor %}
 						</li>
 					</ul>
 					<hr />
 
-					<h3>Accessible Services</h3>
+					<h2>Accessible Services</h2>
 					<div class="row uniform">
 						<div class="4u 12u$(small)">
-							<i class="icon fas fa-check-square" id="checklist1"></i>Level entry or ramp
+							<p><i class="icon fas fa-check-square" id="checklist1"></i>Level entry or ramp</p>
 						</div>
 						<div class="4u 12u$(small)">
-							<i class="icon fas fa-check-square" id="checklist2"></i>32-inch wide door
+							<p><i class="icon fas fa-check-square" id="checklist2"></i>32-inch wide door</p>
 						</div>
 						<div class="4u 12u$(small)">
-							<i class="icon fas fa-check-square" id="checklist3"></i>Accessible tables
+							<p><i class="icon fas fa-check-square" id="checklist3"></i>Accessible tables</p>
 						</div>
 					</div>
 					<div class="row uniform">
 						<div class="4u 12u$(small)">
-							<i class="icon fas fa-check-square" id="checklist5"></i>Accessible restroom
+							<p><i class="icon fas fa-check-square" id="checklist5"></i>Accessible restroom</p>
 						</div>
 						<div class="6u 12u$(small)">
-							<i class="icon fas fa-times-circle" id="checklist4"></i>Accessible 36-inch wide path
+							<p><i class="icon fas fa-times-circle" id="checklist4"></i>Accessible 36-inch wide path</p>
 						</div>
 					</div>
 
 					<hr />
-					<h3>Recommended Reviews</h3>
+					<h2>Recommended Reviews</h2>
 					{% for review in restaurant_review.reviews %}
 						<div class="row uniform">
 							<div class="3u 12u$(medium)">
@@ -121,7 +119,7 @@
 				</div>
 
 				<div class="4u$ 12u$(medium)">
-					<h3>Open Hours</h3>
+					<h2>Open Hours</h2>
 					<ul>
 						{% if is_open_now %}
 							<li class="no-bullets"><i class="icon fas fa-check-circle"></i>Open Now</li>
@@ -132,7 +130,7 @@
 							<li>{{ hour_data.weekday }} &emsp; {{ hour_data.start }}-{{ hour_data.end }}</li>
 						{% endfor %}
 					</ul>
-					<h3>Contact Info</h3>
+					<h2>Contact Info</h2>
 					<ul class="alt">
 						<li><i class="icon fas fa-phone-square-alt"></i>{{ restaurant_data.display_phone }}</li>
 						<li><i class="icon fas fa-map-marker-alt"></i>{{ restaurant_data.location.address1 }}, {{ restaurant_data.location.city }}, {{ restaurant_data.location.state }} {{ restaurant_data.location.zip_code }}</li>

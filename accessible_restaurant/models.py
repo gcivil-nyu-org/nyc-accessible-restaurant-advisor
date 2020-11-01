@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser  # User
 from PIL import Image
 
+
 # Create your models here.
 
 
@@ -76,6 +77,9 @@ class Restaurant(models.Model):
         default="https://i.pinimg.com/originals/4e/24/f5/4e24f523182e09376bfe8424d556610a.png",
     )
     rating = models.FloatField(blank=True, default=0)
+    price = models.CharField(max_length=5, blank=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, default=0)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, default=0)
     address = models.CharField(max_length=128, blank=True)
     city = models.CharField(max_length=64, blank=True)
     zip_code = models.CharField(max_length=16, blank=True)
