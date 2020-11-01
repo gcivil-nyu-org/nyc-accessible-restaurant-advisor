@@ -37,7 +37,7 @@ urlpatterns = [
     ),
     # Browse restaurant
     path(
-        "restaurants/browse/<int:page>/<sort_property>",
+        "restaurants/browse/<page>/<sort_property>",
         views.restaurant_list_view,
         name="browse",
     ),

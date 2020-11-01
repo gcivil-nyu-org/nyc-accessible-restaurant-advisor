@@ -193,6 +193,7 @@ def restaurant_profile_view(request):
 
 
 def restaurant_list_view(request, page, sort_property):
+    page = int(page)
     client_ip = get_client_ip(request)
     restaurant_list = get_restaurant_list(page, 10, sort_property, client_ip)
     star_list = get_star_list()
