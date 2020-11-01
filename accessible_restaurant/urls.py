@@ -36,7 +36,11 @@ urlpatterns = [
         name="restaurant_profile",
     ),
     # Browse restaurant
-    path("restaurants/browse/<page>", views.restaurant_list_view, name="browse"),
+    path(
+        "restaurants/browse/<page>/<sort_property>",
+        views.restaurant_list_view,
+        name="browse",
+    ),
     path(
         "restaurants/detail/<business_id>", views.restaurant_detail_view, name="detail"
     ),

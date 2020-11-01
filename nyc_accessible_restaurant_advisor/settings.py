@@ -147,3 +147,5 @@ YELP_TOKEN = "PKbT9xaBBV7GvQU72SRGf-0JAz4-CvMu1zVOeKA2Bz5heJQAHoONKYNRX-AUYP0Jwz
 LOGIN_REDIRECT_URL = "/accessible_restaurant/home"
 LOGIN_URL = "/accessible_restaurant/accounts/login"
 LOGOUT_REDIRECT_URL = "/accessible_restaurant/home"
+
+GEOIP_PATH = os.path.join(BASE_DIR, "geoip")
