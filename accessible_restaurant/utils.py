@@ -51,7 +51,7 @@ def get_restaurant_list(page, size, sort_property, client_ip):
             client_position = g.lat_lon(client_ip)
         restaurants = Restaurant.objects.all()
         restaurants = sorted(restaurants, key=lambda x: math.sqrt(client_position[0] - float(x.latitude))+math.sqrt(client_position[1] - float(x.longitude)), reverse=False)
-    elif sort_property == 'default':
+    else:
         restaurants = Restaurant.objects.all()
     offset = page * int(size)
     restaurant_list = restaurants[offset: offset + size]

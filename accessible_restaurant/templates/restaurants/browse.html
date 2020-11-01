@@ -25,30 +25,33 @@
                     <h3>Filters</h3>
                     <hr />
                     <h4>Price</h4>
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                        <a href="#" class="btn btn-outline-danger" role="button">$</a>
-                        <a href="#" class="btn btn-outline-danger" role="button">$$</a>
-                        <a href="#" class="btn btn-outline-danger" role="button">$$$</a>
-                        <a href="#" class="btn btn-outline-danger" role="button">$$$$</a>
+                    <div class="text-center">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <a href="#" class="btn btn-outline-danger" role="button">$</a>
+                            <a href="#" class="btn btn-outline-danger" role="button">$$</a>
+                            <a href="#" class="btn btn-outline-danger" role="button">$$$</a>
+                            <a href="#" class="btn btn-outline-danger" role="button">$$$$</a>
+                        </div>
                     </div>
                     <hr />
                     <h4>Category</h4>
-                    <div class="row">
-                        <div class="3u 12u$(medium)">
+                    <div class="row uniform">
+                        <div class="btn-group mr-2" role="group" aria-label="Second group">
                             <a href="#" class="btn btn-outline-danger" role="button">Chinese</a>
                         </div>
-                        <div class="3u 12u$(medium)">
+                        <div class="btn-group mr-2" role="group" aria-label="Second group">
                             <a href="#" class="btn btn-outline-danger" role="button">Korean</a>
                         </div>
-                        <div class="3u 12u$(medium)">
+                        <div class="btn-group mr-2" role="group" aria-label="Second group">
                             <a href="#" class="btn btn-outline-danger" role="button">Salad</a>
                         </div>
-                        <div class="3u 12u$(medium)">
+                        <div class="btn-group mr-2" role="group" aria-label="Second group">
                             <a href="#" class="btn btn-outline-danger" role="button">Pizza</a>
                         </div>
                      </div>
                     <hr />
                 </div>
+
                 <div class="9u 12u$(medium)">
                     <form method="post" action="#">
                         {% csrf_token %}
@@ -70,10 +73,10 @@
                         Sort: <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {{ sort_property }}</a>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href='{% url "accessible_restaurant:browse" page_num "default"%}'>default</a>
-                            <a class="dropdown-item" href='{% url "accessible_restaurant:browse" page_num "lowestPrice" %}'>lowest price</a>
-                            <a class="dropdown-item" href='{% url "accessible_restaurant:browse" page_num "highestPrice" %}'>highest price</a>
-                            <a class="dropdown-item" href='{% url "accessible_restaurant:browse" page_num "nearest" %}'>nearest</a>
+                            <a class="dropdown-item" href='{% url "accessible_restaurant:browse" 0 "default"%}'>default</a>
+                            <a class="dropdown-item" href='{% url "accessible_restaurant:browse" 0 "lowestPrice" %}'>lowest price</a>
+                            <a class="dropdown-item" href='{% url "accessible_restaurant:browse" 0 "highestPrice" %}'>highest price</a>
+                            <a class="dropdown-item" href='{% url "accessible_restaurant:browse" 0 "nearest" %}'>nearest</a>
                         </div>
                     </div>
 
@@ -87,11 +90,11 @@
                                     <div class="8u 12u$(medium)">
                                         <header>
                                             <ul class="actions">
-                                                <li><h2><strong>{{ restaurant.name }}</strong></h2></li>
+                                                <li><h3><strong>{{ restaurant.name }}</strong></h3></li>
                                                 {% if restaurant.compliant %}
-                                                    <li><h4><i class="icon far fa-check-circle"></i>compliant</h4></li>
+                                                    <li><h3><i class="icon far fa-check-circle"></i>compliant</h3></li>
                                                 {% else %}
-                                                    <li><h4><i class="icon far fa-times-circle"></i>compliant</h4></li>
+                                                    <li><h3><i class="icon far fa-times-circle"></i>compliant</h3></li>
                                                 {% endif %}
                                             </ul>
                                             <ul class="icons">

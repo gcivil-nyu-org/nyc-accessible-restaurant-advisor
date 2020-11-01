@@ -1727,7 +1727,7 @@
 	}
 
 	.inner {
-		max-width: 95em;
+		max-width: 85em;
 		margin: 0 auto;
 	}
 
@@ -2817,9 +2817,9 @@
 /* Dropdown */
 
 .dropdown {
-	font-size: 1.75em;
+	font-size: 1.5em;
 }
 
 .dropdown-menu {
-	font-size: 1em;
+	font-size: 0.75em;
 }
