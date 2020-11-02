@@ -144,8 +144,8 @@ django_heroku.settings(locals(), test_runner=False)
 YELP_REST_ENDPOINT = "https://api.yelp.com/v3/businesses/"
 YELP_TOKEN = "PKbT9xaBBV7GvQU72SRGf-0JAz4-CvMu1zVOeKA2Bz5heJQAHoONKYNRX-AUYP0JwzL2da6aFBFKLPPZipnO5LFDsQlcq2QUJs_UhMhalZnv59QNaXK591UFIZKXX3Yx"
 
-LOGIN_REDIRECT_URL = "/accessible_restaurant/home"
-LOGIN_URL = "/accessible_restaurant/accounts/login"
-LOGOUT_REDIRECT_URL = "/accessible_restaurant/home"
+LOGIN_REDIRECT_URL = "/home"
+LOGIN_URL = "/accounts/login"
+LOGOUT_REDIRECT_URL = "/home"
 
 GEOIP_PATH = os.path.join(BASE_DIR, "geoip")
