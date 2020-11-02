@@ -225,12 +225,12 @@ class UserSignUpTest(TestCase):
     def setUp(self):
         self.usersignup_url = reverse("accessible_restaurant:user_signup")
         self.user = {
-            "username": "username",
+            "username": "test",
             "email": "testemail@gmail.com",
             "first_name": "first",
             "last_name": "last",
-            "password1": "password123",
-            "password2": "password123",
+            "password1": "123456test",
+            "password2": "123456test",
         }
         return super().setUp()
 
@@ -241,17 +241,18 @@ class UserSignUpTest(TestCase):
 
     def test_can_register_user(self):
         response = self.client.post(self.usersignup_url, self.user, format="text/html")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        self.assertTemplateUsed(response, "accounts/activate_account.html")
 
 
 class RestaurantSignUpTest(TestCase):
     def setUp(self):
         self.restaurantsignup_url = reverse("accessible_restaurant:restaurant_signup")
         self.restaurant = {
-            "username": "username",
+            "username": "test",
             "email": "testemail@gmail.com",
-            "password1": "password123",
-            "password2": "password123",
+            "password1": "123456test",
+            "password2": "123456test",
         }
         return super().setUp()
 
@@ -265,6 +266,7 @@ class RestaurantSignUpTest(TestCase):
             self.restaurantsignup_url, self.restaurant, format="text/html", follow=True
         )
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/emailSent.html")
 
 
 class TestViews(TestCase):
@@ -279,7 +281,9 @@ class TestViews(TestCase):
         )
         self.userprofile_url = reverse("accessible_restaurant:user_profile")
         self.resprofile_url = reverse("accessible_restaurant:restaurant_profile")
-        self.browse_url = reverse("accessible_restaurant:browse", args=[10])
+        self.browse_url = reverse(
+            "accessible_restaurant:browse", args=[10, "lowestPrice"]
+        )
         self.detail_url = reverse(
             "accessible_restaurant:detail", args=["FaPtColHYcTnZAxtoM33cA"]
         )
@@ -314,6 +318,7 @@ class TestViews(TestCase):
     #     self.assertTemplateUsed(response, "accountss/activate_account.html")
 
     def test_browse_view_GET(self):
+        print(self.browse_url)
         response = self.client.get(self.browse_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "restaurants/browse.html")
