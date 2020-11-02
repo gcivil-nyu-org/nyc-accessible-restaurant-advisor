@@ -10,10 +10,6 @@ urlpatterns = [
         auth_views.LoginView.as_view(template_name="accounts/login.html"),
         name="login",
     ),
-    # path("accounts/profile", views.user_profile, name="user_profile"),  # For Test Only
-    # path(
-    #     "accounts/profile", views.restaurant_profile, name="restaurant_profile"
-    # ),  # For Test Only
     path(
         "accounts/logout",
         auth_views.LogoutView.as_view(template_name="index.html"),
