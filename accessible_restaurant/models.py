@@ -82,5 +82,11 @@ class Restaurant(models.Model):
     phone = models.CharField(max_length=32, blank=True)
     compliant = models.BooleanField(default=False)
 
+    price = models.CharField(max_length=64, blank=True)
+    category1 = models.CharField(max_length=128, blank=True)
+    category2 = models.CharField(max_length=128, blank=True)
+    category3 = models.CharField(max_length=128, blank=True)
+
+
     def __str__(self):
         return f"{self.name}"

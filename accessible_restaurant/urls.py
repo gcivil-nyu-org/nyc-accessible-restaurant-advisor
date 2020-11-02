@@ -40,4 +40,9 @@ urlpatterns = [
     path(
         "restaurants/detail/<business_id>", views.restaurant_detail_view, name="detail"
     ),
+
+    # Search restaurant
+    path(
+        "restaurants/browse/search/<page>", views.search_restaurant_view, name="search"
+    )
 ]

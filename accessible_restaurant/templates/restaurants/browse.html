@@ -18,13 +18,14 @@
             </header>
             <div class="row 200%">
                 <div class="12u 12u$(medium)">
-                    <form method="post" action="#">
+                    <form method="get" action="{% url 'accessible_restaurant:search' 0 %}">
+                        {% csrf_token %}
                         <div class="row uniform">
                             <div class="9u 12u$(small)">
-                                <input type="text" name="query" id="query" value="" placeholder="Restaurants" />
+                                <input type="text" name="query" id="query" value="{{ request.GET.query }}" placeholder="Restaurants" />
                             </div>
                             <div class="3u$ 12u$(small)">
-                                <input type="submit" value="Search" class="fit" />
+                                <input type="submit" value="Search" class="fit"/>
                             </div>
                         </div>
                     </form>

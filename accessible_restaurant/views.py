@@ -26,7 +26,13 @@ from .forms import (
 from django.contrib.auth.decorators import login_required
 
 from .models import User, Restaurant
-from .utils import get_restaurant_list, get_restaurant, get_page_range, get_star_list
+from .utils import (
+    get_restaurant_list,
+    get_restaurant,
+    get_page_range,
+    get_star_list,
+    get_search_restaurant,
+)
 
 
 # Create your views here.
@@ -194,7 +200,8 @@ def restaurant_profile_view(request):
 
 def restaurant_list_view(request, page):
     page = int(page)
-    restaurant_list = get_restaurant_list(page, 10)
+    restaurant_all = Restaurant.objects.all()
+    restaurant_list = get_restaurant_list(page, 10, restaurant_all)
     star_list = get_star_list()
     for restaurant in restaurant_list:
         full, half, null = star_list[restaurant["rating"]]
@@ -277,3 +284,41 @@ def restaurant_detail_view(request, business_id):
             "is_open_now": is_open_now,
         }
         return render(request, "restaurants/detail.html", context)
+
+
+def search_restaurant_view(request, page):
+    page = int(page)
+    keyword = request.GET['query']
+    print(keyword)
+    if len(keyword) == 0:
+        return redirect('accessible_restaurant:browse', page=0)
+    searched_restaurants = get_search_restaurant(keyword)
+    restaurant_list = get_restaurant_list(page, 10, searched_restaurants)
+    star_list = get_star_list()
+    for restaurant in restaurant_list:
+        full, half, null = star_list[restaurant["rating"]]
+        restaurant["full"] = full
+        restaurant["half"] = half
+        restaurant["null"] = null
+
+    # Page count
+    total_restaurant = Restaurant.objects.count()
+    total_page = total_restaurant // 10
+    if total_restaurant % 10 == 0:
+        total_page -= 1
+
+    # Previous and next page numbers
+    page_range = get_page_range(int(total_page), page + 1)
+    page_exceed_error = (
+        "page number exceeds maximum page number, please choose valid page"
+    )
+    context = {
+        "keyword": keyword,
+        "restaurants": restaurant_list,
+        "star_list": star_list,
+        "page_num": page,
+        "total_page": total_page,
+        "page_range": page_range,
+        "page_exceed_error": page_exceed_error,
+    }
+    return render(request, "restaurants/browse.html", context)
