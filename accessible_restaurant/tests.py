@@ -200,7 +200,7 @@ class TestUrls(SimpleTestCase):
         )
 
     def test_browse_url_is_resolved(self):
-        url = reverse("accessible_restaurant:browse", args=["page"])
+        url = reverse("accessible_restaurant:browse", args=["page", "sort-property"])
         # print(resolve(url))
         self.assertEquals(
             resolve(url).func, accessible_restaurant.views.restaurant_list_view
