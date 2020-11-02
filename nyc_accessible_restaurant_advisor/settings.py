@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "crispy_forms",
     "import_export",
+    "leaflet"
 ]
 
 MIDDLEWARE = [
@@ -147,3 +148,11 @@ YELP_TOKEN = "PKbT9xaBBV7GvQU72SRGf-0JAz4-CvMu1zVOeKA2Bz5heJQAHoONKYNRX-AUYP0Jwz
 LOGIN_REDIRECT_URL = "/accessible_restaurant/home"
 LOGIN_URL = "/accessible_restaurant/accounts/login"
 LOGOUT_REDIRECT_URL = "/accessible_restaurant/home"
+
+# Leaflet parameters
+LEAFLET_CONFIG = {
+'ATTRIBUTION_PREFIX': 'Powered by django-leaflet',
+'SCALE': None
+}
+# 'DEFAULT_CENTER': (40.7127837, -74.0059413),
+# 'DEFAULT_ZOOM': 16,
