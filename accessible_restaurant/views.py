@@ -163,7 +163,7 @@ def user_profile_view(request):
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
-            print("profile form successfully saved!")
+
             messages.success(request, f'{"Your profile has been updated!"}')
             return redirect("accessible_restaurant:user_profile")
 
@@ -218,7 +218,7 @@ def restaurant_list_view(request, page, sort_property):
         "prices": [price1, price2, price3, price4],
         "categories": [chinese, korean, salad, pizza],
     }
-    print(filters)
+
     if keyword:
         restaurants = get_search_restaurant(keyword)
     restaurants = get_filter_restaurant(filters, restaurants)
@@ -245,7 +245,7 @@ def restaurant_list_view(request, page, sort_property):
     page_exceed_error = (
         "page number exceeds maximum page number, please choose valid page"
     )
-    print("Url postfix:" + request.GET.urlencode())
+
     postfix = request.GET.urlencode()
     context = {
         "restaurants": restaurant_list,
