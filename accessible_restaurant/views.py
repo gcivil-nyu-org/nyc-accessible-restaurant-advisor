@@ -26,7 +26,14 @@ from .forms import (
 from django.contrib.auth.decorators import login_required
 
 from .models import User, Restaurant
-from .utils import get_restaurant_list, get_restaurant, get_page_range, get_star_list
+from .utils import (
+    get_restaurant_list,
+    get_filter_restaurant,
+    get_restaurant,
+    get_page_range,
+    get_star_list,
+    get_search_restaurant,
+)
 
 
 # Create your views here.
@@ -196,7 +203,30 @@ def restaurant_list_view(request, page, sort_property):
     page = int(page)
     client_ip = get_client_ip(request)
     restaurants = Restaurant.objects.all()
-    restaurant_list = get_restaurant_list(page, 10, sort_property, client_ip, restaurants)
+
+    keyword = request.GET.get("query", "")
+    price1 = request.GET.get("price1", "")
+    price2 = request.GET.get("price2", "")
+    price3 = request.GET.get("price3", "")
+    price4 = request.GET.get("price4", "")
+    chinese = request.GET.get("Chinese", "")
+    korean = request.GET.get("Korean", "")
+    salad = request.GET.get("Salad", "")
+    pizza = request.GET.get("Pizza", "")
+
+    filters = {
+        "prices": [price1, price2, price3, price4],
+        "categories": [chinese, korean, salad, pizza],
+    }
+    print(filters)
+    if keyword:
+        restaurants = get_search_restaurant(keyword)
+    restaurants = get_filter_restaurant(filters, restaurants)
+    restaurant_results = get_restaurant_list(
+        page, 10, sort_property, client_ip, restaurants
+    )
+    restaurant_list = restaurant_results["restaurants_list"]
+
     star_list = get_star_list()
     for restaurant in restaurant_list:
         full, half, null = star_list[restaurant["rating"]]
@@ -205,7 +235,7 @@ def restaurant_list_view(request, page, sort_property):
         restaurant["null"] = null
 
     # Page count
-    total_restaurant = Restaurant.objects.count()
+    total_restaurant = restaurant_results["total_restaurant"]
     total_page = total_restaurant // 10
     if total_restaurant % 10 == 0:
         total_page -= 1
@@ -215,6 +245,8 @@ def restaurant_list_view(request, page, sort_property):
     page_exceed_error = (
         "page number exceeds maximum page number, please choose valid page"
     )
+    print("Url postfix:" + request.GET.urlencode())
+    postfix = request.GET.urlencode()
     context = {
         "restaurants": restaurant_list,
         "star_list": star_list,
@@ -223,6 +255,16 @@ def restaurant_list_view(request, page, sort_property):
         "page_range": page_range,
         "page_exceed_error": page_exceed_error,
         "sort_property": sort_property,
+        "keyword": keyword,
+        "postfix": postfix,
+        "price1": price1,
+        "price2": price2,
+        "price3": price3,
+        "price4": price4,
+        "Chinese": chinese,
+        "Korean": korean,
+        "Salad": salad,
+        "Pizza": pizza,
     }
     return render(request, "restaurants/browse.html", context)
 
