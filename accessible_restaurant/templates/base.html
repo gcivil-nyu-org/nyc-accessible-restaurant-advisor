@@ -16,7 +16,7 @@
         <div class="inner">
             <a href="{% url 'accessible_restaurant:index' %}" class="logo"><strong>NYC Accessible Restaurant Advisor</strong></a>
             <nav id="nav">
-                <a href="{% url 'accessible_restaurant:browse' 0 'default'%}">Browse</a>
+                <a href="{% url 'accessible_restaurant:browse' 0 'default' %}">Browse</a>
                 {% if user.is_authenticated %}
                     {% if user.is_user %}
                         <a href="{% url 'accessible_restaurant:user_profile' %}">Profile</a>

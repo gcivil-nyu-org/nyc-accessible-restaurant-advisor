@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models import Q
 from .models import Restaurant
 import requests
 import json
@@ -38,11 +39,11 @@ def get_restaurant(business_id):
     return response
 
 
-def get_restaurant_list(page, size, sort_property, client_ip):
+def get_restaurant_list(page, size, sort_property, client_ip, restaurants):
     if sort_property == "lowestPrice":
-        restaurants = Restaurant.objects.order_by("price")
+        restaurants = restaurants.order_by("price")
     elif sort_property == "highestPrice":
-        restaurants = Restaurant.objects.order_by("-price")
+        restaurants = restaurants.order_by("-price")
     elif sort_property == "nearest":
         g = GeoIP2()
         try:
@@ -50,21 +51,24 @@ def get_restaurant_list(page, size, sort_property, client_ip):
         except AddressNotFoundError:
             client_ip = "207.172.171.222"
             client_position = g.lat_lon(client_ip)
-        restaurants = Restaurant.objects.all()
         restaurants = sorted(
             restaurants,
             key=lambda x: math.sqrt(client_position[0] - float(x.latitude))
             + math.sqrt(client_position[1] - float(x.longitude)),
             reverse=False,
         )
-    else:
-        restaurants = Restaurant.objects.all()
+
     offset = page * int(size)
     restaurant_list = restaurants[offset : offset + size]
-    response = []
-    for restaurant in restaurant_list:
-        response.append(restaurant.__dict__)
 
+    total_restaurant = len(restaurants)
+    restaurants_sublist = []
+    for restaurant in restaurant_list:
+        restaurants_sublist.append(restaurant.__dict__)
+    response = {
+        "total_restaurant": total_restaurant,
+        "restaurants_list": restaurants_sublist,
+    }
     return response
 
 
@@ -90,3 +94,90 @@ def get_star_list():
         null = 5 - full - half
         result[num] = [range(int(full)), range(int(half)), range(int(null))]
     return result
+
+
+def decompose_keyword(keyword):
+    """
+    @ Return: A context dictionary contains:
+     possible keywords list,
+     possible zipcodes list
+    """
+    words = keyword.split(",")
+    codes_list, words_list = [], []
+    for word in words:
+        key = word.strip()
+        if len(key) == 0:
+            continue
+        if key.isdigit() and len(key) == 5:
+            codes_list.append(key)
+        else:
+            words_list.append(key)
+    context = {
+        "codes_list": codes_list,
+        "words_list": words_list,
+    }
+    return context
+
+
+def get_search_restaurant(keyword):
+    context = decompose_keyword(keyword)
+    codes_list = context["codes_list"]
+    words_list = context["words_list"]
+
+    restaurants = Restaurant.objects.all()
+    for word in words_list:
+        restaurants = restaurants.filter(
+            Q(name__icontains=word)
+            | Q(category1__icontains=word)
+            | Q(category2__icontains=word)
+            | Q(category3__icontains=word)
+            | Q(address__icontains=word)
+        )
+
+    for zip_code in codes_list:
+        restaurants = restaurants.filter(zip_code__contains=zip_code)
+    return restaurants
+
+
+def get_filter_restaurant(filters, restaurants):
+    prices = filters["prices"]
+    categories = filters["categories"]
+
+    price_flag = False
+    categories_flag = False
+    for price in prices:
+        if price:
+            price_flag = True
+            break
+    for i in range(len(categories)):
+        if categories[i]:
+            categories_flag = True
+        else:
+            categories[i] = "#"
+
+    price1, price2, price3, price4 = prices
+    chinese, korean, salad, pizza = categories
+
+    if price_flag:
+        print(prices)
+        restaurants = restaurants.filter(
+            Q(price=price1) | Q(price=price2) | Q(price=price3) | Q(price=price4)
+        )
+    if categories_flag:
+
+        restaurants = restaurants.filter(
+            Q(category1__icontains=chinese)
+            | Q(category2__icontains=chinese)
+            | Q(category3__icontains=chinese)
+            | Q(category1__icontains=korean)
+            | Q(category2__icontains=korean)
+            | Q(category3__icontains=korean)
+            | Q(category1__icontains=salad)
+            | Q(category2__icontains=salad)
+            | Q(category3__icontains=salad)
+            | Q(category1__icontains=pizza)
+            | Q(category2__icontains=pizza)
+            | Q(category3__icontains=pizza)
+        )
+    print(restaurants.count())
+    return restaurants
