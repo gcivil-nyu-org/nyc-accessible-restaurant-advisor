@@ -22,6 +22,7 @@ from .forms import (
     UserUpdateForm,
     UserProfileUpdateForm,
     RestaurantProfileUpdateForm,
+    ReviewPostForm,
 )
 from django.contrib.auth.decorators import login_required
 
@@ -243,8 +244,51 @@ def restaurant_detail_view(request, business_id):
 
         restaurant_data = response["restaurant_data"]
         restaurant_reviews = response["restaurant_reviews"]
+        local_restaurant_reviews = response["local_restaurant_reviews"]
+        local_restaurant_data = response["local_restaurant_data"]
+
+        # Accessible Rating
+        (
+            level_entry_rating_full,
+            level_entry_rating_half,
+            level_entry_rating_null,
+        ) = star_list[local_restaurant_data.get("level_entry_rating")]
+        wide_door_rating_full, wide_door_rating_half, wide_door_rating_null = star_list[
+            local_restaurant_data.get("wide_door_rating")
+        ]
+        (
+            accessible_table_rating_full,
+            accessible_table_rating_half,
+            accessible_table_rating_null,
+        ) = star_list[local_restaurant_data.get("accessible_table_rating")]
+        (
+            accessible_restroom_rating_full,
+            accessible_restroom_rating_half,
+            accessible_restroom_rating_null,
+        ) = star_list[local_restaurant_data.get("accessible_restroom_rating")]
+        (
+            accessible_path_rating_full,
+            accessible_path_rating_half,
+            accessible_path_rating_null,
+        ) = star_list[local_restaurant_data.get("accessible_path_rating")]
+
+        # initial
+        lr_full = 0
+        lr_half = 0
+        lr_null = 0
+        username = ""
+        photo = ""
 
         # Rating stars
+        if local_restaurant_reviews != null:
+            for review in local_restaurant_reviews:
+                lr_full, lr_half, lr_null = star_list[float(review["rating"])]
+                review["lfull"] = lr_full
+                review["lhalf"] = lr_half
+                review["lnull"] = lr_null
+                username = review["username"]
+                photo = review["photo"]
+
         for review in restaurant_reviews["reviews"]:
             r_full, r_half, r_null = star_list[float(review["rating"])]
             review["full"] = r_full
@@ -270,10 +314,56 @@ def restaurant_detail_view(request, business_id):
             "restaurant": restaurant,
             "restaurant_data": restaurant_data,
             "restaurant_review": restaurant_reviews,
+            "local_restaurant_review": local_restaurant_reviews,
+            "local_restaurant_data": local_restaurant_data,
             "full": full,
             "half": half,
             "null": null,
+            "lfull": lr_full,
+            "lhalf": lr_half,
+            "lnull": lr_null,
             "hours": hours,
             "is_open_now": is_open_now,
+            "username": username,
+            "photo": photo,
+            "level_entry_rating_full": level_entry_rating_full,
+            "level_entry_rating_half": level_entry_rating_half,
+            "level_entry_rating_null": level_entry_rating_null,
+            "wide_door_rating_full": wide_door_rating_full,
+            "wide_door_rating_half": wide_door_rating_half,
+            "wide_door_rating_null": wide_door_rating_null,
+            "accessible_table_rating_full": accessible_table_rating_full,
+            "accessible_table_rating_half": accessible_table_rating_half,
+            "accessible_table_rating_null": accessible_table_rating_null,
+            "accessible_restroom_rating_full": accessible_restroom_rating_full,
+            "accessible_restroom_rating_half": accessible_restroom_rating_half,
+            "accessible_restroom_rating_null": accessible_restroom_rating_null,
+            "accessible_path_rating_full": accessible_path_rating_full,
+            "accessible_path_rating_half": accessible_path_rating_half,
+            "accessible_path_rating_null": accessible_path_rating_null,
         }
         return render(request, "restaurants/detail.html", context)
+
+
+@login_required
+def write_review_view(request, business_id):
+    if request.method == "GET":
+        review_form = ReviewPostForm(request.GET)
+        restaurant_instance = Restaurant.objects.get(business_id=business_id)
+
+        if review_form.is_valid():
+            temp = review_form.save(commit=False)
+            temp.user = request.user
+            temp.restaurant = restaurant_instance
+            review_form.save()
+            messages.success(request, f'{"Your review has been updated!"}')
+            return redirect("accessible_restaurant:detail", business_id)
+    else:
+        review_form = ReviewPostForm(request.GET)
+
+    context = {
+        "user": request.user,
+        "restaurant": restaurant_instance,
+        "review_form": review_form,
+    }
+    return render(request, "review/write_review.html", context)

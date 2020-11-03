@@ -38,7 +38,7 @@
 							<li><h4>{{ restaurant_data.review_count}} Reviews</h4></li>
 						</ul>
 						<ul class="actions">
-							<li><a href="#" class="button special"><i class="far fa-edit"></i>Write a review</a></li>
+							<li><a href="{% url "accessible_restaurant:write_review" restaurant.business_id %}" class="button special"><i class="far fa-edit"></i>Write a review</a></li>
 						</ul>
 					</header>
 
@@ -61,29 +61,123 @@
 					</ul>
 					<hr />
 
+{#                    <i class="icon fas fa-check-square" id="checklist1"></i>#}
 					<h3>Accessible Services</h3>
 					<div class="row uniform">
-						<div class="4u 12u$(small)">
-							<i class="icon fas fa-check-square" id="checklist1"></i>Level entry or ramp
+						<div class="4u 12u$(small)">Level entry or ramp
 						</div>
+                        <ul class="icons">
+                            {% for _ in level_entry_rating_full %}
+                                <li><i class="icon fas fa-star"></i></li>
+                            {% endfor %}
+                            {% for _ in level_entry_rating_half %}
+                                <li><i class="icon fas fa-star-half-alt"></i></li>
+                            {% endfor %}
+                            {% for _ in level_entry_rating_null %}
+                                <li><i class="icon far fa-star"></i></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="row uniform">
 						<div class="4u 12u$(small)">
-							<i class="icon fas fa-check-square" id="checklist2"></i>32-inch wide door
+							32-inch wide door
 						</div>
+                        <ul class="icons">
+                            {% for _ in wide_door_rating_full %}
+                                <li><i class="icon fas fa-star"></i></li>
+                            {% endfor %}
+                            {% for _ in wide_door_rating_half %}
+                                <li><i class="icon fas fa-star-half-alt"></i></li>
+                            {% endfor %}
+                            {% for _ in wide_door_rating_null %}
+                                <li><i class="icon far fa-star"></i></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="row uniform">
 						<div class="4u 12u$(small)">
-							<i class="icon fas fa-check-square" id="checklist3"></i>Accessible tables
+							Accessible tables
 						</div>
+                        <ul class="icons">
+                            {% for _ in accessible_table_rating_full %}
+                                <li><i class="icon fas fa-star"></i></li>
+                            {% endfor %}
+                            {% for _ in accessible_table_rating_half %}
+                                <li><i class="icon fas fa-star-half-alt"></i></li>
+                            {% endfor %}
+                            {% for _ in accessible_table_rating_null %}
+                                <li><i class="icon far fa-star"></i></li>
+                            {% endfor %}
+                        </ul>
 					</div>
 					<div class="row uniform">
 						<div class="4u 12u$(small)">
-							<i class="icon fas fa-check-square" id="checklist5"></i>Accessible restroom
+							Accessible restroom
 						</div>
-						<div class="6u 12u$(small)">
-							<i class="icon fas fa-times-circle" id="checklist4"></i>Accessible 36-inch wide path
+                        <ul class="icons">
+                            {% for _ in accessible_restroom_rating_full %}
+                                <li><i class="icon fas fa-star"></i></li>
+                            {% endfor %}
+                            {% for _ in accessible_restroom_rating_half %}
+                                <li><i class="icon fas fa-star-half-alt"></i></li>
+                            {% endfor %}
+                            {% for _ in accessible_restroom_rating_null %}
+                                <li><i class="icon far fa-star"></i></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="row uniform">
+						<div class="4u 12u$(small)">
+							Accessible 36-inch wide path
 						</div>
+                        <ul class="icons">
+                            {% for _ in accessible_path_rating_full %}
+                                <li><i class="icon fas fa-star"></i></li>
+                            {% endfor %}
+                            {% for _ in accessible_path_rating_half %}
+                                <li><i class="icon fas fa-star-half-alt"></i></li>
+                            {% endfor %}
+                            {% for _ in accessible_path_rating_null %}
+                                <li><i class="icon far fa-star"></i></li>
+                            {% endfor %}
+                        </ul>
 					</div>
 
 					<hr />
 					<h3>Recommended Reviews</h3>
+
+					{% for review in local_restaurant_review %}
+						<div class="row uniform">
+							<div class="3u 12u$(medium)">
+								<div class="row uniform">
+									<span class="image fit"><img src="{{ review.photo.url }}" alt="" /></span>
+								</div>
+								<div class="row">
+									<h4>{{ review.username }}</h4>
+								</div>
+							</div>
+							<div class="9u 12u$(medium)">
+								<div class="row uniform">
+									<ul class="icons">
+										{% for _ in review.lfull %}
+											<li><i class="icon fas fa-star"></i></li>
+										{% endfor %}
+										{% for _ in review.lhalf %}
+											<li><i class="icon fas fa-star-half-alt"></i></li>
+										{% endfor %}
+										{% for _ in review.lnull %}
+											<li><i class="icon far fa-star"></i></li>
+										{% endfor %}
+										<li><h4>{{ review.review_date | date:"Y-m-d h:m:s" }}</h4></li>
+									</ul>
+								</div>
+								<div class="row uniform">
+									<p>{{ review.review_context }}</p>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+
 					{% for review in restaurant_review.reviews %}
 						<div class="row uniform">
 							<div class="3u 12u$(medium)">

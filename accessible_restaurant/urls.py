@@ -40,4 +40,5 @@ urlpatterns = [
     path(
         "restaurants/detail/<business_id>", views.restaurant_detail_view, name="detail"
     ),
+    path("writeareview/<business_id>", views.write_review_view, name="write_review"),
 ]

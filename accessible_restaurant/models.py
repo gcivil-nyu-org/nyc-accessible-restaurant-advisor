@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser  # User
 from PIL import Image
@@ -84,3 +86,23 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+
+class Review(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, related_name="review_user"
+    )
+    restaurant = models.ForeignKey(
+        Restaurant, null=True, on_delete=models.CASCADE, related_name="relate_busid"
+    )
+    review_date = models.DateTimeField(default=datetime.now, editable=False)
+    review_context = models.TextField()
+    rating = models.PositiveIntegerField(blank=True, default=0)
+    level_entry_rating = models.PositiveIntegerField(blank=True, default=0)
+    wide_door_rating = models.PositiveIntegerField(blank=True, default=0)
+    accessible_table_rating = models.PositiveIntegerField(blank=True, default=0)
+    accessible_restroom_rating = models.PositiveIntegerField(blank=True, default=0)
+    accessible_path_rating = models.PositiveIntegerField(blank=True, default=0)
+
+    def __str__(self):
+        return f"{self.user} review on {self.restaurant}"
