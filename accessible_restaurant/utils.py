@@ -38,11 +38,11 @@ def get_restaurant(business_id):
     return response
 
 
-def get_restaurant_list(page, size, sort_property, client_ip):
+def get_restaurant_list(page, size, sort_property, client_ip, restaurants):
     if sort_property == "lowestPrice":
-        restaurants = Restaurant.objects.order_by("price")
+        restaurants = restaurants.order_by("price")
     elif sort_property == "highestPrice":
-        restaurants = Restaurant.objects.order_by("-price")
+        restaurants = restaurants.order_by("-price")
     elif sort_property == "nearest":
         g = GeoIP2()
         try:
@@ -50,15 +50,12 @@ def get_restaurant_list(page, size, sort_property, client_ip):
         except AddressNotFoundError:
             client_ip = "207.172.171.222"
             client_position = g.lat_lon(client_ip)
-        restaurants = Restaurant.objects.all()
         restaurants = sorted(
             restaurants,
             key=lambda x: math.sqrt(client_position[0] - float(x.latitude))
             + math.sqrt(client_position[1] - float(x.longitude)),
             reverse=False,
         )
-    else:
-        restaurants = Restaurant.objects.all()
     offset = page * int(size)
     restaurant_list = restaurants[offset : offset + size]
     response = []

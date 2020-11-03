@@ -27,10 +27,38 @@
                     <h4>Price</h4>
                     <div class="text-center">
                         <div class="btn-group" role="group" aria-label="Basic example">
-                            <a href="#" class="btn btn-outline-danger" role="button">$</a>
-                            <a href="#" class="btn btn-outline-danger" role="button">$$</a>
-                            <a href="#" class="btn btn-outline-danger" role="button">$$$</a>
-                            <a href="#" class="btn btn-outline-danger" role="button">$$$$</a>
+<!--                            <a href="#" class="btn btn-outline-danger" role="button">$</a>-->
+<!--                            <a href="#" class="btn btn-outline-danger" role="button">$$</a>-->
+<!--                            <a href="#" class="btn btn-outline-danger" role="button">$$$</a>-->
+<!--                            <a href="#" class="btn btn-outline-danger" role="button">$$$$</a>-->
+
+                                <form id="priceForm" method="get" action="#">
+                                    {% csrf_token %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" checked="checked" onchange="$('#priceForm').submit();" type="checkbox" value="" id="defaultCheck1">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                        $
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" onchange="$('#priceForm').submit();" type="checkbox" value="$$" id="defaultCheck2">
+                                        <label class="form-check-label" for="defaultCheck2">
+                                        $$
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" onchange="$('#priceForm').submit();" type="checkbox" value="$$$" id="defaultCheck3">
+                                        <label class="form-check-label" for="defaultCheck3">
+                                        $$$
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" onchange="$('#priceForm').submit();" type="checkbox" value="$$$$" id="defaultCheck4">
+                                        <label class="form-check-label" for="defaultCheck4">
+                                        $$$$
+                                        </label>
+                                    </div>
+                                </form>
                         </div>
                     </div>
                     <hr />
@@ -50,10 +78,11 @@
                         </div>
                      </div>
                     <hr />
+                    <a href="#" class="button">Clear</a>
                 </div>
 
                 <div class="9u 12u$(medium)">
-                    <form method="post" action="#">
+                    <form method="post" action="/query">
                         {% csrf_token %}
                         <div class="row uniform">
                             <div class="9u 12u$(small)">
@@ -110,6 +139,8 @@
                                             </ul>
                                         </header>
                                         <ul class="alt">
+                                            <li>Price: {{ restaurant.price }}</li>
+                                            <li>Category: {{ restaurant.category1 }} {{ restaurant.category2 }} {{ restaurant.category3 }}</li>
                                             <li><i class="icon fas fa-phone-square-alt"></i>{{ restaurant.phone }}</li>
                                             <li><i class="icon fas fa-map-marker-alt"></i>{{ restaurant.address }}, {{ restaurant.city }}, {{ restaurant.zip_code }}</li>
                                         </ul>
