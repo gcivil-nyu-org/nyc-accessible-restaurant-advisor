@@ -123,7 +123,7 @@ def get_search_restaurant(keyword):
     context = decompose_keyword(keyword)
     codes_list = context["codes_list"]
     words_list = context["words_list"]
-    restaurant_list = []
+
     restaurants = Restaurant.objects.all()
     for word in words_list:
         restaurants = restaurants.filter(
