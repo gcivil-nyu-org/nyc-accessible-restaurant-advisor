@@ -28,6 +28,7 @@ from django.contrib.auth.decorators import login_required
 from .models import User, Restaurant
 from .utils import (
     get_restaurant_list,
+    get_filter_restaurant,
     get_restaurant,
     get_page_range,
     get_star_list,
@@ -198,10 +199,34 @@ def restaurant_profile_view(request):
     return render(request, "profile/restaurant_profile.html", context)
 
 
-def restaurant_list_view(request, page):
+def restaurant_list_view(request, page, sort_property):
     page = int(page)
-    restaurant_all = Restaurant.objects.all()
-    restaurant_list = get_restaurant_list(page, 10, restaurant_all)
+    client_ip = get_client_ip(request)
+    restaurants = Restaurant.objects.all()
+
+    keyword = request.GET.get("query", "")
+    price1 = request.GET.get("price1", "")
+    price2 = request.GET.get("price2", "")
+    price3 = request.GET.get("price3", "")
+    price4 = request.GET.get("price4", "")
+    chinese = request.GET.get("Chinese", "")
+    korean = request.GET.get("Korean", "")
+    salad = request.GET.get("Salad", "")
+    pizza = request.GET.get("Pizza", "")
+
+    filters = {
+        "prices": [price1, price2, price3, price4],
+        "categories": [chinese, korean, salad, pizza],
+    }
+    print(filters)
+    if keyword:
+        restaurants = get_search_restaurant(keyword)
+    restaurants = get_filter_restaurant(filters, restaurants)
+    restaurant_results = get_restaurant_list(
+        page, 10, sort_property, client_ip, restaurants
+    )
+    restaurant_list = restaurant_results["restaurants_list"]
+
     star_list = get_star_list()
     for restaurant in restaurant_list:
         full, half, null = star_list[restaurant["rating"]]
@@ -210,7 +235,7 @@ def restaurant_list_view(request, page):
         restaurant["null"] = null
 
     # Page count
-    total_restaurant = Restaurant.objects.count()
+    total_restaurant = restaurant_results["total_restaurant"]
     total_page = total_restaurant // 10
     if total_restaurant % 10 == 0:
         total_page -= 1
@@ -220,6 +245,8 @@ def restaurant_list_view(request, page):
     page_exceed_error = (
         "page number exceeds maximum page number, please choose valid page"
     )
+    print("Url postfix:" + request.GET.urlencode())
+    postfix = request.GET.urlencode()
     context = {
         "restaurants": restaurant_list,
         "star_list": star_list,
@@ -227,6 +254,17 @@ def restaurant_list_view(request, page):
         "total_page": total_page,
         "page_range": page_range,
         "page_exceed_error": page_exceed_error,
+        "sort_property": sort_property,
+        "keyword": keyword,
+        "postfix": postfix,
+        "price1": price1,
+        "price2": price2,
+        "price3": price3,
+        "price4": price4,
+        "Chinese": chinese,
+        "Korean": korean,
+        "Salad": salad,
+        "Pizza": pizza,
     }
     return render(request, "restaurants/browse.html", context)
 
@@ -286,39 +324,11 @@ def restaurant_detail_view(request, business_id):
         return render(request, "restaurants/detail.html", context)
 
 
-def search_restaurant_view(request, page):
-    page = int(page)
-    keyword = request.GET['query']
-    print(keyword)
-    if len(keyword) == 0:
-        return redirect('accessible_restaurant:browse', page=0)
-    searched_restaurants = get_search_restaurant(keyword)
-    restaurant_list = get_restaurant_list(page, 10, searched_restaurants)
-    star_list = get_star_list()
-    for restaurant in restaurant_list:
-        full, half, null = star_list[restaurant["rating"]]
-        restaurant["full"] = full
-        restaurant["half"] = half
-        restaurant["null"] = null
+def get_client_ip(request):
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
 
-    # Page count
-    total_restaurant = Restaurant.objects.count()
-    total_page = total_restaurant // 10
-    if total_restaurant % 10 == 0:
-        total_page -= 1
-
-    # Previous and next page numbers
-    page_range = get_page_range(int(total_page), page + 1)
-    page_exceed_error = (
-        "page number exceeds maximum page number, please choose valid page"
-    )
-    context = {
-        "keyword": keyword,
-        "restaurants": restaurant_list,
-        "star_list": star_list,
-        "page_num": page,
-        "total_page": total_page,
-        "page_range": page_range,
-        "page_exceed_error": page_exceed_error,
-    }
-    return render(request, "restaurants/browse.html", context)
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(",")[0]
+    else:
+        ip = request.META.get("REMOTE_ADDR")
+    return ip

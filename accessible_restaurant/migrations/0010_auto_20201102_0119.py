@@ -6,28 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accessible_restaurant', '0009_auto_20201028_1114'),
+        ("accessible_restaurant", "0009_auto_20201028_1114"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='restaurant',
-            name='category1',
+            model_name="restaurant",
+            name="category1",
             field=models.CharField(blank=True, max_length=128),
         ),
         migrations.AddField(
-            model_name='restaurant',
-            name='category2',
+            model_name="restaurant",
+            name="category2",
             field=models.CharField(blank=True, max_length=128),
         ),
         migrations.AddField(
-            model_name='restaurant',
-            name='category3',
+            model_name="restaurant",
+            name="category3",
             field=models.CharField(blank=True, max_length=128),
         ),
         migrations.AddField(
-            model_name='restaurant',
-            name='price',
+            model_name="restaurant",
+            name="price",
             field=models.CharField(blank=True, max_length=64),
         ),
     ]

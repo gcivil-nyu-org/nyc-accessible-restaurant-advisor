@@ -2,6 +2,10 @@
 
 {% block staticlink %}
     {% load static %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/detail_style.css' %}">
 	<script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
 {% endblock %}
@@ -17,12 +21,111 @@
                 <h2><strong>Browse Restaurants</strong></h2>
             </header>
             <div class="row 200%">
-                <div class="12u 12u$(medium)">
-                    <form method="get" action="{% url 'accessible_restaurant:search' 0 %}">
+                <div class="3u 12u$(medium)">
+                    <h3>Filters</h3>
+                    <hr />
+                    <form id="filterForm" method="get" action="{% url 'accessible_restaurant:browse' 0 'default' %}?{{ request.GET.urlencode }}">
+                    {% csrf_token %}
+                    <h4>Price</h4>
+                    <div class="text-center">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                                <div class="form-check form-check-inline">
+                                    {% if price1 %}
+                                        <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="$" id="price1" name="price1">
+                                    {% else %}
+                                        <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="$" id="price1" name="price1">
+                                    {% endif %}
+                                    <label class="form-check-label" for="price1">
+                                    $
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    {% if price2 %}
+                                        <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="$$" id="price2" name="price2">
+                                    {% else %}
+                                        <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="$$" id="price2" name="price2">
+                                    {% endif %}
+                                    <label class="form-check-label" for="price2">
+                                    $$
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    {% if price3 %}
+                                        <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="$$$" id="price3" name="price3">
+                                    {% else %}
+                                        <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="$$$" id="price3" name="price3">
+                                    {% endif %}
+                                    <label class="form-check-label" for="price3">
+                                    $$$
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    {% if price4 %}
+                                        <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="$$$$" id="price4" name="price4">
+                                    {% else %}
+                                        <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="$$$$" id="price4" name="price4">
+                                    {% endif %}
+                                    <label class="form-check-label" for="price4">
+                                    $$$$
+                                    </label>
+                                </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <h4>Category</h4>
+                    <div class="row uniform">
+                                <div class="form-check form-check-inline">
+                                    {% if Chinese %}
+                                        <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit(); $('#priceForm').submit();" type="checkbox" value="Chinese" id="Chinese" name="Chinese">
+                                    {% else %}
+                                        <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Chinese" id="Chinese" name="Chinese">
+                                    {% endif %}
+                                    <label class="form-check-label" for="Chinese">
+                                    Chinese
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    {% if Korean %}
+                                        <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Korean" id="Korean" name="Korean">
+                                    {% else %}
+                                        <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Korean" id="Korean" name="Korean">
+                                    {% endif %}
+                                    <label class="form-check-label" for="Korean">
+                                    Korean
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    {% if Salad %}
+                                        <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Salad" id="Salad" name="Salad">
+                                    {% else %}
+                                        <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Salad" id="Salad" name="Salad">
+                                    {% endif %}
+                                    <label class="form-check-label" for="Salad">
+                                    Salad
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    {% if Pizza %}
+                                        <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Pizza" id="Pizza" name="Pizza">
+                                    {% else %}
+                                        <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Pizza" id="Pizza" name="Pizza">
+                                    {% endif %}
+                                    <label class="form-check-label" for="Pizza">
+                                    Pizza
+                                    </label>
+                                </div>
+                     </div>
+                    </form>
+                    <hr />
+                </div>
+
+
+                <div class="9u 12u$(medium)">
+                    <form method="get" action="{% url 'accessible_restaurant:browse' 0 'default' %}">
                         {% csrf_token %}
                         <div class="row uniform">
                             <div class="9u 12u$(small)">
-                                <input type="text" name="query" id="query" value="{{ request.GET.query }}" placeholder="Restaurants" />
+                                <input type="text" name="query" id="query" value="{{ request.GET.query }}" placeholder="Restaurant name, category, zip code, etc(use ',' between different types of keywords)" />
                             </div>
                             <div class="3u$ 12u$(small)">
                                 <input type="submit" value="Search" class="fit"/>
@@ -34,6 +137,17 @@
                         <h2><center>{{ page_exceed_error }}</center></h2>
                     {% endif %}
 
+                    <div class="dropdown show text-right">
+                        Sort: <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ sort_property }}</a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href='{% url "accessible_restaurant:browse" 0 "default"%}'>default</a>
+                            <a class="dropdown-item" href='{% url "accessible_restaurant:browse" 0 "lowestPrice" %}'>lowest price</a>
+                            <a class="dropdown-item" href='{% url "accessible_restaurant:browse" 0 "highestPrice" %}'>highest price</a>
+                            <a class="dropdown-item" href='{% url "accessible_restaurant:browse" 0 "nearest" %}'>nearest</a>
+                        </div>
+                    </div>
+
                     {% for restaurant in restaurants %}
                         <a href = '{% url "accessible_restaurant:detail" restaurant.business_id %}'>
                             <div class="box">
@@ -44,11 +158,11 @@
                                     <div class="8u 12u$(medium)">
                                         <header>
                                             <ul class="actions">
-                                                <li><h2><strong>{{ restaurant.name }}</strong></h2></li>
+                                                <li><h3><strong>{{ restaurant.name }}</strong></h3></li>
                                                 {% if restaurant.compliant %}
-                                                    <li><h4><i class="icon far fa-check-circle"></i>compliant</h4></li>
+                                                    <li><h3><i class="icon far fa-check-circle"></i>compliant</h3></li>
                                                 {% else %}
-                                                    <li><h4><i class="icon far fa-times-circle"></i>compliant</h4></li>
+                                                    <li><h3><i class="icon far fa-times-circle"></i>compliant</h3></li>
                                                 {% endif %}
                                             </ul>
                                             <ul class="icons">
@@ -64,6 +178,8 @@
                                             </ul>
                                         </header>
                                         <ul class="alt">
+                                            <li>Price: {{ restaurant.price }}</li>
+                                            <li>Category: {{ restaurant.category1 }} {{ restaurant.category2 }} {{ restaurant.category3 }}</li>
                                             <li><i class="icon fas fa-phone-square-alt"></i>{{ restaurant.phone }}</li>
                                             <li><i class="icon fas fa-map-marker-alt"></i>{{ restaurant.address }}, {{ restaurant.city }}, {{ restaurant.zip_code }}</li>
                                         </ul>
@@ -72,36 +188,31 @@
                             </div>
                         </a>
                     {% endfor %}
-                    <div class="row uniform">
-                    <div class="4u 12u$(medium)">
-                    </div>
-                    <div class="4u 12u$(medium)">
-                        <ul class="icons">
-                            {% if page_num == 0 %}
-                                First Page
-                            {% else %}
-                                <a href="0">First Page</a>
-                            {% endif %}
-                            &emsp;
-                            {% for pnum in page_range %}
-                                {% if pnum == page_num %}
-                                    <li>{{ pnum|add:"1" }}</li>
-                                {% else %}
-                                    <li><a href="{{ pnum }}">{{ pnum|add:"1" }}</a></li>
-                                {% endif %}
-                            &emsp;
-                            {% endfor %}
-                            {% if total_page == page_num %}
-                                Last Page
-                            {% else %}
-                                <a href="{{ total_page }}">Last Page</a>
-                            {% endif %}
-                        </ul>
-                    </div>
-                    <div class="4u 12u$(medium)">
-                    </div>
-                        </div>
                 </div>
+                <div class="12u 12u$(medium)">
+                    <ul class="icons text-center">
+                        {% if page_num == 0 %}
+                            <li><a> First Page </a></li>
+                        {% else %}
+                            <li><a href='{% url "accessible_restaurant:browse" 0 sort_property%}?{{ request.GET.urlencode }}'>First Page</a></li>
+                        {% endif %}
+                        &emsp;
+                        {% for pnum in page_range %}
+                            {% if pnum == page_num %}
+                                <li>{{ pnum|add:"1" }}</li>
+                            {% else %}
+                                <li><a href='{% url "accessible_restaurant:browse" pnum sort_property%}?{{ request.GET.urlencode }}'>{{ pnum|add:"1" }}</a></li>
+                            {% endif %}
+                        &emsp;
+                        {% endfor %}
+                        {% if total_page == page_num %}
+                            <li><a> Last Page </a></li>
+                        {% else %}
+                            <li><a href='{% url "accessible_restaurant:browse" total_page sort_property%}?{{ request.GET.urlencode }}'>Last Page</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
             </div>
         </div>
     </section>
