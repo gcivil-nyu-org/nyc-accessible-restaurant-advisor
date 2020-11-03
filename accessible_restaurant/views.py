@@ -192,9 +192,10 @@ def restaurant_profile_view(request):
     return render(request, "profile/restaurant_profile.html", context)
 
 
-def restaurant_list_view(request, page):
+def restaurant_list_view(request, page, sort_property):
     page = int(page)
-    restaurant_list = get_restaurant_list(page, 10)
+    client_ip = get_client_ip(request)
+    restaurant_list = get_restaurant_list(page, 10, sort_property, client_ip)
     star_list = get_star_list()
     for restaurant in restaurant_list:
         full, half, null = star_list[restaurant["rating"]]
@@ -220,6 +221,7 @@ def restaurant_list_view(request, page):
         "total_page": total_page,
         "page_range": page_range,
         "page_exceed_error": page_exceed_error,
+        "sort_property": sort_property,
     }
     return render(request, "restaurants/browse.html", context)
 
@@ -277,3 +279,13 @@ def restaurant_detail_view(request, business_id):
             "is_open_now": is_open_now,
         }
         return render(request, "restaurants/detail.html", context)
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(",")[0]
+    else:
+        ip = request.META.get("REMOTE_ADDR")
+    return ip
