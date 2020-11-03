@@ -43,29 +43,29 @@
 					</header>
 
 					<hr />
-					<h3>About the restaurant</h3>
+					<h2>About the restaurant</h2>
 					<ul>
-						<li><p><strong>Price:</strong> {{ restaurant_data.price }}</p></li>
+						<li><strong>Price:</strong> {{ restaurant_data.price }}</li>
 						<li>
-							<p>
-								<strong>Categories:</strong>
-								{% for category in restaurant_data.categories %}
-								 	{% if forloop.counter == restaurant_data.categories|length %}
-										{{ category.title }}
-									{% else %}
-										{{ category.title }},
-									{% endif %}
-								{% endfor %}
-							</p>
+							<strong>Categories:</strong>
+							{% for category in restaurant_data.categories %}
+								{% if forloop.counter == restaurant_data.categories|length %}
+									{{ category.title }}
+								{% else %}
+									{{ category.title }},
+								{% endif %}
+							{% endfor %}
 						</li>
 					</ul>
 					<hr />
 
+
 {#                    <i class="icon fas fa-check-square" id="checklist1"></i>#}
 					<h3>Accessible Services</h3>
-					<div class="row uniform">
-						<div class="4u 12u$(small)">Level entry or ramp
-						</div>
+                    <div class="row uniform">
+                        <div class="4u 12u$(small)">
+                            Level entry or ramp
+                        </div>
                         <ul class="icons">
                             {% for _ in level_entry_rating_full %}
                                 <li><i class="icon fas fa-star"></i></li>
@@ -144,6 +144,7 @@
 					</div>
 
 					<hr />
+
 					<h3>Recommended Reviews</h3>
 
 					{% for review in local_restaurant_review %}
@@ -177,6 +178,8 @@
 							</div>
 						</div>
 					{% endfor %}
+
+					<h2>Recommended Reviews</h2>
 
 					{% for review in restaurant_review.reviews %}
 						<div class="row uniform">
@@ -215,7 +218,7 @@
 				</div>
 
 				<div class="4u$ 12u$(medium)">
-					<h3>Open Hours</h3>
+					<h2>Open Hours</h2>
 					<ul>
 						{% if is_open_now %}
 							<li class="no-bullets"><i class="icon fas fa-check-circle"></i>Open Now</li>
@@ -226,12 +229,12 @@
 							<li>{{ hour_data.weekday }} &emsp; {{ hour_data.start }}-{{ hour_data.end }}</li>
 						{% endfor %}
 					</ul>
-					<h3>Contact Info</h3>
+					<h2>Contact Info</h2>
 					<ul class="alt">
 						<li><i class="icon fas fa-phone-square-alt"></i>{{ restaurant_data.display_phone }}</li>
 						<li><i class="icon fas fa-map-marker-alt"></i>{{ restaurant_data.location.address1 }}, {{ restaurant_data.location.city }}, {{ restaurant_data.location.state }} {{ restaurant_data.location.zip_code }}</li>
 					</ul>
-					<h3>Pictures</h3>
+					<h2>Pictures</h2>
 						<!-- Slideshow -->
 						<div class="w3-container">
 							{% for image in restaurant_data.photos %}
