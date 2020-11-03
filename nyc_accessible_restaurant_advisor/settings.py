@@ -152,9 +152,8 @@ LOGOUT_REDIRECT_URL = "/accessible_restaurant/home"
 # Leaflet parameters
 LEAFLET_CONFIG = {
 'ATTRIBUTION_PREFIX': 'Powered by django-leaflet',
-'SCALE': None
+'SCALE': None,
+'RESET_VIEW': False
 }
-# 'DEFAULT_CENTER': (40.7127837, -74.0059413),
-# 'DEFAULT_ZOOM': 16,
 
 GEOIP_PATH = os.path.join(BASE_DIR, "geoip")
