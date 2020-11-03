@@ -29,7 +29,7 @@
                     <h4>Price</h4>
                     <div class="text-center">
                         <div class="btn-group" role="group" aria-label="Basic example">
-                                <div class="form-check form-check-inline">
+                                <div class="form-check">
                                     {% if price1 %}
                                         <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="$" id="price1" name="price1">
                                     {% else %}
@@ -39,7 +39,7 @@
                                     $
                                     </label>
                                 </div>
-                                <div class="form-check form-check-inline">
+                                <div class="form-check">
                                     {% if price2 %}
                                         <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="$$" id="price2" name="price2">
                                     {% else %}
@@ -49,7 +49,7 @@
                                     $$
                                     </label>
                                 </div>
-                                <div class="form-check form-check-inline">
+                                <div class="form-check">
                                     {% if price3 %}
                                         <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="$$$" id="price3" name="price3">
                                     {% else %}
@@ -59,7 +59,7 @@
                                     $$$
                                     </label>
                                 </div>
-                                <div class="form-check form-check-inline">
+                                <div class="form-check">
                                     {% if price4 %}
                                         <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="$$$$" id="price4" name="price4">
                                     {% else %}
@@ -74,7 +74,7 @@
                     <hr />
                     <h4>Category</h4>
                     <div class="row uniform">
-                                <div class="form-check form-check-inline">
+                                <div class="form-check">
                                     {% if Chinese %}
                                         <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit(); $('#priceForm').submit();" type="checkbox" value="Chinese" id="Chinese" name="Chinese">
                                     {% else %}
@@ -84,7 +84,7 @@
                                     Chinese
                                     </label>
                                 </div>
-                                <div class="form-check form-check-inline">
+                                <div class="form-check">
                                     {% if Korean %}
                                         <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Korean" id="Korean" name="Korean">
                                     {% else %}
@@ -94,7 +94,7 @@
                                     Korean
                                     </label>
                                 </div>
-                                <div class="form-check form-check-inline">
+                                <div class="form-check">
                                     {% if Salad %}
                                         <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Salad" id="Salad" name="Salad">
                                     {% else %}
@@ -104,7 +104,7 @@
                                     Salad
                                     </label>
                                 </div>
-                                <div class="form-check form-check-inline">
+                                <div class="form-check">
                                     {% if Pizza %}
                                         <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Pizza" id="Pizza" name="Pizza">
                                     {% else %}
@@ -125,7 +125,7 @@
                         {% csrf_token %}
                         <div class="row uniform">
                             <div class="9u 12u$(small)">
-                                <input type="text" name="query" id="query" value="{{ request.GET.query }}" placeholder="Restaurant name, category, zip code, etc(use ',' between different types of keywords)" />
+                                <input type="text" name="query" id="query" value="{{ request.GET.query }}" placeholder="Restaurant name, category, zip code, etc (use ',' between different types of keywords)" />
                             </div>
                             <div class="3u$ 12u$(small)">
                                 <input type="submit" value="Search" class="fit"/>
