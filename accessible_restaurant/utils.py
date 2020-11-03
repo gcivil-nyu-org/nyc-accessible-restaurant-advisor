@@ -159,7 +159,7 @@ def get_filter_restaurant(filters, restaurants):
     chinese, korean, salad, pizza = categories
 
     if price_flag:
-        print(prices)
+
         restaurants = restaurants.filter(
             Q(price=price1) | Q(price=price2) | Q(price=price3) | Q(price=price4)
         )
@@ -179,5 +179,4 @@ def get_filter_restaurant(filters, restaurants):
             | Q(category2__icontains=pizza)
             | Q(category3__icontains=pizza)
         )
-    print(restaurants.count())
     return restaurants
