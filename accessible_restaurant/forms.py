@@ -2,7 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 
-from accessible_restaurant.models import User, User_Profile, Restaurant_Profile
+from accessible_restaurant.models import User, User_Profile, Restaurant_Profile, Review
+from django.utils.safestring import mark_safe
 
 
 class UserSignUpForm(UserCreationForm):
@@ -83,4 +84,54 @@ class RestaurantProfileUpdateForm(forms.ModelForm):
             "restaurant_name": "Restaurant Name",
             "zip_code": "Zip Code",
             "is_open": "Is Open",
+        }
+
+
+class HorizontalRadioSelect(forms.RadioSelect):
+    template_name = "horizontal_select.html"
+
+
+class ReviewPostForm(forms.ModelForm):
+    SCORE_CHOICES = (
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5),
+    )
+    rating = forms.ChoiceField(label=("General Rating"), choices=SCORE_CHOICES)
+    level_entry_rating = forms.ChoiceField(
+        label=("Level Entry Rating"), choices=SCORE_CHOICES
+    )
+    wide_door_rating = forms.ChoiceField(
+        label=("Wide Door Rating"), choices=SCORE_CHOICES
+    )
+    accessible_table_rating = forms.ChoiceField(
+        label=("Accessible Table Rating"), choices=SCORE_CHOICES
+    )
+    accessible_restroom_rating = forms.ChoiceField(
+        label=("Accessible Restroom Rating"), choices=SCORE_CHOICES
+    )
+    accessible_path_rating = forms.ChoiceField(
+        label=("Accessible Path Rating"), choices=SCORE_CHOICES
+    )
+
+    class Meta:
+        model = Review
+        fields = [
+            "rating",
+            "level_entry_rating",
+            "wide_door_rating",
+            "accessible_table_rating",
+            "accessible_restroom_rating",
+            "accessible_path_rating",
+            "review_context",
+        ]
+        widgets = {
+            "rating": HorizontalRadioSelect(),
+            "level_entry_rating": forms.RadioSelect,
+            "wide_door_rating": forms.RadioSelect,
+            "accessible_table_rating": forms.RadioSelect,
+            "accessible_restroom_rating": forms.RadioSelect,
+            "accessible_path_rating": forms.RadioSelect,
         }
