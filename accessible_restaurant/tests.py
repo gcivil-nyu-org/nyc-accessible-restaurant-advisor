@@ -414,7 +414,7 @@ class TestViews(TestCase):
             "review_context": "test review",
         }
         form = ReviewPostForm(form_data)
-        self.assertTrue(form.is_valid())
+
         Restaurant.objects.create(
             business_id="FaPtColHYcTnZAxtoM33cA",
             name="Chu Tea",
@@ -432,6 +432,6 @@ class TestViews(TestCase):
             category2="Poke",
             category3="Juice Bars & Smoothies",
         )
-        response = self.client.get(self.review_url)
+        response = self.client.get(self.review_url, form_data)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "review/write_review.html")
