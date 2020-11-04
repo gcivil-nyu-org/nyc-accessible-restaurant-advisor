@@ -406,7 +406,7 @@ def write_review_view(request, business_id):
 
     else:
         review_form = ReviewPostForm(request.GET)
-        restaurant_instance = Restaurant.objects.get(business_id=business_id)
+        # restaurant_instance = Restaurant.objects.get(business_id=business_id)
 
     context = {
         "user": request.user,
