@@ -313,6 +313,7 @@ class TestViews(TestCase):
         self.review_url = reverse(
             "accessible_restaurant:write_review", args=["FaPtColHYcTnZAxtoM33cA"]
         )
+        self.user = User.objects.create_user('huanjin', 'zhanghuanjin97@gmail.com', 'test123456')
 
     def test_index_view_GET(self):
         response = self.client.get(self.index_url)
@@ -366,7 +367,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, "restaurants/detail.html")
 
     def test_user_profile_view_POST(self):
-        User.objects.create(username="huanjin", first_name="Huanjin", last_name="Zhang")
+        self.user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
         User_Profile.objects.create(
             photo="default.jpg",
             phone="3474223609",
@@ -379,7 +380,7 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_res_profile_view_POST(self):
-        User.objects.create(username="huanjin", first_name="Huanjin", last_name="Zhang")
+        self.user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
         Restaurant_Profile.objects.create(
             restaurant_name="name",
             photo="default.jpg",
@@ -394,7 +395,6 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_write_review_view_GET(self):
-        User.objects.create(username="huanjin", first_name="Huanjin", last_name="Zhang")
         Restaurant.objects.create(
             business_id="FaPtColHYcTnZAxtoM33cA",
             name="Chu Tea",
@@ -412,6 +412,7 @@ class TestViews(TestCase):
             category2="Poke",
             category3="Juice Bars & Smoothies",
         )
-        response = self.client.get(self.detail_url)
+        self.client.login(username='huanjin', password='test123456')
+        response = self.client.get(self.review_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "restaurants/detail.html")
+        self.assertTemplateUsed(response, "review/write_review.html")
