@@ -404,6 +404,17 @@ class TestViews(TestCase):
             "huanjin", "zhanghuanjin97@gmail.com", "test123456"
         )
         self.client.login(username="huanjin", password="test123456")
+        form_data = {
+            "rating": 5,
+            "level_entry_rating": 5,
+            "wide_door_rating": 5,
+            "accessible_table_rating": 5,
+            "accessible_restroom_rating": 5,
+            "accessible_path_rating": 5,
+            "review_context": "test review",
+        }
+        form = ReviewPostForm(form_data)
+        self.assertTrue(form.is_valid())
         Restaurant.objects.create(
             business_id="FaPtColHYcTnZAxtoM33cA",
             name="Chu Tea",
