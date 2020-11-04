@@ -28,6 +28,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="restaurant",
             name="price",
-            field=models.CharField(blank=True, max_length=64),
+            field=models.CharField(blank=True, max_length=5),
         ),
     ]

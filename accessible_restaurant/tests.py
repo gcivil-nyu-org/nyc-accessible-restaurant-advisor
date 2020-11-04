@@ -22,6 +22,7 @@ from accessible_restaurant.forms import (
     UserProfileUpdateForm,
     UserUpdateForm,
     RestaurantProfileUpdateForm,
+    ReviewPostForm,
 )
 
 from django.test import TestCase, Client
@@ -139,6 +140,20 @@ class TestForms(TestCase):
         )
         self.assertTrue(form.is_valid())
 
+    def test_WriteReviewForm_is_valid(self):
+        form = ReviewPostForm(
+            data={
+                "rating": 5,
+                "level_entry_rating": 5,
+                "wide_door_rating": 5,
+                "accessible_table_rating": 5,
+                "accessible_restroom_rating": 5,
+                "accessible_path_rating": 5,
+                "review_context": "test review",
+            }
+        )
+        self.assertTrue(form.is_valid())
+
 
 class TestUrls(SimpleTestCase):
     def test_index_url_is_resolved(self):
@@ -220,6 +235,14 @@ class TestUrls(SimpleTestCase):
             resolve(url).func, accessible_restaurant.views.activate_account
         )
 
+    def test_write_review_url_is_resolved(self):
+        url = reverse(
+            "accessible_restaurant:write_review", args=["FaPtColHYcTnZAxtoM33cA"]
+        )
+        self.assertEquals(
+            resolve(url).func, accessible_restaurant.views.write_review_view
+        )
+
 
 class UserSignUpTest(TestCase):
     def setUp(self):
@@ -287,6 +310,9 @@ class TestViews(TestCase):
         self.detail_url = reverse(
             "accessible_restaurant:detail", args=["FaPtColHYcTnZAxtoM33cA"]
         )
+        self.review_url = reverse(
+            "accessible_restaurant:write_review", args=["FaPtColHYcTnZAxtoM33cA"]
+        )
 
     def test_index_view_GET(self):
         response = self.client.get(self.index_url)
@@ -339,7 +365,10 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, "restaurants/detail.html")
 
     def test_user_profile_view_POST(self):
-        User.objects.create(username="huanjin", first_name="Huanjin", last_name="Zhang")
+        self.user = User.objects.create_user(
+            "huanjin", "zhanghuanjin97@gmail.com", "test123456"
+        )
+        # self.client.login(username="huanjin", password="test123456")
         User_Profile.objects.create(
             photo="default.jpg",
             phone="3474223609",
@@ -352,8 +381,11 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_res_profile_view_POST(self):
-        User.objects.create(username="huanjin", first_name="Huanjin", last_name="Zhang")
-        Restaurant_Profile.objects.create(
+        self.user = User.objects.create_user(
+            "huanjin", "zhanghuanjin97@gmail.com", "test123456"
+        )
+        # self.client.login(username="huanjin", password="test123456")
+        self.user.rprofile = Restaurant_Profile.objects.create(
             restaurant_name="name",
             photo="default.jpg",
             phone="3474223609",
@@ -363,8 +395,72 @@ class TestViews(TestCase):
             state="NJ",
             is_open=True,
         )
-        response = self.client.post(self.resprofile_url)
+
+        response = self.client.post(self.resprofile_url)  # self.user.rprofile)
         self.assertEqual(response.status_code, 302)
+
+    def test_write_review_view_GET(self):
+        self.user = User.objects.create_user(
+            "huanjin", "zhanghuanjin97@gmail.com", "test123456"
+        )
+        self.client.login(username="huanjin", password="test123456")
+
+        Restaurant.objects.create(
+            business_id="FaPtColHYcTnZAxtoM33cA",
+            name="Chu Tea",
+            img_url="https://s3-media4.fl.yelpcdn.com/bphoto/05Q6eHDSpXmytCf4JHR7AQ/o.jpg",
+            rating="4.0",
+            latitude="40.668253",
+            longitude="-73.986898",
+            address="471 5th Ave",
+            city="Brooklyn",
+            zip_code="11215",
+            phone="+17187881113",
+            compliant=True,
+            price="$",
+            category1="Bubble Tea",
+            category2="Poke",
+            category3="Juice Bars & Smoothies",
+        )
+        response = self.client.get(self.review_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "review/write_review.html")
+
+    # def test_review_form_valid_view_GET(self):
+    #     self.user = User.objects.create_user(
+    #         "huanjin", "zhanghuanjin97@gmail.com", "test123456"
+    #     )
+    #     self.client.login(username="huanjin", password="test123456")
+    #     form_data = {
+    #         "rating": 5,
+    #         "level_entry_rating": 5,
+    #         "wide_door_rating": 5,
+    #         "accessible_table_rating": 5,
+    #         "accessible_restroom_rating": 5,
+    #         "accessible_path_rating": 5,
+    #         "review_context": "test review",
+    #     }
+    #
+    #     Restaurant.objects.create(
+    #         business_id="FaPtColHYcTnZAxtoM33cA",
+    #         name="Chu Tea",
+    #         img_url="https://s3-media4.fl.yelpcdn.com/bphoto/05Q6eHDSpXmytCf4JHR7AQ/o.jpg",
+    #         rating="4.0",
+    #         latitude="40.668253",
+    #         longitude="-73.986898",
+    #         address="471 5th Ave",
+    #         city="Brooklyn",
+    #         zip_code="11215",
+    #         phone="+17187881113",
+    #         compliant=True,
+    #         price="$",
+    #         category1="Bubble Tea",
+    #         category2="Poke",
+    #         category3="Juice Bars & Smoothies",
+    #     )
+    #     response = self.client.post(self.detail_url, form_data)
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, "restaurants/detail.html")
 
 
 class SortTest(TestCase):
