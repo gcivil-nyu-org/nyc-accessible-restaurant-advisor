@@ -79,7 +79,6 @@ class Restaurant(models.Model):
         default="https://i.pinimg.com/originals/4e/24/f5/4e24f523182e09376bfe8424d556610a.png",
     )
     rating = models.FloatField(blank=True, default=0)
-    price = models.CharField(max_length=5, blank=True)
     latitude = models.DecimalField(
         max_digits=9, decimal_places=6, blank=True, default=0
     )
@@ -92,7 +91,7 @@ class Restaurant(models.Model):
     phone = models.CharField(max_length=32, blank=True)
     compliant = models.BooleanField(default=False)
 
-    price = models.CharField(max_length=64, blank=True)
+    price = models.CharField(max_length=5, blank=True)
     category1 = models.CharField(max_length=128, blank=True)
     category2 = models.CharField(max_length=128, blank=True)
     category3 = models.CharField(max_length=128, blank=True)
