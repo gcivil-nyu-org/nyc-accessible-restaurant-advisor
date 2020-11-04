@@ -386,7 +386,7 @@ class TestViews(TestCase):
             "huanjin", "zhanghuanjin97@gmail.com", "test123456"
         )
         # self.client.login(username="huanjin", password="test123456")
-        Restaurant_Profile.objects.create(
+        self.user.rprofile = Restaurant_Profile.objects.create(
             restaurant_name="name",
             photo="default.jpg",
             phone="3474223609",
@@ -396,7 +396,8 @@ class TestViews(TestCase):
             state="NJ",
             is_open=True,
         )
-        response = self.client.post(self.resprofile_url)
+
+        response = self.client.post(self.resprofile_url)  # self.user.rprofile)
         self.assertEqual(response.status_code, 302)
 
     def test_write_review_view_GET(self):
