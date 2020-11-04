@@ -318,7 +318,6 @@ class TestViews(TestCase):
     #     self.assertTemplateUsed(response, "accountss/activate_account.html")
 
     def test_browse_view_GET(self):
-        print(self.browse_url)
         response = self.client.get(self.browse_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "restaurants/browse.html")
@@ -366,3 +365,26 @@ class TestViews(TestCase):
         )
         response = self.client.post(self.resprofile_url)
         self.assertEqual(response.status_code, 302)
+
+
+class SortTest(TestCase):
+    def setUp(self):
+        self.sortbydefault_url = reverse("accessible_restaurant:browse", args=["0", "default"])
+        self.sortbylowestprice_url = reverse("accessible_restaurant:browse", args=["0", "lowestprice"])
+        self.sortbyhighestprice_url = reverse("accessible_restaurant:browse", args=["0", "highestprice"])
+        self.sortbynearest_url = reverse("accessible_restaurant:browse", args=["0", "nearest"])
+        return super().setUp()
+
+    def test_can_view_page_correctly(self):
+        sortbydefault_response = self.client.get(self.sortbydefault_url)
+        sortbylowestprice_response = self.client.get(self.sortbylowestprice_url)
+        sortbyhighestprice_response = self.client.get(self.sortbyhighestprice_url)
+        sortbynearest_response = self.client.get(self.sortbynearest_url)
+        self.assertEqual(sortbydefault_response.status_code, 200)
+        self.assertEqual(sortbylowestprice_response.status_code, 200)
+        self.assertEqual(sortbyhighestprice_response.status_code, 200)
+        self.assertEqual(sortbynearest_response.status_code, 200)
+        self.assertTemplateUsed(sortbydefault_response, "restaurants/browse.html")
+        self.assertTemplateUsed(sortbylowestprice_response, "restaurants/browse.html")
+        self.assertTemplateUsed(sortbyhighestprice_response, "restaurants/browse.html")
+        self.assertTemplateUsed(sortbynearest_response, "restaurants/browse.html")
