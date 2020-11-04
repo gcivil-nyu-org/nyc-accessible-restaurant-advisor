@@ -369,7 +369,7 @@ class TestViews(TestCase):
         self.user = User.objects.create_user(
             "huanjin", "zhanghuanjin97@gmail.com", "test123456"
         )
-        #self.client.login(username="huanjin", password="test123456")
+        # self.client.login(username="huanjin", password="test123456")
         User_Profile.objects.create(
             photo="default.jpg",
             phone="3474223609",
@@ -385,7 +385,7 @@ class TestViews(TestCase):
         self.user = User.objects.create_user(
             "huanjin", "zhanghuanjin97@gmail.com", "test123456"
         )
-        #self.client.login(username="huanjin", password="test123456")
+        # self.client.login(username="huanjin", password="test123456")
         Restaurant_Profile.objects.create(
             restaurant_name="name",
             photo="default.jpg",
@@ -398,7 +398,6 @@ class TestViews(TestCase):
         )
         response = self.client.post(self.resprofile_url)
         self.assertEqual(response.status_code, 302)
-
 
     def test_write_review_view_GET(self):
         self.user = User.objects.create_user(
