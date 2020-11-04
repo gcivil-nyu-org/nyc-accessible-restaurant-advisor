@@ -4,12 +4,8 @@ from . import views
 
 app_name = "accessible_restaurant"
 urlpatterns = [
-
     path("", views.index_view, name="index"),
     path("about/", views.about_view, name="about"),
-
-    
-
     path(
         "accounts/login",
         auth_views.LoginView.as_view(template_name="accounts/login.html"),
