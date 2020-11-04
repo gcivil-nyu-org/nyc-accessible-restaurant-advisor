@@ -12,7 +12,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-# 
+
 # from .token_generator import generate_token
 from django.core.mail import EmailMessage
 
