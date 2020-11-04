@@ -492,3 +492,78 @@ class SortTest(TestCase):
         self.assertTemplateUsed(sortbylowestprice_response, "restaurants/browse.html")
         self.assertTemplateUsed(sortbyhighestprice_response, "restaurants/browse.html")
         self.assertTemplateUsed(sortbynearest_response, "restaurants/browse.html")
+
+class SearchTest(TestCase):
+    def setUp(self) -> None:
+        Restaurant.objects.create(
+            business_id="FaPtColHYcTnZAxtoM33cA",
+            name="Chu Tea",
+            img_url="https://s3-media4.fl.yelpcdn.com/bphoto/05Q6eHDSpXmytCf4JHR7AQ/o.jpg",
+            rating="4.0",
+            latitude="40.668253",
+            longitude="-73.986898",
+            address="471 5th Ave",
+            city="Brooklyn",
+            zip_code="11215",
+            phone="+17187881113",
+            compliant=True,
+            price="$",
+            category1="Bubble Tea",
+            category2="Poke",
+            category3="Juice Bars & Smoothies",
+        )
+
+        Restaurant.objects.create(
+            business_id="De_10VF2CrC2moWaPA81mg",
+            name="Just Salad",
+            img_url="https://s3-media1.fl.yelpcdn.com/bphoto/xX9UzyMKSao3qfsufH9SnA/o.jpg",
+            rating="3.5",
+            latitude="40.669429",
+            longitude="-73.979494",
+            address="252 7th Ave",
+            city="Brooklyn",
+            zip_code="11215",
+            phone="+18666733757",
+            compliant=True,
+            price="$$",
+            category1="Salad",
+            category2="Wraps",
+            category3="Vegetarian",
+        )
+
+        self.search_url = reverse(
+            "accessible_restaurant:browse", args=["0", "default"]
+        )
+        self.filter_url = reverse(
+            "accessible_restaurant:browse", args=["0", "default"]
+        )
+
+    def test_can_view_page_correctly(self):
+        response_search_zipcode = self.client.get(self.search_url, {'query': '11215'})
+        response_search_restaurant_name = self.client.get(self.search_url, {'query': 'Chu Tea'})
+        response_search_category = self.client.get(self.search_url, {'query': 'Bubble Tea'})
+        response_search_address = self.client.get(self.search_url, {'query': '5th Ave'})
+        response_search_multicondition = self.client.get(self.search_url, {'query': '11215, Juice Bars'})
+
+        response_filter_price = self.client.get(self.filter_url, {'price1': '$'})
+        response_filter_category = self.client.get(self.filter_url, {'Salad': 'Salad'})
+
+        self.assertEqual(response_search_zipcode.status_code, 200)
+        self.assertEqual(response_search_restaurant_name.status_code, 200)
+        self.assertEqual(response_search_category.status_code, 200)
+        self.assertEqual(response_search_address.status_code, 200)
+        self.assertEqual(response_search_multicondition.status_code, 200)
+
+        self.assertEqual(response_filter_price.status_code, 200)
+        self.assertEqual(response_filter_category.status_code, 200)
+
+        self.assertTemplateUsed(response_search_zipcode, "restaurants/browse.html")
+        self.assertTemplateUsed(response_search_restaurant_name, "restaurants/browse.html")
+        self.assertTemplateUsed(response_search_category, "restaurants/browse.html")
+        self.assertTemplateUsed(response_search_address, "restaurants/browse.html")
+        self.assertTemplateUsed(response_search_multicondition, "restaurants/browse.html")
+
+        self.assertTemplateUsed(response_filter_price, "restaurants/browse.html")
+        self.assertTemplateUsed(response_filter_category, "restaurants/browse.html")
+
+
