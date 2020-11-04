@@ -22,6 +22,7 @@ from accessible_restaurant.forms import (
     UserProfileUpdateForm,
     UserUpdateForm,
     RestaurantProfileUpdateForm,
+    ReviewPostForm,
 )
 
 from django.test import TestCase, Client
@@ -139,6 +140,20 @@ class TestForms(TestCase):
         )
         self.assertTrue(form.is_valid())
 
+    def test_WriteReviewForm_is_valid(self):
+        form = ReviewPostForm(
+            data={
+                "rating": 5,
+                "level_entry_rating": 5,
+                "wide_door_rating": 5,
+                "accessible_table_rating": 5,
+                "accessible_restroom_rating": 5,
+                "accessible_path_rating": 5,
+                "review_context": "test review",
+            }
+        )
+        self.assertTrue(form.is_valid())
+
 
 class TestUrls(SimpleTestCase):
     def test_index_url_is_resolved(self):
@@ -220,6 +235,14 @@ class TestUrls(SimpleTestCase):
             resolve(url).func, accessible_restaurant.views.activate_account
         )
 
+    def test_write_review_url_is_resolved(self):
+        url = reverse(
+            "accessible_restaurant:write_review", args=["FaPtColHYcTnZAxtoM33cA"]
+        )
+        self.assertEquals(
+            resolve(url).func, accessible_restaurant.views.write_review_view
+        )
+
 
 class UserSignUpTest(TestCase):
     def setUp(self):
@@ -286,6 +309,9 @@ class TestViews(TestCase):
         )
         self.detail_url = reverse(
             "accessible_restaurant:detail", args=["FaPtColHYcTnZAxtoM33cA"]
+        )
+        self.review_url = reverse(
+            "accessible_restaurant:write_review", args=["FaPtColHYcTnZAxtoM33cA"]
         )
 
     def test_index_view_GET(self):
@@ -366,3 +392,26 @@ class TestViews(TestCase):
         )
         response = self.client.post(self.resprofile_url)
         self.assertEqual(response.status_code, 302)
+
+    def test_write_review_view_GET(self):
+        User.objects.create(username="huanjin", first_name="Huanjin", last_name="Zhang")
+        Restaurant.objects.create(
+            business_id="FaPtColHYcTnZAxtoM33cA",
+            name="Chu Tea",
+            img_url="https://s3-media4.fl.yelpcdn.com/bphoto/05Q6eHDSpXmytCf4JHR7AQ/o.jpg",
+            rating="4.0",
+            latitude="40.668253",
+            longitude="-73.986898",
+            address="471 5th Ave",
+            city="Brooklyn",
+            zip_code="11215",
+            phone="+17187881113",
+            compliant=True,
+            price="$",
+            category1="Bubble Tea",
+            category2="Poke",
+            category3="Juice Bars & Smoothies",
+        )
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "restaurants/detail.html")
