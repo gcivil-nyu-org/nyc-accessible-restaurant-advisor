@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser  # User
 from PIL import Image
@@ -77,7 +79,6 @@ class Restaurant(models.Model):
         default="https://i.pinimg.com/originals/4e/24/f5/4e24f523182e09376bfe8424d556610a.png",
     )
     rating = models.FloatField(blank=True, default=0)
-    price = models.CharField(max_length=5, blank=True)
     latitude = models.DecimalField(
         max_digits=9, decimal_places=6, blank=True, default=0
     )
@@ -90,5 +91,30 @@ class Restaurant(models.Model):
     phone = models.CharField(max_length=32, blank=True)
     compliant = models.BooleanField(default=False)
 
+    price = models.CharField(max_length=5, blank=True)
+    category1 = models.CharField(max_length=128, blank=True)
+    category2 = models.CharField(max_length=128, blank=True)
+    category3 = models.CharField(max_length=128, blank=True)
+
     def __str__(self):
         return f"{self.name}"
+
+
+class Review(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, related_name="review_user"
+    )
+    restaurant = models.ForeignKey(
+        Restaurant, null=True, on_delete=models.CASCADE, related_name="relate_busid"
+    )
+    review_date = models.DateTimeField(default=datetime.now, editable=False)
+    review_context = models.TextField()
+    rating = models.PositiveIntegerField(blank=True, default=0)
+    level_entry_rating = models.PositiveIntegerField(blank=True, default=0)
+    wide_door_rating = models.PositiveIntegerField(blank=True, default=0)
+    accessible_table_rating = models.PositiveIntegerField(blank=True, default=0)
+    accessible_restroom_rating = models.PositiveIntegerField(blank=True, default=0)
+    accessible_path_rating = models.PositiveIntegerField(blank=True, default=0)
+
+    def __str__(self):
+        return f"{self.user} review on {self.restaurant}"

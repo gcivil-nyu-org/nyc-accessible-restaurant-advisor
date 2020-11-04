@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block staticlink %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/review_style.css' %}">
+{% endblock %}
+
+{% block title %} Write a review {% endblock %}
+
+{% block body %}<body class="subpage">{% endblock %}
+
+{% block content %}
+    <div class="wrapper fl">
+        <div class="main">
+            <div class="inner">
+                <div class="row 200%">
+
+            <div class="form fl">
+                <div class="head">
+                <p>Write Review</p>
+            </div>
+                    <form method="GET" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ review_form|crispy }}
+                        <div class="submit-wrap">
+                            <input type="submit" id="submit" name="sb" value="SUBMIT">
+                        </div>
+                    </form>
+            </div></div></div>
+        </div>
+    </div>
+{% endblock content %}
