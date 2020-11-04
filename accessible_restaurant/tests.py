@@ -404,15 +404,6 @@ class TestViews(TestCase):
             "huanjin", "zhanghuanjin97@gmail.com", "test123456"
         )
         self.client.login(username="huanjin", password="test123456")
-        form_data = {
-            "rating": 5,
-            "level_entry_rating": 5,
-            "wide_door_rating": 5,
-            "accessible_table_rating": 5,
-            "accessible_restroom_rating": 5,
-            "accessible_path_rating": 5,
-            "review_context": "test review",
-        }
 
         Restaurant.objects.create(
             business_id="FaPtColHYcTnZAxtoM33cA",
@@ -431,6 +422,42 @@ class TestViews(TestCase):
             category2="Poke",
             category3="Juice Bars & Smoothies",
         )
-        response = self.client.post(self.detail_url, form_data)
+        response = self.client.get(self.review_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "restaurants/detail.html")
+        self.assertTemplateUsed(response, "review/write_review.html")
+
+    # def test_review_form_valid_view_GET(self):
+    #     self.user = User.objects.create_user(
+    #         "huanjin", "zhanghuanjin97@gmail.com", "test123456"
+    #     )
+    #     self.client.login(username="huanjin", password="test123456")
+    #     form_data = {
+    #         "rating": 5,
+    #         "level_entry_rating": 5,
+    #         "wide_door_rating": 5,
+    #         "accessible_table_rating": 5,
+    #         "accessible_restroom_rating": 5,
+    #         "accessible_path_rating": 5,
+    #         "review_context": "test review",
+    #     }
+    #
+    #     Restaurant.objects.create(
+    #         business_id="FaPtColHYcTnZAxtoM33cA",
+    #         name="Chu Tea",
+    #         img_url="https://s3-media4.fl.yelpcdn.com/bphoto/05Q6eHDSpXmytCf4JHR7AQ/o.jpg",
+    #         rating="4.0",
+    #         latitude="40.668253",
+    #         longitude="-73.986898",
+    #         address="471 5th Ave",
+    #         city="Brooklyn",
+    #         zip_code="11215",
+    #         phone="+17187881113",
+    #         compliant=True,
+    #         price="$",
+    #         category1="Bubble Tea",
+    #         category2="Poke",
+    #         category3="Juice Bars & Smoothies",
+    #     )
+    #     response = self.client.post(self.detail_url, form_data)
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, "restaurants/detail.html")
