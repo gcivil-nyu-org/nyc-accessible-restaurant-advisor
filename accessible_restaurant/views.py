@@ -403,8 +403,10 @@ def write_review_view(request, business_id):
             review_form.save()
             messages.success(request, f'{"Your review has been updated!"}')
             return redirect("accessible_restaurant:detail", business_id)
+
     else:
         review_form = ReviewPostForm(request.GET)
+        # restaurant_instance = Restaurant.objects.get(business_id=business_id)
 
     context = {
         "user": request.user,
