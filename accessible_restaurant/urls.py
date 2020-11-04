@@ -51,6 +51,7 @@ urlpatterns = [
     path(
         "restaurants/detail/<business_id>", views.restaurant_detail_view, name="detail"
     ),
+    path("writeareview/<business_id>", views.write_review_view, name="write_review"),
     # # Search restaurant
     # path(
     #     "restaurants/browse/search/<page>", views.search_restaurant_view, name="search"
