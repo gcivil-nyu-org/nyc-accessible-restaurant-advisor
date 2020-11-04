@@ -465,10 +465,18 @@ class TestViews(TestCase):
 
 class SortTest(TestCase):
     def setUp(self):
-        self.sortbydefault_url = reverse("accessible_restaurant:browse", args=["0", "default"])
-        self.sortbylowestprice_url = reverse("accessible_restaurant:browse", args=["0", "lowestprice"])
-        self.sortbyhighestprice_url = reverse("accessible_restaurant:browse", args=["0", "highestprice"])
-        self.sortbynearest_url = reverse("accessible_restaurant:browse", args=["0", "nearest"])
+        self.sortbydefault_url = reverse(
+            "accessible_restaurant:browse", args=["0", "default"]
+        )
+        self.sortbylowestprice_url = reverse(
+            "accessible_restaurant:browse", args=["0", "lowestprice"]
+        )
+        self.sortbyhighestprice_url = reverse(
+            "accessible_restaurant:browse", args=["0", "highestprice"]
+        )
+        self.sortbynearest_url = reverse(
+            "accessible_restaurant:browse", args=["0", "nearest"]
+        )
         return super().setUp()
 
     def test_can_view_page_correctly(self):
