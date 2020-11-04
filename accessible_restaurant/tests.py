@@ -493,6 +493,7 @@ class SortTest(TestCase):
         self.assertTemplateUsed(sortbyhighestprice_response, "restaurants/browse.html")
         self.assertTemplateUsed(sortbynearest_response, "restaurants/browse.html")
 
+
 class SearchTest(TestCase):
     def setUp(self) -> None:
         Restaurant.objects.create(
@@ -531,22 +532,24 @@ class SearchTest(TestCase):
             category3="Vegetarian",
         )
 
-        self.search_url = reverse(
-            "accessible_restaurant:browse", args=["0", "default"]
-        )
-        self.filter_url = reverse(
-            "accessible_restaurant:browse", args=["0", "default"]
-        )
+        self.search_url = reverse("accessible_restaurant:browse", args=["0", "default"])
+        self.filter_url = reverse("accessible_restaurant:browse", args=["0", "default"])
 
     def test_can_view_page_correctly(self):
-        response_search_zipcode = self.client.get(self.search_url, {'query': '11215'})
-        response_search_restaurant_name = self.client.get(self.search_url, {'query': 'Chu Tea'})
-        response_search_category = self.client.get(self.search_url, {'query': 'Bubble Tea'})
-        response_search_address = self.client.get(self.search_url, {'query': '5th Ave'})
-        response_search_multicondition = self.client.get(self.search_url, {'query': '11215, Juice Bars'})
+        response_search_zipcode = self.client.get(self.search_url, {"query": "11215"})
+        response_search_restaurant_name = self.client.get(
+            self.search_url, {"query": "Chu Tea"}
+        )
+        response_search_category = self.client.get(
+            self.search_url, {"query": "Bubble Tea"}
+        )
+        response_search_address = self.client.get(self.search_url, {"query": "5th Ave"})
+        response_search_multicondition = self.client.get(
+            self.search_url, {"query": "11215, Juice Bars"}
+        )
 
-        response_filter_price = self.client.get(self.filter_url, {'price1': '$'})
-        response_filter_category = self.client.get(self.filter_url, {'Salad': 'Salad'})
+        response_filter_price = self.client.get(self.filter_url, {"price1": "$"})
+        response_filter_category = self.client.get(self.filter_url, {"Salad": "Salad"})
 
         self.assertEqual(response_search_zipcode.status_code, 200)
         self.assertEqual(response_search_restaurant_name.status_code, 200)
@@ -558,12 +561,14 @@ class SearchTest(TestCase):
         self.assertEqual(response_filter_category.status_code, 200)
 
         self.assertTemplateUsed(response_search_zipcode, "restaurants/browse.html")
-        self.assertTemplateUsed(response_search_restaurant_name, "restaurants/browse.html")
+        self.assertTemplateUsed(
+            response_search_restaurant_name, "restaurants/browse.html"
+        )
         self.assertTemplateUsed(response_search_category, "restaurants/browse.html")
         self.assertTemplateUsed(response_search_address, "restaurants/browse.html")
-        self.assertTemplateUsed(response_search_multicondition, "restaurants/browse.html")
+        self.assertTemplateUsed(
+            response_search_multicondition, "restaurants/browse.html"
+        )
 
         self.assertTemplateUsed(response_filter_price, "restaurants/browse.html")
         self.assertTemplateUsed(response_filter_category, "restaurants/browse.html")
-
-
