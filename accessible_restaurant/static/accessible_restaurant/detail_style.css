@@ -2168,7 +2168,7 @@
 			margin: 0 0 3em 0;
 			width: 100%;
 		}
-
+			/* Style added */
 			.image.fit img {
 				height: -webkit-fill-available;
 				width: 100%;
