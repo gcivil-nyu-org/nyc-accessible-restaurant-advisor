@@ -2165,12 +2165,12 @@
 		.image.fit {
 			
 			display: block;
-			margin: 0 0 3em 0;
+			margin: 0 0 2em 0;
 			width: 100%;
 		}
 			/* Style added */
 			.image.fit img {
-				height: -webkit-fill-available;
+				/* height: -webkit-fill-available; */
 				width: 100%;
 			}
 
