@@ -22,11 +22,19 @@ from .forms import (
     UserUpdateForm,
     UserProfileUpdateForm,
     RestaurantProfileUpdateForm,
+    ReviewPostForm,
 )
 from django.contrib.auth.decorators import login_required
 
 from .models import User, Restaurant
-from .utils import get_restaurant_list, get_restaurant, get_page_range, get_star_list
+from .utils import (
+    get_restaurant_list,
+    get_filter_restaurant,
+    get_restaurant,
+    get_page_range,
+    get_star_list,
+    get_search_restaurant,
+)
 
 
 # Create your views here.
@@ -156,7 +164,7 @@ def user_profile_view(request):
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
-            print("profile form successfully saved!")
+
             messages.success(request, f'{"Your profile has been updated!"}')
             return redirect("accessible_restaurant:user_profile")
 
@@ -192,9 +200,34 @@ def restaurant_profile_view(request):
     return render(request, "profile/restaurant_profile.html", context)
 
 
-def restaurant_list_view(request, page):
+def restaurant_list_view(request, page, sort_property):
     page = int(page)
-    restaurant_list = get_restaurant_list(page, 10)
+    client_ip = get_client_ip(request)
+    restaurants = Restaurant.objects.all()
+
+    keyword = request.GET.get("query", "")
+    price1 = request.GET.get("price1", "")
+    price2 = request.GET.get("price2", "")
+    price3 = request.GET.get("price3", "")
+    price4 = request.GET.get("price4", "")
+    chinese = request.GET.get("Chinese", "")
+    korean = request.GET.get("Korean", "")
+    salad = request.GET.get("Salad", "")
+    pizza = request.GET.get("Pizza", "")
+
+    filters = {
+        "prices": [price1, price2, price3, price4],
+        "categories": [chinese, korean, salad, pizza],
+    }
+
+    if keyword:
+        restaurants = get_search_restaurant(keyword)
+    restaurants = get_filter_restaurant(filters, restaurants)
+    restaurant_results = get_restaurant_list(
+        page, 10, sort_property, client_ip, restaurants
+    )
+    restaurant_list = restaurant_results["restaurants_list"]
+
     star_list = get_star_list()
     for restaurant in restaurant_list:
         full, half, null = star_list[restaurant["rating"]]
@@ -203,7 +236,7 @@ def restaurant_list_view(request, page):
         restaurant["null"] = null
 
     # Page count
-    total_restaurant = Restaurant.objects.count()
+    total_restaurant = restaurant_results["total_restaurant"]
     total_page = total_restaurant // 10
     if total_restaurant % 10 == 0:
         total_page -= 1
@@ -213,6 +246,8 @@ def restaurant_list_view(request, page):
     page_exceed_error = (
         "page number exceeds maximum page number, please choose valid page"
     )
+
+    postfix = request.GET.urlencode()
     context = {
         "restaurants": restaurant_list,
         "star_list": star_list,
@@ -220,6 +255,17 @@ def restaurant_list_view(request, page):
         "total_page": total_page,
         "page_range": page_range,
         "page_exceed_error": page_exceed_error,
+        "sort_property": sort_property,
+        "keyword": keyword,
+        "postfix": postfix,
+        "price1": price1,
+        "price2": price2,
+        "price3": price3,
+        "price4": price4,
+        "Chinese": chinese,
+        "Korean": korean,
+        "Salad": salad,
+        "Pizza": pizza,
     }
     return render(request, "restaurants/browse.html", context)
 
@@ -243,8 +289,51 @@ def restaurant_detail_view(request, business_id):
 
         restaurant_data = response["restaurant_data"]
         restaurant_reviews = response["restaurant_reviews"]
+        local_restaurant_reviews = response["local_restaurant_reviews"]
+        local_restaurant_data = response["local_restaurant_data"]
+
+        # Accessible Rating
+        (
+            level_entry_rating_full,
+            level_entry_rating_half,
+            level_entry_rating_null,
+        ) = star_list[local_restaurant_data.get("level_entry_rating")]
+        wide_door_rating_full, wide_door_rating_half, wide_door_rating_null = star_list[
+            local_restaurant_data.get("wide_door_rating")
+        ]
+        (
+            accessible_table_rating_full,
+            accessible_table_rating_half,
+            accessible_table_rating_null,
+        ) = star_list[local_restaurant_data.get("accessible_table_rating")]
+        (
+            accessible_restroom_rating_full,
+            accessible_restroom_rating_half,
+            accessible_restroom_rating_null,
+        ) = star_list[local_restaurant_data.get("accessible_restroom_rating")]
+        (
+            accessible_path_rating_full,
+            accessible_path_rating_half,
+            accessible_path_rating_null,
+        ) = star_list[local_restaurant_data.get("accessible_path_rating")]
+
+        # initial
+        lr_full = 0
+        lr_half = 0
+        lr_null = 0
+        username = ""
+        photo = ""
 
         # Rating stars
+        if local_restaurant_reviews != null:
+            for review in local_restaurant_reviews:
+                lr_full, lr_half, lr_null = star_list[float(review["rating"])]
+                review["lfull"] = lr_full
+                review["lhalf"] = lr_half
+                review["lnull"] = lr_null
+                username = review["username"]
+                photo = review["photo"]
+
         for review in restaurant_reviews["reviews"]:
             r_full, r_half, r_null = star_list[float(review["rating"])]
             review["full"] = r_full
@@ -270,10 +359,68 @@ def restaurant_detail_view(request, business_id):
             "restaurant": restaurant,
             "restaurant_data": restaurant_data,
             "restaurant_review": restaurant_reviews,
+            "local_restaurant_review": local_restaurant_reviews,
+            "local_restaurant_data": local_restaurant_data,
             "full": full,
             "half": half,
             "null": null,
+            "lfull": lr_full,
+            "lhalf": lr_half,
+            "lnull": lr_null,
             "hours": hours,
             "is_open_now": is_open_now,
+            "username": username,
+            "photo": photo,
+            "level_entry_rating_full": level_entry_rating_full,
+            "level_entry_rating_half": level_entry_rating_half,
+            "level_entry_rating_null": level_entry_rating_null,
+            "wide_door_rating_full": wide_door_rating_full,
+            "wide_door_rating_half": wide_door_rating_half,
+            "wide_door_rating_null": wide_door_rating_null,
+            "accessible_table_rating_full": accessible_table_rating_full,
+            "accessible_table_rating_half": accessible_table_rating_half,
+            "accessible_table_rating_null": accessible_table_rating_null,
+            "accessible_restroom_rating_full": accessible_restroom_rating_full,
+            "accessible_restroom_rating_half": accessible_restroom_rating_half,
+            "accessible_restroom_rating_null": accessible_restroom_rating_null,
+            "accessible_path_rating_full": accessible_path_rating_full,
+            "accessible_path_rating_half": accessible_path_rating_half,
+            "accessible_path_rating_null": accessible_path_rating_null,
         }
         return render(request, "restaurants/detail.html", context)
+
+
+@login_required
+def write_review_view(request, business_id):
+    if request.method == "GET":
+        review_form = ReviewPostForm(request.GET)
+        restaurant_instance = Restaurant.objects.get(business_id=business_id)
+
+        if review_form.is_valid():
+            temp = review_form.save(commit=False)
+            temp.user = request.user
+            temp.restaurant = restaurant_instance
+            review_form.save()
+            messages.success(request, f'{"Your review has been updated!"}')
+            return redirect("accessible_restaurant:detail", business_id)
+
+    else:
+        review_form = ReviewPostForm(request.GET)
+        # restaurant_instance = Restaurant.objects.get(business_id=business_id)
+
+    context = {
+        "user": request.user,
+        "restaurant": restaurant_instance,
+        "review_form": review_form,
+    }
+    return render(request, "review/write_review.html", context)
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(",")[0]
+    else:
+        ip = request.META.get("REMOTE_ADDR")
+    return ip

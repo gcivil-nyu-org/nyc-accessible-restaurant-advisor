@@ -4,7 +4,7 @@ from . import views
 
 app_name = "accessible_restaurant"
 urlpatterns = [
-    path("home/", views.index_view, name="index"),
+    path("", views.index_view, name="index"),
     path(
         "accounts/login",
         auth_views.LoginView.as_view(template_name="accounts/login.html"),
@@ -14,6 +14,13 @@ urlpatterns = [
         "accounts/logout",
         auth_views.LogoutView.as_view(template_name="index.html"),
         name="logout",
+    ),
+    path(
+        "accounts/password-reset/",
+        auth_views.PasswordResetView.as_view(
+            template_name="accounts/password_reset.html"
+        ),
+        name="password-reset",
     ),
     path("accounts/signup/", views.signup_view, name="signup"),
     path(
@@ -36,8 +43,17 @@ urlpatterns = [
         name="restaurant_profile",
     ),
     # Browse restaurant
-    path("restaurants/browse/<page>", views.restaurant_list_view, name="browse"),
+    path(
+        "restaurants/browse/<page>/<sort_property>/",
+        views.restaurant_list_view,
+        name="browse",
+    ),
     path(
         "restaurants/detail/<business_id>", views.restaurant_detail_view, name="detail"
     ),
+    path("writeareview/<business_id>", views.write_review_view, name="write_review"),
+    # # Search restaurant
+    # path(
+    #     "restaurants/browse/search/<page>", views.search_restaurant_view, name="search"
+    # )
 ]
