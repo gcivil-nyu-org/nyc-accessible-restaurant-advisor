@@ -42,6 +42,10 @@ def index_view(request):
     return render(request, "index.html")
 
 
+def about_view(request):
+    return render(request, "accounts/about.html")
+
+
 def logout_view(request):
     return render(request, "accounts/logout.html")
 
