@@ -119,8 +119,8 @@ def get_restaurant_list(page, size, sort_property, client_ip, restaurants):
             client_position = g.lat_lon(client_ip)
         restaurants = sorted(
             restaurants,
-            key=lambda x: math.sqrt(client_position[0] - float(x.latitude))
-            + math.sqrt(client_position[1] - float(x.longitude)),
+            key=lambda x: (client_position[0] - float(x.latitude)) ** 2
+            + (client_position[1] - float(x.longitude)) ** 2,
             reverse=False,
         )
 
