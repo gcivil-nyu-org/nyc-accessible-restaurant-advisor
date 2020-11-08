@@ -24,6 +24,9 @@ class User_Profile(models.Model):
     city = models.CharField(max_length=64, blank=True)
     zip_code = models.CharField(max_length=16, blank=True)
     state = models.CharField(max_length=32, blank=True)
+    auth_documents = models.FileField(
+        default="documents/pdfs/test.pdf", upload_to="documents/pdfs/"
+    )
 
     def __str__(self):
         return f"{self.user.username} User Profile"

@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse, resolve
 from django.test import SimpleTestCase
 import accessible_restaurant
@@ -32,6 +32,7 @@ from accessible_restaurant.models import (
     User_Profile,
     Restaurant_Profile,
     Restaurant,
+    Review,
 )
 import json
 
@@ -115,6 +116,7 @@ class TestForms(TestCase):
                 "city": "New York",
                 "Zip Code": "11220",
                 "state": "NY",
+                "Authorization Documents": "auth_documents",
             }
         )
         self.assertTrue(form.is_valid())
@@ -302,6 +304,7 @@ class TestViews(TestCase):
         self.activate_url = reverse(
             "accessible_restaurant:activate", args=["uid", "token"]
         )
+
         self.userprofile_url = reverse("accessible_restaurant:user_profile")
         self.resprofile_url = reverse("accessible_restaurant:restaurant_profile")
         self.browse_url = reverse(
@@ -316,7 +319,7 @@ class TestViews(TestCase):
 
     def test_index_view_GET(self):
         response = self.client.get(self.index_url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "index.html")
 
     def test_logout_view_GET(self):
@@ -334,11 +337,11 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, "accounts/emailSent.html")
 
     # def test_activate_view_GET(self):
-    #     User.objects.create(
-    #         username="username",
-    #         first_name="first",
-    #         last_name="last"
-    #     )
+    #     # User.objects.create(
+    #     #     username="username",
+    #     #     first_name="first",
+    #     #     last_name="last"
+    #     # )
     #     response = self.client.get(self.activate_url)
     #     self.assertEqual(response.status_code, 200)
     #     self.assertTemplateUsed(response, "accountss/activate_account.html")
@@ -369,16 +372,30 @@ class TestViews(TestCase):
             "huanjin", "zhanghuanjin97@gmail.com", "test123456"
         )
         # self.client.login(username="huanjin", password="test123456")
-        User_Profile.objects.create(
+        self.user.uprofile = User_Profile.objects.create(
             photo="default.jpg",
             phone="3474223609",
+            auth_documents="documents/pdfs/test.pdf",
             address="35 River Drive South",
             city="Jersey City",
             zip_code="07310",
             state="NJ",
         )
-        response = self.client.post(self.userprofile_url)
+        response = self.client.post(
+            self.userprofile_url,
+            {
+                "photo": "default.jpg",
+                "phone": "3474223609",
+                "auth_documents": "documents/pdfs/test.pdf",
+                "address": "35 River Drive South",
+                "city": "Jersey City",
+                "zip_code": "07310",
+                "state": "NJ",
+            },
+        )
         self.assertEqual(response.status_code, 302)
+        self.assertEquals(self.user.uprofile.phone, "3474223609")
+        # self.assertTemplateUsed(response, "profile/user_profile.html")
 
     def test_res_profile_view_POST(self):
         self.user = User.objects.create_user(
@@ -572,3 +589,102 @@ class SearchTest(TestCase):
 
         self.assertTemplateUsed(response_filter_price, "restaurants/browse.html")
         self.assertTemplateUsed(response_filter_category, "restaurants/browse.html")
+
+
+class TestModels(TestCase):
+    def test_save_restaurant_profile_image_correctly(self):
+        self.user = User.objects.create_user(
+            "huanjin", "zhanghuanjin97@gmail.com", "test123456"
+        )
+        # self.client.login(username="huanjin", password="test123456")
+        self.user.rprofile = Restaurant_Profile.objects.create(
+            restaurant_name="name",
+            photo="default.jpg",
+            phone="3474223609",
+            address="35 River Drive South",
+            city="Jersey City",
+            zip_code="07310",
+            state="NJ",
+            is_open=True,
+        )
+
+        self.assertEquals(self.user.rprofile.photo.height, 300)
+        self.assertEquals(self.user.rprofile.photo.width, 300)
+        self.assertEqual(str(self.user.rprofile), "huanjin Restaurant Profile")
+        # self.assertEquals(self.user.rprofile.photo.path , "\media\default.jpg")
+
+    def test_save_user_profile_image_correctly(self):
+        self.user = User.objects.create_user(
+            "huanjin", "zhanghuanjin97@gmail.com", "test123456"
+        )
+        # self.client.login(username="huanjin", password="test123456")
+        self.user.uprofile = User_Profile.objects.create(
+            photo="default.jpg",
+            phone="3474223609",
+            address="35 River Drive South",
+            city="Jersey City",
+            zip_code="07310",
+            state="NJ",
+        )
+        self.assertEquals(self.user.uprofile.photo.height, 300)
+        self.assertEquals(self.user.uprofile.photo.width, 300)
+
+        self.assertEqual(str(self.user.uprofile), "huanjin User Profile")
+
+    def test_review_model_correctly(self):
+        self.user = User.objects.create_user(
+            "huanjin", "zhanghuanjin97@gmail.com", "test123456"
+        )
+        self.client.login(username="huanjin", password="test123456")
+
+        self.Restaurant = Restaurant.objects.create(
+            business_id="FaPtColHYcTnZAxtoM33cA",
+            name="Chu Tea",
+            img_url="https://s3-media4.fl.yelpcdn.com/bphoto/05Q6eHDSpXmytCf4JHR7AQ/o.jpg",
+            rating="4.0",
+            latitude="40.668253",
+            longitude="-73.986898",
+            address="471 5th Ave",
+            city="Brooklyn",
+            zip_code="11215",
+            phone="+17187881113",
+            compliant=True,
+            price="$",
+            category1="Bubble Tea",
+            category2="Poke",
+            category3="Juice Bars & Smoothies",
+        )
+        self.Review = Review.objects.create(
+            user=self.user,
+            restaurant=self.Restaurant,
+            review_date="2020-05-01",
+            rating=5,
+            level_entry_rating=5,
+            wide_door_rating=5,
+            accessible_table_rating=5,
+            accessible_restroom_rating=5,
+            accessible_path_rating=5,
+            review_context="test review",
+        )
+        self.assertEqual(str(self.Review), "huanjin review on Chu Tea")
+
+    def test_save_restaurant_name_correctly(self):
+        self.Restaurant = Restaurant.objects.create(
+            business_id="De_10VF2CrC2moWaPA81mg",
+            name="Just Salad",
+            img_url="https://s3-media1.fl.yelpcdn.com/bphoto/xX9UzyMKSao3qfsufH9SnA/o.jpg",
+            rating="3.5",
+            latitude="40.669429",
+            longitude="-73.979494",
+            address="252 7th Ave",
+            city="Brooklyn",
+            zip_code="11215",
+            phone="+18666733757",
+            compliant=True,
+            price="$$",
+            category1="Salad",
+            category2="Wraps",
+            category3="Vegetarian",
+        )
+
+        self.assertEqual(str(self.Restaurant), "Just Salad")
