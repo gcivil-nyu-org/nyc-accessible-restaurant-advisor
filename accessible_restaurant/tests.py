@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse, resolve
 from django.test import SimpleTestCase
 import accessible_restaurant
@@ -32,6 +32,7 @@ from accessible_restaurant.models import (
     User_Profile,
     Restaurant_Profile,
     Restaurant,
+    Review,
 )
 import json
 
@@ -115,6 +116,7 @@ class TestForms(TestCase):
                 "city": "New York",
                 "Zip Code": "11220",
                 "state": "NY",
+                "Authorization Documents": "auth_documents",
             }
         )
         self.assertTrue(form.is_valid())
@@ -302,6 +304,7 @@ class TestViews(TestCase):
         self.activate_url = reverse(
             "accessible_restaurant:activate", args=["uid", "token"]
         )
+
         self.userprofile_url = reverse("accessible_restaurant:user_profile")
         self.resprofile_url = reverse("accessible_restaurant:restaurant_profile")
         self.browse_url = reverse(
@@ -316,7 +319,7 @@ class TestViews(TestCase):
 
     def test_index_view_GET(self):
         response = self.client.get(self.index_url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "index.html")
 
     def test_logout_view_GET(self):
@@ -334,11 +337,11 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, "accounts/emailSent.html")
 
     # def test_activate_view_GET(self):
-    #     User.objects.create(
-    #         username="username",
-    #         first_name="first",
-    #         last_name="last"
-    #     )
+    #     # User.objects.create(
+    #     #     username="username",
+    #     #     first_name="first",
+    #     #     last_name="last"
+    #     # )
     #     response = self.client.get(self.activate_url)
     #     self.assertEqual(response.status_code, 200)
     #     self.assertTemplateUsed(response, "accountss/activate_account.html")
@@ -572,3 +575,59 @@ class SearchTest(TestCase):
 
         self.assertTemplateUsed(response_filter_price, "restaurants/browse.html")
         self.assertTemplateUsed(response_filter_category, "restaurants/browse.html")
+
+
+class TestModels(TestCase):
+    def test_save_restaurant_profile_image_correctly(self):
+        self.user = User.objects.create_user(
+            "huanjin", "zhanghuanjin97@gmail.com", "test123456"
+        )
+        # self.client.login(username="huanjin", password="test123456")
+        self.user.rprofile = Restaurant_Profile.objects.create(
+            restaurant_name="name",
+            photo="default.jpg",
+            phone="3474223609",
+            address="35 River Drive South",
+            city="Jersey City",
+            zip_code="07310",
+            state="NJ",
+            is_open=True,
+        )
+
+        self.assertEquals(self.user.rprofile.photo.height, 300)
+        self.assertEquals(self.user.rprofile.photo.width, 300)
+        # self.assertEquals(self.user.rprofile.photo.path , "\media\default.jpg")
+
+    def test_save_user_profile_image_correctly(self):
+        self.user = User.objects.create_user(
+            "huanjin", "zhanghuanjin97@gmail.com", "test123456"
+        )
+        # self.client.login(username="huanjin", password="test123456")
+        self.user.uprofile = User_Profile.objects.create(
+            photo="default.jpg",
+            phone="3474223609",
+            address="35 River Drive South",
+            city="Jersey City",
+            zip_code="07310",
+            state="NJ",
+        )
+        self.assertEquals(self.user.uprofile.photo.height, 300)
+        self.assertEquals(self.user.uprofile.photo.width, 300)
+        # self.assertEquals(self.user.uprofile.photo.path , "Frontend-SE\nyc-accessible-restaurant-advisor\media\default.jpg")
+
+    def test_review_model_correctly(self):
+        self.user = User.objects.create_user(
+            "huanjin", "zhanghuanjin97@gmail.com", "test123456"
+        )
+        # self.client.login(username="huanjin", password="test123456")
+        self.user.uprofile = User_Profile.objects.create(
+            photo="default.jpg",
+            auth_documents="documents/pdfs/test.pdf",
+            phone="3474223609",
+            address="35 River Drive South",
+            city="Jersey City",
+            zip_code="07310",
+            state="NJ",
+        )
+        self.assertEquals(self.user.uprofile.photo.height, 300)
+        self.assertEquals(self.user.uprofile.photo.width, 300)
