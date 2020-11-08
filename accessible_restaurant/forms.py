@@ -61,10 +61,9 @@ class UserProfileUpdateForm(forms.ModelForm):
             "city",
             "zip_code",
             "state",
+            "auth_documents",
         ]
-        labels = {
-            "zip_code": "Zip Code",
-        }
+        labels = {"zip_code": "Zip Code", "auth_documents": "Authorization Documents"}
 
 
 class RestaurantProfileUpdateForm(forms.ModelForm):
