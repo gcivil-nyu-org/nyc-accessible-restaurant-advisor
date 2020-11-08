@@ -372,16 +372,30 @@ class TestViews(TestCase):
             "huanjin", "zhanghuanjin97@gmail.com", "test123456"
         )
         # self.client.login(username="huanjin", password="test123456")
-        User_Profile.objects.create(
+        self.user.uprofile = User_Profile.objects.create(
             photo="default.jpg",
             phone="3474223609",
+            auth_documents="documents/pdfs/test.pdf",
             address="35 River Drive South",
             city="Jersey City",
             zip_code="07310",
             state="NJ",
         )
-        response = self.client.post(self.userprofile_url)
+        response = self.client.post(
+            self.userprofile_url,
+            {
+                "photo": "default.jpg",
+                "phone": "3474223609",
+                "auth_documents": "documents/pdfs/test.pdf",
+                "address": "35 River Drive South",
+                "city": "Jersey City",
+                "zip_code": "07310",
+                "state": "NJ",
+            },
+        )
         self.assertEqual(response.status_code, 302)
+        self.assertEquals(self.user.uprofile.phone, "3474223609")
+        # self.assertTemplateUsed(response, "profile/user_profile.html")
 
     def test_res_profile_view_POST(self):
         self.user = User.objects.create_user(
@@ -596,6 +610,7 @@ class TestModels(TestCase):
 
         self.assertEquals(self.user.rprofile.photo.height, 300)
         self.assertEquals(self.user.rprofile.photo.width, 300)
+        self.assertEqual(str(self.user.rprofile), "huanjin Restaurant Profile")
         # self.assertEquals(self.user.rprofile.photo.path , "\media\default.jpg")
 
     def test_save_user_profile_image_correctly(self):
@@ -613,21 +628,63 @@ class TestModels(TestCase):
         )
         self.assertEquals(self.user.uprofile.photo.height, 300)
         self.assertEquals(self.user.uprofile.photo.width, 300)
-        # self.assertEquals(self.user.uprofile.photo.path , "Frontend-SE\nyc-accessible-restaurant-advisor\media\default.jpg")
+
+        self.assertEqual(str(self.user.uprofile), "huanjin User Profile")
 
     def test_review_model_correctly(self):
         self.user = User.objects.create_user(
             "huanjin", "zhanghuanjin97@gmail.com", "test123456"
         )
-        # self.client.login(username="huanjin", password="test123456")
-        self.user.uprofile = User_Profile.objects.create(
-            photo="default.jpg",
-            auth_documents="documents/pdfs/test.pdf",
-            phone="3474223609",
-            address="35 River Drive South",
-            city="Jersey City",
-            zip_code="07310",
-            state="NJ",
+        self.client.login(username="huanjin", password="test123456")
+
+        self.Restaurant = Restaurant.objects.create(
+            business_id="FaPtColHYcTnZAxtoM33cA",
+            name="Chu Tea",
+            img_url="https://s3-media4.fl.yelpcdn.com/bphoto/05Q6eHDSpXmytCf4JHR7AQ/o.jpg",
+            rating="4.0",
+            latitude="40.668253",
+            longitude="-73.986898",
+            address="471 5th Ave",
+            city="Brooklyn",
+            zip_code="11215",
+            phone="+17187881113",
+            compliant=True,
+            price="$",
+            category1="Bubble Tea",
+            category2="Poke",
+            category3="Juice Bars & Smoothies",
         )
-        self.assertEquals(self.user.uprofile.photo.height, 300)
-        self.assertEquals(self.user.uprofile.photo.width, 300)
+        self.Review = Review.objects.create(
+            user=self.user,
+            restaurant=self.Restaurant,
+            review_date="2020-05-01",
+            rating=5,
+            level_entry_rating=5,
+            wide_door_rating=5,
+            accessible_table_rating=5,
+            accessible_restroom_rating=5,
+            accessible_path_rating=5,
+            review_context="test review",
+        )
+        self.assertEqual(str(self.Review), "huanjin review on Chu Tea")
+
+    def test_save_restaurant_name_correctly(self):
+        self.Restaurant = Restaurant.objects.create(
+            business_id="De_10VF2CrC2moWaPA81mg",
+            name="Just Salad",
+            img_url="https://s3-media1.fl.yelpcdn.com/bphoto/xX9UzyMKSao3qfsufH9SnA/o.jpg",
+            rating="3.5",
+            latitude="40.669429",
+            longitude="-73.979494",
+            address="252 7th Ave",
+            city="Brooklyn",
+            zip_code="11215",
+            phone="+18666733757",
+            compliant=True,
+            price="$$",
+            category1="Salad",
+            category2="Wraps",
+            category3="Vegetarian",
+        )
+
+        self.assertEqual(str(self.Restaurant), "Just Salad")
