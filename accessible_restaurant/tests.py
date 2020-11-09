@@ -116,7 +116,7 @@ class TestForms(TestCase):
                 "city": "New York",
                 "Zip Code": "11220",
                 "state": "NY",
-                "Authorization Documents": "auth_documents",
+                "auth_status": "uncertified",
             }
         )
         self.assertTrue(form.is_valid())
@@ -375,7 +375,6 @@ class TestViews(TestCase):
         self.user.uprofile = User_Profile.objects.create(
             photo="default.jpg",
             phone="3474223609",
-            auth_documents="documents/pdfs/test.pdf",
             address="35 River Drive South",
             city="Jersey City",
             zip_code="07310",
@@ -386,7 +385,6 @@ class TestViews(TestCase):
             {
                 "photo": "default.jpg",
                 "phone": "3474223609",
-                "auth_documents": "documents/pdfs/test.pdf",
                 "address": "35 River Drive South",
                 "city": "Jersey City",
                 "zip_code": "07310",
@@ -688,3 +686,19 @@ class TestModels(TestCase):
         )
 
         self.assertEqual(str(self.Restaurant), "Just Salad")
+
+class TestManageCertificate(TestCase):
+    def setUp(self):
+        self.management_url = reverse(
+            "accessible_restaurant:authenticate"
+        )
+        return super().setUp()
+
+    def test_can_view_management_page_correctly(self):
+        self.user = User.objects.create_superuser(
+            "admin", "shonna.x.tang@gmail.com", "accessible"
+        )
+        self.client.login(username="admin", password="accessible")
+        management_response = self.client.get(self.management_url)
+        self.assertEqual(management_response.status_code, 200)
+        self.assertTemplateUsed(management_response, "admin/manage.html")

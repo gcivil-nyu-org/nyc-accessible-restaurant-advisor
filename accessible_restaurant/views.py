@@ -164,30 +164,32 @@ class RestaurantSignUpView(CreateView):
 @login_required
 def user_profile_view(request):
     if request.method == "POST":
-        if 'submit-certificate' in request.POST:
-            auth_form = UserCertUpdateForm(
-                request.POST, request.FILES
-            )
+        if "submit-certificate" in request.POST:
+            auth_form = UserCertUpdateForm(request.POST, request.FILES)
             if auth_form.is_valid():
                 tmp_auth = auth_form.save(commit=False)
                 tmp_auth.user = request.user
                 tmp_auth.auth_status = "pending"
-                prev_auth_len = ApprovalPendingUsers.objects.filter(user=request.user).count()
+                prev_auth_len = ApprovalPendingUsers.objects.filter(
+                    user=request.user
+                ).count()
                 if prev_auth_len > 0:
                     prev_auth = ApprovalPendingUsers.objects.get(user=request.user)
                     prev_auth.auth_documents.delete()
                     prev_auth.delete()
                 auth_form.save()
                 p_instance = User_Profile.objects.get(user=request.user)
-                p_instance.auth_status = 'pending'
+                p_instance.auth_status = "pending"
                 p_instance.save()
-                messages.success(request, f'{"Your certificate has been sent to administrator!"}')
+                messages.success(
+                    request, f'{"Your certificate has been sent to administrator!"}'
+                )
                 return redirect("accessible_restaurant:user_profile")
             else:
                 u_form = UserUpdateForm(instance=request.user)
                 p_form = UserProfileUpdateForm(instance=request.user.uprofile)
 
-        elif 'submit-info' in request.POST:
+        elif "submit-info" in request.POST:
             u_form = UserUpdateForm(request.POST, instance=request.user)
             p_form = UserProfileUpdateForm(
                 request.POST, request.FILES, instance=request.user.uprofile
@@ -216,13 +218,18 @@ def user_profile_view(request):
         else:
             auth_form = UserCertUpdateForm()
 
-    action = request.GET.get('action')
-    if action == 'Edit Profile':
-        profile_action = 'edit'
+    action = request.GET.get("action")
+    if action == "Edit Profile":
+        profile_action = "edit"
     else:
-        profile_action = 'view'
+        profile_action = "view"
 
-    context = {"user_form": u_form, "profile_form": p_form, "auth_form": auth_form, "profile_action": profile_action}
+    context = {
+        "user_form": u_form,
+        "profile_form": p_form,
+        "auth_form": auth_form,
+        "profile_action": profile_action,
+    }
     return render(request, "profile/user_profile.html", context)
 
 
@@ -230,21 +237,21 @@ def user_profile_view(request):
 def authentication_view(request):
     if request.method == "POST":
         auth_form = UserCertVerifyForm(request.POST)
-        user_id = request.POST.get('user_id')
+        user_id = request.POST.get("user_id")
         if auth_form.is_valid():
-            auth_status = auth_form.cleaned_data['auth_status']
-            if auth_status != 'pending' and auth_status != 'N/A':
+            auth_status = auth_form.cleaned_data["auth_status"]
+            if auth_status != "pending" and auth_status != "N/A":
                 p_instance = User_Profile.objects.get(user=user_id)
-                if auth_status == 'approve':
-                    p_instance.auth_status = 'certified'
+                if auth_status == "approve":
+                    p_instance.auth_status = "certified"
                 else:
-                    p_instance.auth_status = 'uncertified'
+                    p_instance.auth_status = "uncertified"
                 p_instance.save()
                 curr_user = ApprovalPendingUsers.objects.get(user=user_id)
                 # delete document from the database
                 curr_user.auth_documents.delete()
                 curr_user.delete()
-                if auth_status == 'approve':
+                if auth_status == "approve":
                     messages.success(request, f'{"Approved!"}')
                 else:
                     messages.success(request, f'{"Disapproved!"}')
@@ -253,9 +260,7 @@ def authentication_view(request):
     certificate_list = ApprovalPendingUsers.objects.order_by("time_created")
     form_list = []
     for c in certificate_list:
-        curr = UserCertVerifyForm(
-            instance=c.user.auth
-        )
+        curr = UserCertVerifyForm(instance=c.user.auth)
         form_list.append(curr)
     context = {
         "certificate_list": form_list,

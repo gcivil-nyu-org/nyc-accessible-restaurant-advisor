@@ -25,11 +25,13 @@ class User_Profile(models.Model):
     zip_code = models.CharField(max_length=16, blank=True)
     state = models.CharField(max_length=32, blank=True)
     AUTH_STATUS_CHOICES = [
-        ('certified', 'Certified'),
-        ('pending', 'Pending'),
-        ('uncertified', 'Uncertified'),
+        ("certified", "Certified"),
+        ("pending", "Pending"),
+        ("uncertified", "Uncertified"),
     ]
-    auth_status = models.CharField(max_length=16, choices=AUTH_STATUS_CHOICES, default='uncertified')
+    auth_status = models.CharField(
+        max_length=16, choices=AUTH_STATUS_CHOICES, default="uncertified"
+    )
 
     def __str__(self):
         return f"{self.user.username} User Profile"
@@ -50,15 +52,15 @@ class ApprovalPendingUsers(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, null=True, related_name="auth"
     )
-    auth_documents = models.FileField(
-        blank=False, upload_to="documents/pdfs/"
-    )
+    auth_documents = models.FileField(blank=False, upload_to="documents/pdfs/")
     AUTH_STATUS_CHOICES = [
-        ('approve', 'Approve'),
-        ('pending', 'Pending'),
-        ('disapprove', 'Disapprove'),
+        ("approve", "Approve"),
+        ("pending", "Pending"),
+        ("disapprove", "Disapprove"),
     ]
-    auth_status = models.CharField(max_length=16, choices=AUTH_STATUS_CHOICES, default='N/A')
+    auth_status = models.CharField(
+        max_length=16, choices=AUTH_STATUS_CHOICES, default="N/A"
+    )
     time_created = models.DateTimeField(auto_now_add=True)
 
 
