@@ -16,8 +16,8 @@ admin.site.register(Review)
 class ViewAdmin(ImportExportModelAdmin):
     pass
 
+
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('user', 'review', 'time', 'text')
-    list_filter = ('time')
-    search_fields = ('user', 'review', 'text')
+    list_display = ("user", "review", "time", "text")
+    search_fields = ("user", "review", "text")

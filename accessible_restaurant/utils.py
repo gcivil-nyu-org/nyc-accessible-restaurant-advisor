@@ -78,10 +78,10 @@ def get_local_restaurant_data(business_id):
 
 
 def get_local_restaurant_reviews(business_id):
-    '''
+    """
     @ Return: Dictionary of local reviews of specific restaurant
         Each review also contain a comment list
-    '''
+    """
     if not business_id:
         return None
     target_restaurant = Restaurant.objects.get(business_id=business_id)

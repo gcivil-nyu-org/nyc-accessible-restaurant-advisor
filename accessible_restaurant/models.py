@@ -127,9 +127,7 @@ class Review(models.Model):
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="comments"
-    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
     review = models.ForeignKey(
         Review, on_delete=models.CASCADE, null=True, related_name="comments"
     )
@@ -137,7 +135,9 @@ class Comment(models.Model):
     time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['time']
+        ordering = ["time"]
 
     def __str__(self):
-        return 'Comment {} by {} '.format(self.review.review_context, self.user.username)
+        return "Comment {} by {} ".format(
+            self.review.review_context, self.user.username
+        )

@@ -442,9 +442,8 @@ def add_comment_view(request, business_id, review_id):
     context = {
         "comment_form": comment_form,
     }
-    #TODO: add a page for writing comments or embed the comment form under each review
+    # TODO: add a page for writing comments or embed the comment form under each review
     return render(request, "review/write_review.html", context)
-
 
 
 def get_client_ip(request):
