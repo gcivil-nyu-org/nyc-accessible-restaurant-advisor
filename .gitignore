@@ -133,3 +133,6 @@ db.sqlite3
 # Specific profile images
 media/user_profile_pics/*
 media/restaurant_profile_pics/*
+
+# ignore migrations file
+accessible_restaurant/migrations/0*.py

@@ -24,8 +24,13 @@ class User_Profile(models.Model):
     city = models.CharField(max_length=64, blank=True)
     zip_code = models.CharField(max_length=16, blank=True)
     state = models.CharField(max_length=32, blank=True)
-    auth_documents = models.FileField(
-        default="documents/pdfs/test.pdf", upload_to="documents/pdfs/"
+    AUTH_STATUS_CHOICES = [
+        ("certified", "Certified"),
+        ("pending", "Pending"),
+        ("uncertified", "Uncertified"),
+    ]
+    auth_status = models.CharField(
+        max_length=16, choices=AUTH_STATUS_CHOICES, default="uncertified"
     )
 
     def __str__(self):
@@ -41,6 +46,22 @@ class User_Profile(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.photo.path)
+
+
+class ApprovalPendingUsers(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, null=True, related_name="auth"
+    )
+    auth_documents = models.FileField(blank=False, upload_to="documents/pdfs/")
+    AUTH_STATUS_CHOICES = [
+        ("approve", "Approve"),
+        ("pending", "Pending"),
+        ("disapprove", "Disapprove"),
+    ]
+    auth_status = models.CharField(
+        max_length=16, choices=AUTH_STATUS_CHOICES, default="N/A"
+    )
+    time_created = models.DateTimeField(auto_now_add=True)
 
 
 class Restaurant_Profile(models.Model):
