@@ -1,6 +1,10 @@
 from django.conf import settings
 
+
 from .models import Restaurant, Review, User_Profile, User
+
+from .models import Restaurant, Review, User_Profile, Comment
+
 from django.db.models import Q
 from .models import Restaurant
 import requests
@@ -78,6 +82,10 @@ def get_local_restaurant_data(business_id):
 
 
 def get_local_restaurant_reviews(business_id):
+    """
+    @ Return: Dictionary of local reviews of specific restaurant
+        Each review also contain a comment list
+    """
     if not business_id:
         return None
     target_restaurant = Restaurant.objects.get(business_id=business_id)
@@ -85,10 +93,12 @@ def get_local_restaurant_reviews(business_id):
     response = []
     for review in reviews:
         user = review.user
+        comments = review.comments.all()
         profile = User_Profile.objects.get(user=user)
         photo = profile.photo
         review.username = user.username
         review.photo = photo
+        review.comments_set = comments
         response.append(review.__dict__)
     return response
 

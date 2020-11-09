@@ -2,7 +2,13 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 
-from accessible_restaurant.models import User, User_Profile, Restaurant_Profile, Review
+from accessible_restaurant.models import (
+    User,
+    User_Profile,
+    Restaurant_Profile,
+    Review,
+    Comment,
+)
 from django.utils.safestring import mark_safe
 
 
@@ -133,4 +139,13 @@ class ReviewPostForm(forms.ModelForm):
             "accessible_table_rating": forms.RadioSelect,
             "accessible_restroom_rating": forms.RadioSelect,
             "accessible_path_rating": forms.RadioSelect,
+        }
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["text"]
+        labels = {
+            "text": "Comments",
         }
