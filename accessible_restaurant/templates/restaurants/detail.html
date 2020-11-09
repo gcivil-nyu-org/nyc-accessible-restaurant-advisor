@@ -154,7 +154,9 @@
 									<span class="image fit"><img src="{{ review.photo.url }}" alt="" /></span>
 								</div>
 								<div class="row">
-									<h4>{{ review.username }}</h4>
+                                    <a href = '{% url "accessible_restaurant:public_facing"  user.id%}'>
+                                        <h4>{{ review.username }}</h4>
+                                    </a>
 								</div>
 							</div>
 							<div class="9u 12u$(medium)">

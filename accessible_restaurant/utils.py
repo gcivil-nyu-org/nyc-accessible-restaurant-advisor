@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from .models import Restaurant, Review, User_Profile
+from .models import Restaurant, Review, User_Profile, User
 from django.db.models import Q
 from .models import Restaurant
 import requests
@@ -246,3 +246,36 @@ def get_filter_restaurant(filters, restaurants):
             | Q(category3__icontains=pizza)
         )
     return restaurants
+
+
+def get_public_user_detail(user):
+    if not user:
+        return None
+    user_instance = User.objects.get(pk=user)
+    response = {
+        "username": user_instance.username,
+        "email": user_instance.email,
+        "first_name": user_instance.first_name,
+        "last_name": user_instance.last_name,
+        "address": user_instance.uprofile.address,
+        "phone": user_instance.uprofile.phone,
+        "zip_code": user_instance.uprofile.zip_code,
+        "state": user_instance.uprofile.state,
+        "city": user_instance.uprofile.city,
+        "photo": user_instance.uprofile.photo,
+    }
+    return response
+
+
+def get_user_reviews(user):
+    if not user:
+        return None
+    all_reviews = Review.objects.filter(user=user)
+    response = []
+    for review in all_reviews:
+        restaurant = review.restaurant
+        review.business_id = restaurant.business_id
+        review.res_name = restaurant.name
+        review.res_url = restaurant.img_url
+        response.append(review.__dict__)
+    return response
