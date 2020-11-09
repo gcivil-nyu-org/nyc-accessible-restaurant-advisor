@@ -1,15 +1,57 @@
+{% extends "base.html" %}
 {% load crispy_forms_tags %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    {% for l in certificate_list %}
-        {% csrf_token %}
-        {{ l|crispy }}
-    <hr />
-    {% endfor %}
-</body>
-</html>
+{% block staticlink %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/manage_style.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+{% endblock %}
+
+{% block title %} Certificate Management {% endblock %}
+
+{% block body %}<body class="subpage">{% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-100">
+     <div class="row">
+         <div class="col-md-12">
+             <div class="card mb-3">
+                 <div class="card-header pr-0 pl-0">
+                     <div class="row no-gutters align-items-center w-100">
+                         <div class="col font-weight-bold pl-3">Username</div>
+                         <div class="d-none d-md-block col-6 text-muted">
+                             <div class="row no-gutters align-items-center">
+                                 <div class="col-6">Certificate</div>
+<!--                                 <div class="col-3">Replies</div>-->
+                                 <div class="col-6">Actions</div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                 {% for user in certificate_list %}
+                     <div class="card-body py-3">
+                         <div class="row no-gutters align-items-center">
+                             <div class="col"><a class="text-big font-weight-semibold" data-abc="true">{{ user.username }}</a></div>
+                             <div class="d-none d-md-block col-6">
+                                 <div class="row no-gutters align-items-center">
+                                     <div class="col-3">120</div>
+                                     <div class="col-3">14</div>
+                                     <div class="media col-6 align-items-center"> <img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1574583246/AAA/2.jpg" alt="" class="d-block ui-w-30 rounded-circle">
+                                         <div class="media-body flex-truncate ml-2"> <a href="javascript:void(0)" class="d-block text-truncate" data-abc="true">Thankyou for your help. appreciate your solution</a>
+                                             <div class="text-muted small text-truncate">2d ago &nbsp;·&nbsp; <a href="javascript:void(0)" class="text-muted" data-abc="true">William Smith</a></div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                     <hr class="m-0">
+                 {% endfor %}
+             </div>
+         </div>
+     </div>
+ </div>
+{% endblock %}

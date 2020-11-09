@@ -181,6 +181,7 @@ def user_profile_view(request):
             # return redirect("accessible_restaurant:user_profile")
         if u_form.is_valid():
             u_form.save()
+            messages.success(request, f'{"Your basic info has been updated!"}')
 
         if p_form.is_valid():
             p_form.save()
