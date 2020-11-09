@@ -8,6 +8,7 @@ from accessible_restaurant.models import (
     Restaurant_Profile,
     Review,
     ApprovalPendingUsers,
+    Comment,
 )
 from django.utils.safestring import mark_safe
 
@@ -161,4 +162,13 @@ class ReviewPostForm(forms.ModelForm):
             "accessible_table_rating": forms.RadioSelect,
             "accessible_restroom_rating": forms.RadioSelect,
             "accessible_path_rating": forms.RadioSelect,
+        }
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["text"]
+        labels = {
+            "text": "Comments",
         }

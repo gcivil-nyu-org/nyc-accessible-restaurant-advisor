@@ -95,6 +95,9 @@ class Restaurant_Profile(models.Model):
 
 
 class Restaurant(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, blank=True, related_name="owner"
+    )
     business_id = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=80)
     img_url = models.URLField(
@@ -142,3 +145,20 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.user} review on {self.restaurant}"
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
+    review = models.ForeignKey(
+        Review, on_delete=models.CASCADE, null=True, related_name="comments"
+    )
+    text = models.CharField(max_length=256)
+    time = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["time"]
+
+    def __str__(self):
+        return "Comment {} by {} ".format(
+            self.review.review_context, self.user.username
+        )

@@ -25,11 +25,12 @@ from .forms import (
     ReviewPostForm,
     UserCertUpdateForm,
     UserCertVerifyForm,
+    CommentForm,
 )
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 
-from .models import User, Restaurant, ApprovalPendingUsers, User_Profile
+from .models import User, Restaurant, Review, ApprovalPendingUsers, User_Profile
 from .utils import (
     get_restaurant_list,
     get_filter_restaurant,
@@ -505,6 +506,31 @@ def write_review_view(request, business_id):
         "restaurant": restaurant_instance,
         "review_form": review_form,
     }
+    return render(request, "review/write_review.html", context)
+
+
+@login_required
+def add_comment_view(request, business_id, review_id):
+    if request.method == "POST":
+        comment_form = CommentForm(request.POST)
+        review = Review.objects.get(id=review_id)
+        user = request.user
+
+        if comment_form.is_valid():
+            temp_form = comment_form.save(commit=False)
+            temp_form.user = user
+            temp_form.review = review
+            temp_form.save()
+            messages.success(request, f'{"Your comment is successfully made!"}')
+            return redirect("accessible_restaurant:detail", business_id)
+
+    else:
+        comment_form = CommentForm()
+
+    context = {
+        "comment_form": comment_form,
+    }
+    # TODO: add a page for writing comments or embed the comment form under each review
     return render(request, "review/write_review.html", context)
 
 

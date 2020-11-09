@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load leaflet_tags %}
+
 {% block staticlink %}
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/detail_style.css' %}">
@@ -40,6 +42,8 @@
 						<ul class="actions">
 							<li><a href="{% url 'accessible_restaurant:write_review' restaurant.business_id %}" class="button special"><i class="far fa-edit"></i>Write a review</a></li>
 						</ul>
+							{% leaflet_js %}
+   							{% leaflet_css %}
 					</header>
 
 					<hr />
@@ -177,6 +181,8 @@
 								</div>
 							</div>
 						</div>
+
+
 					{% endfor %}
 
 					{% for review in restaurant_review.reviews %}
@@ -231,6 +237,24 @@
 					<ul class="alt">
 						<li><i class="icon fas fa-phone-square-alt"></i>{{ restaurant_data.display_phone }}</li>
 						<li><i class="icon fas fa-map-marker-alt"></i>{{ restaurant_data.location.address1 }}, {{ restaurant_data.location.city }}, {{ restaurant_data.location.state }} {{ restaurant_data.location.zip_code }}</li>
+					</ul>
+					<h2>Business Location</h2>
+					<ul class="alt">
+					<script type="text/javascript">
+					function map_init(map, options) {
+					    // get point lat and lon
+					    var lat = "{{ restaurant_data.coordinates.latitude }}";
+					    var lon = "{{ restaurant_data.coordinates.longitude }}";
+					    var mapboxUrl = 'https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
+						var accessToken = 'pk.eyJ1IjoicnJyb3NzeTMxMiIsImEiOiJja2gwMjkxZ2swNjh2MnltaGN3eW54Zm9mIn0.75YK7P3nQxVJhbYwX8cwNw';
+					    // zoom to point & add it to map
+					    map.setView([lat, lon], 13);
+					    L.marker([lat, lon]).addTo(map);
+					    L.tileLayer(mapboxUrl, {id: 'outdoors-v11',
+					    	attribution: '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>', maxZoom: 20, accessToken: accessToken}).addTo(map);
+
+					}</script>
+					{% leaflet_map "mymap" callback="map_init" %}
 					</ul>
 					<h2>Pictures</h2>
 						<!-- Slideshow -->

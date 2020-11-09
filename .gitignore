@@ -135,4 +135,4 @@ media/user_profile_pics/*
 media/restaurant_profile_pics/*
 
 # ignore migrations file
-accessible_restaurant/migrations/0*
+accessible_restaurant/migrations/0*.py
