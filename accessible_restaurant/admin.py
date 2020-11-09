@@ -9,7 +9,6 @@ admin.site.register(User)
 admin.site.register(User_Profile)
 admin.site.register(Restaurant_Profile)
 admin.site.register(Review)
-admin.site.register(Comment)
 # admin.site.register(Restaurant)
 
 
