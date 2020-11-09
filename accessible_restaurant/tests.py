@@ -687,11 +687,10 @@ class TestModels(TestCase):
 
         self.assertEqual(str(self.Restaurant), "Just Salad")
 
+
 class TestManageCertificate(TestCase):
     def setUp(self):
-        self.management_url = reverse(
-            "accessible_restaurant:authenticate"
-        )
+        self.management_url = reverse("accessible_restaurant:authenticate")
         return super().setUp()
 
     def test_can_view_management_page_correctly(self):
