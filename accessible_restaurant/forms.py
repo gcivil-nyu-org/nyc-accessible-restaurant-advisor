@@ -76,6 +76,15 @@ class UserCertUpdateForm(forms.ModelForm):
         labels = {"auth_documents": "Authentication Documents", "auth_status": "Authentication Status"}
 
 
+class UserCertVerifyForm(forms.ModelForm):
+    class Meta:
+        model = ApprovalPendingUsers
+        fields = [
+            "auth_status",
+        ]
+        labels = {"auth_status": "Authentication Status"}
+
+
 class RestaurantProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Restaurant_Profile

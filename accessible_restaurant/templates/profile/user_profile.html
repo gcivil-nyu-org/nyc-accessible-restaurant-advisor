@@ -55,15 +55,14 @@
 <!--        </div>-->
 <!--    </div>-->
     <div class="container emp-profile">
-<!--        <form method="get">-->
             <div class="row">
                 <div class="col-md-4">
                     <div class="profile-img">
                         <img src="{{ user.uprofile.photo.url }}" alt=""/>
-                        <div class="file btn btn-lg btn-primary">
-                            Change Photo
+<!--                        <div class="file btn btn-lg btn-primary">-->
+<!--                            Change Photo-->
 <!--                            <input type="file" name="file"/>-->
-                        </div>
+<!--                        </div>-->
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -117,6 +116,20 @@
             </div>
             <div class="row">
                 <div class="col-md-4">
+                    {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
                 <div class="col-md-8">
                     <div class="tab-content profile-tab" id="myTabContent">
@@ -232,7 +245,6 @@
                     </div>
                 </div>
             </div>
-<!--        </form>-->
     </div>
 {% endblock content %}
 

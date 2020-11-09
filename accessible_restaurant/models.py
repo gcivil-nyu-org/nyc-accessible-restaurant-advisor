@@ -46,6 +46,22 @@ class User_Profile(models.Model):
             img.save(self.photo.path)
 
 
+class ApprovalPendingUsers(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, null=True, related_name="auth"
+    )
+    auth_documents = models.FileField(
+        blank=False, upload_to="documents/pdfs/"
+    )
+    AUTH_STATUS_CHOICES = [
+        ('approve', 'Approve'),
+        ('pending', 'Pending'),
+        ('disapprove', 'Disapprove'),
+    ]
+    auth_status = models.CharField(max_length=16, choices=AUTH_STATUS_CHOICES, default='N/A')
+    time_created = models.DateTimeField(auto_now_add=True)
+
+
 class Restaurant_Profile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, null=True, related_name="rprofile"
@@ -124,19 +140,3 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.user} review on {self.restaurant}"
-
-
-class ApprovalPendingUsers(models.Model):
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, null=True, related_name="auth"
-    )
-    auth_documents = models.FileField(
-        blank=False, upload_to="documents/pdfs/"
-    )
-    AUTH_STATUS_CHOICES = [
-        ('approve', 'Approve'),
-        ('pending', 'Pending'),
-        ('disapprove', 'Disapprove'),
-    ]
-    auth_status = models.CharField(max_length=16, choices=AUTH_STATUS_CHOICES, default='pending')
-    time_created = models.DateTimeField(auto_now_add=True)

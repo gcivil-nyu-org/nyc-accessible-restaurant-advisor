@@ -9,17 +9,13 @@ body {
     background-color: #eef1f3
 }
 
-.container-fluid {
-    display: flex;
-    justify-content: center;
-}
+/*.container-fluid {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*}*/
 
 .mt-100 {
     margin-top: 100px;
-}
-
-.row {
-    width: 70%;
 }
 
 .card {

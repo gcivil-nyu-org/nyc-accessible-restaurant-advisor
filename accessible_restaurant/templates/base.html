@@ -24,6 +24,8 @@
                         <a href="{% url 'accessible_restaurant:user_profile' %}?action=View+Profile">Profile</a>
                     {% elif user.is_restaurant %}
                         <a href="{% url 'accessible_restaurant:restaurant_profile' %}">Profile</a>
+                    {% elif user.is_staff %}
+                        <a href="{% url 'accessible_restaurant:authenticate' %}">Manage</a>
                     {% endif %}
                     <a href="{% url 'accessible_restaurant:logout' %}">Logout</a>
                 {% else %}
