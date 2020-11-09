@@ -22,32 +22,40 @@
                  <div class="card-header pr-0 pl-0">
                      <div class="row no-gutters align-items-center w-100">
                          <div class="col font-weight-bold pl-3">Username</div>
-                         <div class="d-none d-md-block col-6 text-muted">
+                         <div class="d-none d-md-block col-9 text-muted">
                              <div class="row no-gutters align-items-center">
                                  <div class="col-6">Certificate</div>
-<!--                                 <div class="col-3">Replies</div>-->
-                                 <div class="col-6">Actions</div>
+                                 <div class="col-4">Status</div>
+                                 <div class="col-2">Actions</div>
                              </div>
                          </div>
                      </div>
                  </div>
-                 {% for user in certificate_list %}
-                     <div class="card-body py-3">
-                         <div class="row no-gutters align-items-center">
-                             <div class="col"><a class="text-big font-weight-semibold" data-abc="true">{{ user.username }}</a></div>
-                             <div class="d-none d-md-block col-6">
-                                 <div class="row no-gutters align-items-center">
-                                     <div class="col-3">120</div>
-                                     <div class="col-3">14</div>
-                                     <div class="media col-6 align-items-center"> <img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1574583246/AAA/2.jpg" alt="" class="d-block ui-w-30 rounded-circle">
-                                         <div class="media-body flex-truncate ml-2"> <a href="javascript:void(0)" class="d-block text-truncate" data-abc="true">Thankyou for your help. appreciate your solution</a>
-                                             <div class="text-muted small text-truncate">2d ago &nbsp;·&nbsp; <a href="javascript:void(0)" class="text-muted" data-abc="true">William Smith</a></div>
-                                         </div>
+                 {% for curr_form in certificate_list %}
+<!--                    <form method="post" action="{% url 'accessible_restaurant:authenticate' %}?{{ request.GET.urlencode }}">-->
+<!--                        {% csrf_token %}-->
+<!--                        <input type="text" class="profile-edit-btn" name="name" value="{{ curr_form.instance.user.id }}"/>-->
+<!--                        {{ curr_form.auth_status }}-->
+<!--                        <input type="submit" class="profile-edit-btn" name="action" value="submit"/>-->
+<!--                    </form>-->
+                     <form method="post" action="{% url 'accessible_restaurant:authenticate' %}">
+                         {% csrf_token %}
+                         <div class="card-body py-3">
+                             <div class="row no-gutters align-items-center">
+                                 <input type="text" class="profile-edit-btn" name="name" value="{{ curr_form.instance.user.id }}" style="display: none"/>
+                                 <div class="col"><a class="text-big font-weight-semibold" data-abc="true">{{ curr_form.instance.user.username }}</a></div>
+                                 <div class="d-none d-md-block col-6">
+                                     <div class="row no-gutters align-items-center">
+
+                                         <div class="col-6"><a href="/media/{{ curr_form.auth_documents.value }}">{{ curr_form.auth_documents.value }}</a></div>
+                                         <div class="col-6">{{ curr_form.auth_status }}</div>
+
                                      </div>
                                  </div>
                              </div>
                          </div>
-                     </div>
+                         <input type="submit" id="submit-info" name="sb" value="SUBMIT">
+                     </form>
                      <hr class="m-0">
                  {% endfor %}
              </div>

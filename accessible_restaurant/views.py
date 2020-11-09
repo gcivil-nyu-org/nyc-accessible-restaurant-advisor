@@ -27,7 +27,7 @@ from .forms import (
 )
 from django.contrib.auth.decorators import login_required
 
-from .models import User, Restaurant, ApprovalPendingUsers
+from .models import User, Restaurant, ApprovalPendingUsers, User_Profile
 from .utils import (
     get_restaurant_list,
     get_filter_restaurant,
@@ -490,6 +490,32 @@ def get_client_ip(request):
 
 
 def authentication_view(request):
+    if request.method == "POST":
+        auth_form = UserCertUpdateForm(request.POST, request.FILES)
+        # print(auth_form.instance.user.id)
+        name = request.POST.get('name')
+        print(auth_form)
+        # if auth_form.is_valid():
+        auth_status = auth_form.cleaned_data['auth_status']
+        # username = auth_form.cleaned_data['user']
+        print(auth_status)
+        print(name)
+        if auth_status != 'pending':
+            # print(auth_form.user)
+            print(User_Profile.objects.filter(user=name))
+            p_form = User_Profile.objects.filter(user=name)[0]
+            print(p_form)
+            p_form.auth_status = auth_status
+            p_form.save()
+            # tmp_auth = auth_form.save(commit=False)
+            ApprovalPendingUsers.objects.filter(user=name).delete()
+            # auth_form.save()
+            # tmp_profile = p_form.save(commit=False)
+            # tmp_profile.auth_status = auth_status
+            # p_form.save()
+            messages.success(request, f'{"Approved!"}')
+        return redirect("accessible_restaurant:authenticate")
+
     certificate_list = ApprovalPendingUsers.objects.order_by("time_created")
     form_list = []
     for c in certificate_list:
