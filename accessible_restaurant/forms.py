@@ -61,9 +61,19 @@ class UserProfileUpdateForm(forms.ModelForm):
             "city",
             "zip_code",
             "state",
-            "auth_documents",
+            "auth_status"
         ]
-        labels = {"zip_code": "Zip Code", "auth_documents": "Authentication Documents"}
+        labels = {"zip_code": "Zip Code", "auth_status": "Authentication Status"}
+
+
+class UserCertUpdateForm(forms.ModelForm):
+    class Meta:
+        model = ApprovalPendingUsers
+        fields = [
+            "auth_documents",
+            "auth_status",
+        ]
+        labels = {"auth_documents": "Authentication Documents", "auth_status": "Authentication Status"}
 
 
 class RestaurantProfileUpdateForm(forms.ModelForm):
@@ -134,13 +144,3 @@ class ReviewPostForm(forms.ModelForm):
             "accessible_restroom_rating": forms.RadioSelect,
             "accessible_path_rating": forms.RadioSelect,
         }
-
-
-class UserCertUpdateForm(forms.ModelForm):
-    class Meta:
-        model = ApprovalPendingUsers
-        fields = [
-            "auth_documents",
-            "auth_status",
-        ]
-        labels = {"auth_documents": "Authentication Documents", "auth_status": "Authentication Status"}

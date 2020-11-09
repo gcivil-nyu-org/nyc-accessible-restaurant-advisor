@@ -24,16 +24,12 @@ class User_Profile(models.Model):
     city = models.CharField(max_length=64, blank=True)
     zip_code = models.CharField(max_length=16, blank=True)
     state = models.CharField(max_length=32, blank=True)
-    auth_documents = models.FileField(
-        null=True, upload_to="documents/pdfs/"
-    )
-    # default = "documents/pdfs/test.pdf",
     AUTH_STATUS_CHOICES = [
-        ('certified', 'Approve'),
+        ('certified', 'Certified'),
         ('pending', 'Pending'),
-        ('uncertified', 'Disapprove'),
+        ('uncertified', 'Uncertified'),
     ]
-    auth_status = models.CharField(max_length=16, choices=AUTH_STATUS_CHOICES, default='pending')
+    auth_status = models.CharField(max_length=16, choices=AUTH_STATUS_CHOICES, default='uncertified')
 
     def __str__(self):
         return f"{self.user.username} User Profile"
@@ -137,11 +133,10 @@ class ApprovalPendingUsers(models.Model):
     auth_documents = models.FileField(
         blank=False, upload_to="documents/pdfs/"
     )
-    # default = "documents/pdfs/test.pdf",
     AUTH_STATUS_CHOICES = [
-        ('certified', 'Approve'),
+        ('approve', 'Approve'),
         ('pending', 'Pending'),
-        ('uncertified', 'Disapprove'),
+        ('disapprove', 'Disapprove'),
     ]
     auth_status = models.CharField(max_length=16, choices=AUTH_STATUS_CHOICES, default='pending')
     time_created = models.DateTimeField(auto_now_add=True)

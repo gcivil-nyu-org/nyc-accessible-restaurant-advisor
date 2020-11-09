@@ -97,17 +97,10 @@ body{
     text-align: center;
 }
 .profile-img img{
-    /*width: 70%;*/
-    /*height: 100%;*/
     width: 70%;
-    height: 160px;
+    height: 200px;
     object-fit: cover;
 }
-/*img {*/
-/*  width: 15em;*/
-/*  height: 8em;*/
-/*  object-fit: cover;*/
-/*}*/
 .profile-img .file {
     position: relative;
     overflow: hidden;
@@ -150,6 +143,7 @@ body{
     font-weight: 600;
 }
 .profile-head .nav-tabs{
+    margin-top: 5%;
     margin-bottom:5%;
 }
 .profile-head .nav-tabs .nav-link{
