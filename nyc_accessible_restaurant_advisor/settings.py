@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "import_export",
     "django_filters",
+    "leaflet"
 ]
 
 MIDDLEWARE = [
@@ -150,3 +151,10 @@ LOGIN_URL = "/accounts/login"
 LOGOUT_REDIRECT_URL = "/"
 
 GEOIP_PATH = os.path.join(BASE_DIR, "geoip")
+
+# Leaflet parameters
+LEAFLET_CONFIG = {
+'ATTRIBUTION_PREFIX': 'Powered by django-leaflet',
+'SCALE': None,
+'RESET_VIEW': False
+}
