@@ -31,6 +31,13 @@
                          </div>
                      </div>
                  </div>
+                 {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags %}
+                            <script>alert("{{ message }}")</script>
+                        {% endif %}
+                    {% endfor %}
+                 {% endif %}
                  {% for curr_form in certificate_list %}
                      <form method="post" action="{% url 'accessible_restaurant:authenticate' %}">
                          {% csrf_token %}
