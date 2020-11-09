@@ -153,8 +153,8 @@ LOGOUT_REDIRECT_URL = "/"
 GEOIP_PATH = os.path.join(BASE_DIR, "geoip")
 
 # Leaflet parameters
-LEAFLET_CONFIG = {
-'ATTRIBUTION_PREFIX': 'Powered by django-leaflet',
-'SCALE': None,
-'RESET_VIEW': False
-}
+# LEAFLET_CONFIG = {
+# 'ATTRIBUTION_PREFIX': 'Powered by django-leaflet',
+# 'SCALE': None,
+# 'RESET_VIEW': False,
+# }
