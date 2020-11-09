@@ -153,8 +153,4 @@ LOGOUT_REDIRECT_URL = "/"
 GEOIP_PATH = os.path.join(BASE_DIR, "geoip")
 
 # Leaflet parameters
-LEAFLET_CONFIG = {
-'SCALE': None,
-'RESET_VIEW': False
-}
-
+LEAFLET_CONFIG = {"SCALE": None, "RESET_VIEW": False}
