@@ -23,10 +23,11 @@ from .forms import (
     UserProfileUpdateForm,
     RestaurantProfileUpdateForm,
     ReviewPostForm,
+    UserCertUpdateForm,
 )
 from django.contrib.auth.decorators import login_required
 
-from .models import User, Restaurant
+from .models import User, Restaurant, ApprovalPendingUsers
 from .utils import (
     get_restaurant_list,
     get_filter_restaurant,
@@ -165,7 +166,34 @@ def user_profile_view(request):
         p_form = UserProfileUpdateForm(
             request.POST, request.FILES, instance=request.user.uprofile
         )
+        auth_form = UserCertUpdateForm(
+            request.POST, request.FILES
+        )
+        if auth_form.is_valid():
+            tmp = auth_form.save(commit=False)
+            tmp.user = request.user
+            ApprovalPendingUsers.objects.filter(user=request.user).delete()
+            auth_form.save()
+            messages.success(request, f'{"Your certificate has been updated!"}')
+            return redirect("accessible_restaurant:user_profile")
+        # if request.method == "GET":
+        #     review_form = ReviewPostForm(request.GET)
+        #     restaurant_instance = Restaurant.objects.get(business_id=business_id)
+        #
+        #     if review_form.is_valid():
+        #         temp = review_form.save(commit=False)
+        #         temp.user = request.user
+        #         temp.restaurant = restaurant_instance
+        #         review_form.save()
+        #         messages.success(request, f'{"Your review has been updated!"}')
+        #         return redirect("accessible_restaurant:detail", business_id)
+
         if u_form.is_valid() and p_form.is_valid():
+            # auth_documents = p_form.cleaned_data.get('auth_documents')
+            # auth_status = p_form.cleaned_data.get('auth_status')
+            # auth_form = UserCertUpdateForm(
+            #     {'auth_documents': auth_documents, 'auth_status' : auth_status})
+            # auth_form.save()
             u_form.save()
             p_form.save()
 
@@ -175,8 +203,16 @@ def user_profile_view(request):
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = UserProfileUpdateForm(instance=request.user.uprofile)
+        file = ApprovalPendingUsers.objects.filter(user=request.user)
+        print(file)
+        if len(file) > 0:
+            for f in file:
+                print(f.user)
+                auth_form = UserCertUpdateForm(instance=f.user.auth)
+        else:
+            auth_form = UserCertUpdateForm()
 
-    context = {"user_form": u_form, "profile_form": p_form}
+    context = {"user_form": u_form, "profile_form": p_form, "auth_form": auth_form}
     return render(request, "profile/user_profile.html", context)
 
 
@@ -428,3 +464,17 @@ def get_client_ip(request):
     else:
         ip = request.META.get("REMOTE_ADDR")
     return ip
+
+
+def authentication_view(request):
+    certificate_list = ApprovalPendingUsers.objects.order_by("time_created")
+    form_list = []
+    for c in certificate_list:
+        curr = UserCertUpdateForm(
+            instance=c.user.auth
+        )
+        form_list.append(curr)
+    context = {
+        "certificate_list": form_list,
+    }
+    return render(request, "admin/manage.html", context)

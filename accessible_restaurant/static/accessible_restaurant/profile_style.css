@@ -1,84 +1,188 @@
-*{
-    margin: 0;
-    padding: 0;
+/**{*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*}*/
+/*.fl{*/
+/*    float: none;*/
+/*}*/
+/*.warpper{*/
+/*    width: 100%;*/
+/*    height: 100vh;*/
+/*    background-image: url("images/profile.png");*/
+/*    background-repeat: no-repeat;*/
+/*    background-size: cover;*/
+/*}*/
+/*.main{*/
+/*    width: 50%;*/
+/*    height: 1200px;*/
+/*    background-color: blanchedalmond;*/
+/*    margin: 50px 5%;*/
+/*    border-radius: 20px 20px 30px 30px;*/
+/*}*/
+/*.head{*/
+/*    width: 100%;*/
+/*    background-color: sandybrown;*/
+/*    height: 40px;*/
+/*    border-radius: 20px 20px 0 0;*/
+/*}*/
+/*.head p{*/
+/*    line-height: 40px;*/
+/*    text-align: center;*/
+/*    font-size: 25px;*/
+/*    font-weight: bold;*/
+/*    color: #fff;*/
+/*}*/
+/*.form{*/
+/*    width: 100%;*/
+/*    height: 500px;*/
+/*}*/
+/*!*.name{*/
+/*    font-size: 16px;*/
+/*    color: #fff;*/
+/*    margin: 15px 0 0 5%;*/
+/*}*/
+/*.name-inp{*/
+/*    width: 90%;*/
+/*    height: 30px;*/
+/*    margin: 5px 0 0 5%;*/
+/*    font-size: 16px;*/
+/*    padding: 2px;*/
+/*    color: rgb(114, 111, 111);*/
+/*    border: 1px solid rgb(17, 67, 107);*/
+/*    background-color: rgb(231, 232, 250);*/
+/*}*/
+/*.name-inp:hover{*/
+/*    background-color: rgb(0, 23, 41);*/
+/*    color: rgb(173, 167, 167);*/
+/*    border: 1px solid rgb(139, 139, 139);*/
+/*}*/
+/*.pass{*/
+/*    margin: 5px 0 0 5%;*/
+/*    height: 30px;*/
+/*    width: 41%;*/
+/*    padding: 2px;*/
+/*    background-color: rgb(231, 232, 250);*/
+/*    border: 1px solid rgb(17, 67, 107);*/
+/*}*/
+/*.pass:hover{*/
+/*    background-color: rgb(0, 23, 41);*/
+/*    color: rgb(173, 167, 167);*/
+/*    border: 1px solid rgb(139, 139, 139);*/
+/*}*!*/
+/*.sub{*/
+/*    width: 90%;*/
+/*    margin: 15px 0 0 5%;*/
+/*    font-size: 16px;*/
+/*    height: 40px;*/
+/*    background-color: #0b3003;*/
+/*    border: 1px solid rgb(17, 67, 107);*/
+/*    color: #fff;*/
+/*}*/
+/*.sub:hover{*/
+/*    background-color: #E94601;*/
+/*    color: #fff;*/
+/*}*/
+
+body{
+    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
 }
-.fl{
-    float: none;
+.emp-profile{
+    padding: 3%;
+    margin-top: 3%;
+    margin-bottom: 3%;
+    border-radius: 0.5rem;
+    background: #fff;
 }
-.warpper{
-    width: 100%;
-    height: 100vh;
-    background-image: url("images/profile.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-.main{
-    width: 50%;
-    height: 1200px;
-    background-color: blanchedalmond;
-    margin: 50px 5%;
-    border-radius: 20px 20px 30px 30px;
-}
-.head{
-    width: 100%;
-    background-color: sandybrown;
-    height: 40px;
-    border-radius: 20px 20px 0 0;
-}
-.head p{
-    line-height: 40px;
+.profile-img{
     text-align: center;
-    font-size: 25px;
-    font-weight: bold;
-    color: #fff;
 }
-.form{
-    width: 100%;
-    height: 500px;
+.profile-img img{
+    /*width: 70%;*/
+    /*height: 100%;*/
+    width: 70%;
+    height: 160px;
+    object-fit: cover;
 }
-/*.name{
-    font-size: 16px;
-    color: #fff;
-    margin: 15px 0 0 5%;
+/*img {*/
+/*  width: 15em;*/
+/*  height: 8em;*/
+/*  object-fit: cover;*/
+/*}*/
+.profile-img .file {
+    position: relative;
+    overflow: hidden;
+    margin-top: -20%;
+    width: 70%;
+    border: none;
+    border-radius: 0;
+    font-size: 15px;
+    background: #212529b8;
 }
-.name-inp{
-    width: 90%;
-    height: 30px;
-    margin: 5px 0 0 5%;
-    font-size: 16px;
-    padding: 2px;
-    color: rgb(114, 111, 111);
-    border: 1px solid rgb(17, 67, 107);
-    background-color: rgb(231, 232, 250);
+.profile-img .file input {
+    position: absolute;
+    opacity: 0;
+    right: 0;
+    top: 0;
 }
-.name-inp:hover{
-    background-color: rgb(0, 23, 41);
-    color: rgb(173, 167, 167);
-    border: 1px solid rgb(139, 139, 139);
+.profile-head h5{
+    color: #333;
 }
-.pass{
-    margin: 5px 0 0 5%;
-    height: 30px;
-    width: 41%;
-    padding: 2px;
-    background-color: rgb(231, 232, 250);
-    border: 1px solid rgb(17, 67, 107);
+.profile-head h6{
+    color: #0062cc;
 }
-.pass:hover{
-    background-color: rgb(0, 23, 41);
-    color: rgb(173, 167, 167);
-    border: 1px solid rgb(139, 139, 139);
-}*/
-.sub{
-    width: 90%;
-    margin: 15px 0 0 5%;
-    font-size: 16px;
-    height: 40px;
-    background-color: #0b3003;
-    border: 1px solid rgb(17, 67, 107);
-    color: #fff;
+.profile-edit-btn{
+    border: none;
+    border-radius: 1.5rem;
+    width: 70%;
+    padding: 2%;
+    font-weight: 600;
+    color: #6c757d;
+    cursor: pointer;
 }
-.sub:hover{
-    background-color: #E94601;
-    color: #fff;
+.proile-rating{
+    font-size: 12px;
+    color: #818182;
+    margin-top: 5%;
+}
+.proile-rating span{
+    color: #495057;
+    font-size: 15px;
+    font-weight: 600;
+}
+.profile-head .nav-tabs{
+    margin-bottom:5%;
+}
+.profile-head .nav-tabs .nav-link{
+    font-weight:600;
+    border: none;
+}
+.profile-head .nav-tabs .nav-link.active{
+    border: none;
+    border-bottom:2px solid #0062cc;
+}
+.profile-work{
+    padding: 14%;
+    margin-top: -15%;
+}
+.profile-work p{
+    font-size: 12px;
+    color: #818182;
+    font-weight: 600;
+    margin-top: 10%;
+}
+.profile-work a{
+    text-decoration: none;
+    color: #495057;
+    font-weight: 600;
+    font-size: 14px;
+}
+.profile-work ul{
+    list-style: none;
+}
+.profile-tab label{
+    font-weight: 600;
+}
+.profile-tab p{
+    font-weight: 600;
+    color: #0062cc;
 }

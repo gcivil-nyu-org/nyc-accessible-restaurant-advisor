@@ -25,8 +25,15 @@ class User_Profile(models.Model):
     zip_code = models.CharField(max_length=16, blank=True)
     state = models.CharField(max_length=32, blank=True)
     auth_documents = models.FileField(
-        default="documents/pdfs/test.pdf", upload_to="documents/pdfs/"
+        null=True, upload_to="documents/pdfs/"
     )
+    # default = "documents/pdfs/test.pdf",
+    AUTH_STATUS_CHOICES = [
+        ('certified', 'Approve'),
+        ('pending', 'Pending'),
+        ('uncertified', 'Disapprove'),
+    ]
+    auth_status = models.CharField(max_length=16, choices=AUTH_STATUS_CHOICES, default='pending')
 
     def __str__(self):
         return f"{self.user.username} User Profile"
@@ -121,3 +128,20 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.user} review on {self.restaurant}"
+
+
+class ApprovalPendingUsers(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, null=True, related_name="auth"
+    )
+    auth_documents = models.FileField(
+        blank=False, upload_to="documents/pdfs/"
+    )
+    # default = "documents/pdfs/test.pdf",
+    AUTH_STATUS_CHOICES = [
+        ('certified', 'Approve'),
+        ('pending', 'Pending'),
+        ('uncertified', 'Disapprove'),
+    ]
+    auth_status = models.CharField(max_length=16, choices=AUTH_STATUS_CHOICES, default='pending')
+    time_created = models.DateTimeField(auto_now_add=True)

@@ -1,0 +1,15 @@
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% for l in certificate_list %}
+        {% csrf_token %}
+        {{ l|crispy }}
+    <hr />
+    {% endfor %}
+</body>
+</html>

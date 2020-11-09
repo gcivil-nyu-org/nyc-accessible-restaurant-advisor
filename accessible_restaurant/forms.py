@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 
-from accessible_restaurant.models import User, User_Profile, Restaurant_Profile, Review
+from accessible_restaurant.models import User, User_Profile, Restaurant_Profile, Review, ApprovalPendingUsers
 from django.utils.safestring import mark_safe
 
 
@@ -63,7 +63,7 @@ class UserProfileUpdateForm(forms.ModelForm):
             "state",
             "auth_documents",
         ]
-        labels = {"zip_code": "Zip Code", "auth_documents": "Authorization Documents"}
+        labels = {"zip_code": "Zip Code", "auth_documents": "Authentication Documents"}
 
 
 class RestaurantProfileUpdateForm(forms.ModelForm):
@@ -134,3 +134,13 @@ class ReviewPostForm(forms.ModelForm):
             "accessible_restroom_rating": forms.RadioSelect,
             "accessible_path_rating": forms.RadioSelect,
         }
+
+
+class UserCertUpdateForm(forms.ModelForm):
+    class Meta:
+        model = ApprovalPendingUsers
+        fields = [
+            "auth_documents",
+            "auth_status",
+        ]
+        labels = {"auth_documents": "Authentication Documents", "auth_status": "Authentication Status"}
