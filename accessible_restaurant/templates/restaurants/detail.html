@@ -1,9 +1,13 @@
- {% extends "base.html" %}
-
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
 {% block staticlink %}
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/detail_style.css' %}">
 	<script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 {% endblock %}
 
@@ -38,7 +42,7 @@
 							<li><h4>{{ restaurant_data.review_count}} Reviews</h4></li>
 						</ul>
 						<ul class="actions">
-							<li><a href="{% url "accessible_restaurant:write_review" restaurant.business_id %}" class="button special"><i class="far fa-edit"></i>Write a review</a></li>
+							<li><a href="{% url 'accessible_restaurant:write_review' restaurant.business_id %}" class="button special"><i class="far fa-edit"></i>Write a review</a></li>
 						</ul>
 					</header>
 
@@ -169,7 +173,7 @@
 										{% for _ in review.lnull %}
 											<li><i class="icon far fa-star"></i></li>
 										{% endfor %}
-										<li><h4>{{ review.review_date | date:"Y-m-d h:m:s" }}</h4></li>
+										<li><h4>{{ review.review_date | date:"Y-m-d H:m:s" }}</h4></li>
 									</ul>
 								</div>
 								<div class="row uniform">
@@ -178,8 +182,70 @@
 							</div>
 						</div>
 
+                        <div class="accordion" id="review-comments-{{ forloop.counter0 }}">
+                            <div class="card">
+                                <div class="card-header" id="header-{{ forloop.counter0 }}">
+                                    <h3 class="mb-0">
+                                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse-{{ forloop.counter0 }}" aria-expanded="true" aria-controls="collapseOne">
+                                            Comments
+                                        </button>
+                                    </h3>
+                                </div>
+
+                                <div id="collapse-{{ forloop.counter0 }}" class="collapse" aria-labelledby="header-{{ forloop.counter0 }}" data-parent="review-comments-{{ forloop.counter0 }}">
+                                    {% for comment in review.comments_set %}
+                                        <div class="card-body">
+                                            <div class="row uniform">
+                                                <div class="3u 12u$(medium)">
+                                                    <div class="row uniform">
+                                                        {% if comment.user.is_user %}
+                                                            <span class="image fit"><img src="{{ comment.user.uprofile.photo.url }}" alt="" /></span>
+                                                        {% else %}
+                                                            <span class="image fit"><img src="{{ comment.user.rprofile.photo.url }}" alt="" /></span>
+                                                        {% endif %}
+                                                    </div>
+                                                    {% if restaurant.user and restaurant.user.id == comment.user.id %}
+                                                        <div class="row">
+                                                            <h5><i class="icon fas fa-utensils"></i>Restaurant</h5>
+                                                        </div>
+                                                    {% endif %}
+                                                    <div class="row">
+                                                        <h4>{{ comment.user.username }}</h4>
+                                                    </div>
+                                                </div>
+
+                                                <div class="9u 12u$(medium)">
+                                                    <div class="row uniform">
+                                                        <h5>{{ comment.time | date:"Y-m-d H:m:s" }}</h5>
+                                                    </div>
+                                                    <div class="row uniform">
+                                                        <li>{{ comment.text }}</li>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    <div class="card-body">
+                                        <div class="form fl">
+                                            <form method="POST" enctype="multipart/form-data" action="{% url 'accessible_restaurant:add_comment' restaurant.business_id review.id %}">
+                                                {% csrf_token %}
+                                                {{ comment_form|crispy }}
+                                                <div class="submit-wrap">
+                                                    <input type="submit" id="submit" name="sb" value="Submit">
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 
 					{% endfor %}
+                    <hr />
+
+					<h2>Yelp Reviews</h2>
 
 					{% for review in restaurant_review.reviews %}
 						<div class="row uniform">

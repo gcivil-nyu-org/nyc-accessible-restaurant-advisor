@@ -87,14 +87,14 @@ def get_local_restaurant_reviews(business_id):
     target_restaurant = Restaurant.objects.get(business_id=business_id)
     reviews = Review.objects.filter(restaurant=target_restaurant)
     response = []
-    for review in reviews:
+    for review in reversed(list(reviews)):
         user = review.user
         comments = review.comments.all()
         profile = User_Profile.objects.get(user=user)
         photo = profile.photo
         review.username = user.username
         review.photo = photo
-        review.comments_set = comments
+        review.comments_set = reversed(list(comments))
         response.append(review.__dict__)
     return response
 

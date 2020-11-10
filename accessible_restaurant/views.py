@@ -360,12 +360,18 @@ def restaurant_detail_view(request, business_id):
                 day["end"] = end[:2] + ":" + end[2:]
                 hours.append(day)
 
+        comment_form = CommentForm()
+        user = request.user
+        if restaurant.user:
+            print(restaurant.user.username)
+            print(restaurant.user.id)
         context = {
             "restaurant": restaurant,
             "restaurant_data": restaurant_data,
             "restaurant_review": restaurant_reviews,
             "local_restaurant_review": local_restaurant_reviews,
             "local_restaurant_data": local_restaurant_data,
+
             "full": full,
             "half": half,
             "null": null,
@@ -373,9 +379,11 @@ def restaurant_detail_view(request, business_id):
             "lhalf": lr_half,
             "lnull": lr_null,
             "hours": hours,
+
             "is_open_now": is_open_now,
             "username": username,
             "photo": photo,
+
             "level_entry_rating_full": level_entry_rating_full,
             "level_entry_rating_half": level_entry_rating_half,
             "level_entry_rating_null": level_entry_rating_null,
@@ -391,6 +399,8 @@ def restaurant_detail_view(request, business_id):
             "accessible_path_rating_full": accessible_path_rating_full,
             "accessible_path_rating_half": accessible_path_rating_half,
             "accessible_path_rating_null": accessible_path_rating_null,
+
+            "comment_form": comment_form,
         }
         return render(request, "restaurants/detail.html", context)
 
