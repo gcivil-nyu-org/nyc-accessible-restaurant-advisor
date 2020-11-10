@@ -2167,7 +2167,7 @@
 		}
 
 		.image.fit {
-			
+
 			display: block;
 			margin: 0 0 2em 0;
 			width: 100%;
@@ -2830,10 +2830,10 @@
 	font-size: 0.75em;
 }
 
-/*img {*/
-/*	border-radius: 0;*/
-/*	display: block;*/
-/*	width: 100%;*/
-/*	height: 300px;*/
-/*	object-fit: cover;*/
-/*}*/
+img {
+	border-radius: 0;
+	display: block;
+	width: 300px;
+	height: 300px;
+	object-fit: cover;
+}

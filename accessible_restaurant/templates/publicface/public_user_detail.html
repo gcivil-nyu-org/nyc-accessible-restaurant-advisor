@@ -2,7 +2,7 @@
 
 {% block staticlink %}
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/detail_style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/public_style.css' %}">
 	<script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 {% endblock %}
@@ -20,15 +20,10 @@
 				<div class="8u 12u$(medium)">
                     <div class="row uniform">
                         <img src="{{ photo.url }}" alt="" />
-                        <h2><strong>Username:</strong> {{ username }}</h2>
-                        <li><strong>Email:</strong> {{ email }}</li>
-                        <li><strong>First Name:</strong> {{ first_name }}</li>
-                        <li><strong>Last Name:</strong> {{ last_name }}</li>
-                        <li><strong>Phone:</strong> {{ phone }}</li>
-                        <li><strong>Zip Code:</strong> {{ zip_code }}</li>
-                        <li><strong>State:</strong> {{ state }}</li>
-                        <li><strong>City:</strong> {{ city }}</li>
-                        <li><strong>Address:</strong> {{ address }}</li>
+                        <h1><strong>Username:</strong> {{ username }}</h1>
+                        <h2><strong>State:</strong> {{ state }}</h2>
+                        <h2><strong>City:</strong> {{ city }}</h2>
+
                     </div>
 
                     <h3>Related Reviews</h3>

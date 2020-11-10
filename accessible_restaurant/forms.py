@@ -7,6 +7,7 @@ from accessible_restaurant.models import (
     User_Profile,
     Restaurant_Profile,
     Review,
+    ApprovalPendingUsers,
     Comment,
 )
 from django.utils.safestring import mark_safe
@@ -67,9 +68,31 @@ class UserProfileUpdateForm(forms.ModelForm):
             "city",
             "zip_code",
             "state",
-            "auth_documents",
+            "auth_status",
         ]
-        labels = {"zip_code": "Zip Code", "auth_documents": "Authorization Documents"}
+        labels = {"zip_code": "Zip Code", "auth_status": "Authentication Status"}
+
+
+class UserCertUpdateForm(forms.ModelForm):
+    class Meta:
+        model = ApprovalPendingUsers
+        fields = [
+            "auth_documents",
+            "auth_status",
+        ]
+        labels = {
+            "auth_documents": "Authentication Documents",
+            "auth_status": "Authentication Status",
+        }
+
+
+class UserCertVerifyForm(forms.ModelForm):
+    class Meta:
+        model = ApprovalPendingUsers
+        fields = [
+            "auth_status",
+        ]
+        labels = {"auth_status": "Authentication Status"}
 
 
 class RestaurantProfileUpdateForm(forms.ModelForm):

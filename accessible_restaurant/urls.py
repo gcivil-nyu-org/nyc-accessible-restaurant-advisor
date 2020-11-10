@@ -58,4 +58,6 @@ urlpatterns = [
     # path(
     #     "restaurants/browse/search/<page>", views.search_restaurant_view, name="search"
     # )
+    # admin manage the certificate
+    path("manage/", views.authentication_view, name="authenticate"),
 ]

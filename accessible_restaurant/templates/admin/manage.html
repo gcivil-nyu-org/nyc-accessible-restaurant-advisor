@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block staticlink %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/manage_style.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block title %} Certificate Management {% endblock %}
+
+{% block body %}<body class="subpage">{% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-100">
+     <div class="row">
+         <div class="col-md-12">
+             <div class="card mb-3">
+                 <div class="card-header pr-0 pl-0">
+                     <div class="row no-gutters align-items-center w-100">
+                         <div class="col font-weight-bold pl-3">Username</div>
+                         <div class="d-none d-md-block col-9 text-muted">
+                             <div class="row no-gutters align-items-center">
+                                 <div class="col-6">Certificate</div>
+                                 <div class="col-2">Status</div>
+                                 <div class="col-2">Creation Time</div>
+                                 <div class="col-2">Actions</div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                 {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags %}
+                            <script>alert("{{ message }}")</script>
+                        {% endif %}
+                    {% endfor %}
+                 {% endif %}
+                 {% for curr_form in certificate_list %}
+                     <form method="post" action="{% url 'accessible_restaurant:authenticate' %}">
+                         {% csrf_token %}
+                         <div class="card-body py-3">
+                             <div class="row no-gutters align-items-center w-100">
+                                 <input type="text" class="profile-edit-btn" name="user_id" value="{{ curr_form.instance.user.id }}" style="display: none"/>
+                                 <div class="col"><a class="text-big font-weight-semibold" data-abc="true">{{ curr_form.instance.user.username }}</a></div>
+                                 <div class="d-none d-md-block col-9">
+                                     <div class="row no-gutters align-items-center">
+                                         <div class="col-6"><a href="{{ curr_form.instance.auth_documents.url }}">{{ curr_form.instance.auth_documents.url }}</a></div>
+                                         <div class="col-2">{{ curr_form.auth_status }}</div>
+                                         <div class="col-2">{{ curr_form.instance.time_created }}</div>
+                                         <div class="col-2"><input type="submit" id="submit-info" name="sb" value="SUBMIT"></div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </form>
+                     <hr class="m-0">
+                 {% endfor %}
+             </div>
+         </div>
+     </div>
+ </div>
+{% endblock %}
