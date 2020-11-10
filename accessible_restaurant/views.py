@@ -30,7 +30,14 @@ from .forms import (
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 
-from .models import User, Restaurant, Review, ApprovalPendingUsers, User_Profile
+from .models import (
+    User,
+    Restaurant,
+    Review,
+    ApprovalPendingUsers,
+    User_Profile,
+    Restaurant_Profile,
+)
 from .utils import (
     get_restaurant_list,
     get_filter_restaurant,
@@ -492,27 +499,30 @@ def restaurant_detail_view(request, business_id):
 @login_required
 @user_passes_test(lambda u: not u.is_superuser)
 def write_review_view(request, business_id):
-    if request.method == "GET":
-        review_form = ReviewPostForm(request.GET)
-        restaurant_instance = Restaurant.objects.get(business_id=business_id)
+    if request.user.is_user:
+        if request.method == "GET":
+            review_form = ReviewPostForm(request.GET)
+            restaurant_instance = Restaurant.objects.get(business_id=business_id)
 
-        if review_form.is_valid():
-            temp = review_form.save(commit=False)
-            temp.user = request.user
-            temp.restaurant = restaurant_instance
-            review_form.save()
-            return redirect("accessible_restaurant:detail", business_id)
+            if review_form.is_valid():
+                temp = review_form.save(commit=False)
+                temp.user = request.user
+                temp.restaurant = restaurant_instance
+                review_form.save()
+                return redirect("accessible_restaurant:detail", business_id)
 
+        else:
+            review_form = ReviewPostForm(request.GET)
+            # restaurant_instance = Restaurant.objects.get(business_id=business_id)
+
+        context = {
+            "user": request.user,
+            "restaurant": restaurant_instance,
+            "review_form": review_form,
+        }
+        return render(request, "review/write_review.html", context)
     else:
-        review_form = ReviewPostForm(request.GET)
-        # restaurant_instance = Restaurant.objects.get(business_id=business_id)
-
-    context = {
-        "user": request.user,
-        "restaurant": restaurant_instance,
-        "review_form": review_form,
-    }
-    return render(request, "review/write_review.html", context)
+        return redirect("accessible_restaurant:detail", business_id)
 
 
 @login_required

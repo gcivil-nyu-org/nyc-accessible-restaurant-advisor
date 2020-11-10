@@ -92,16 +92,18 @@ def get_local_restaurant_reviews(business_id):
     reviews = Review.objects.filter(restaurant=target_restaurant)
     response = []
     for review in reversed(list(reviews)):
-        print(review.__dict__)
         user = review.user
         comments = review.comments.all()
-        profile = User_Profile.objects.get(user=user)
-        photo = profile.photo
-        review.user_id = user.id
-        review.username = user.username
-        review.photo = photo
-        review.comments_set = reversed(list(comments))
-        response.append(review.__dict__)
+        if user.is_user:
+            profile = User_Profile.objects.get(user=user)
+            photo = profile.photo
+            review.user_id = user.id
+            review.username = user.username
+            review.photo = photo
+            review.comments_set = reversed(list(comments))
+            response.append(review.__dict__)
+        elif user.is_restaurant:
+            response.append(review.__dict__)
     return response
 
 
@@ -264,18 +266,22 @@ def get_public_user_detail(user):
     if not user:
         return None
     user_instance = User.objects.get(pk=user)
-    response = {
-        "username": user_instance.username,
-        "email": user_instance.email,
-        "first_name": user_instance.first_name,
-        "last_name": user_instance.last_name,
-        "address": user_instance.uprofile.address,
-        "phone": user_instance.uprofile.phone,
-        "zip_code": user_instance.uprofile.zip_code,
-        "state": user_instance.uprofile.state,
-        "city": user_instance.uprofile.city,
-        "photo": user_instance.uprofile.photo,
-    }
+    if user_instance.is_user:
+        response = {
+            "username": user_instance.username,
+            "email": user_instance.email,
+            "first_name": user_instance.first_name,
+            "last_name": user_instance.last_name,
+            "address": user_instance.uprofile.address,
+            "phone": user_instance.uprofile.phone,
+            "zip_code": user_instance.uprofile.zip_code,
+            "state": user_instance.uprofile.state,
+            "city": user_instance.uprofile.city,
+            "photo": user_instance.uprofile.photo,
+        }
+    elif user_instance.is_restaurant:
+        response = {}
+
     return response
 
 

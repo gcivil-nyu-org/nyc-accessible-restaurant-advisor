@@ -215,9 +215,13 @@
                                                         </div>
                                                     {% endif %}
                                                     <div class="row">
-                                                        <a href = "{% url 'accessible_restaurant:public_facing' comment.user.id %}">
+                                                        {% if comment.user.is_user %}
+                                                            <a href = "{% url 'accessible_restaurant:public_facing' comment.user.id %}">
+                                                                <h4>{{ comment.user.username }}</h4>
+                                                            </a>
+                                                        {% else %}
                                                             <h4>{{ comment.user.username }}</h4>
-                                                        </a>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
 
