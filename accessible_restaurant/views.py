@@ -30,9 +30,6 @@ from .forms import (
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 
-from .models import User, Restaurant, User_Profile, Review
-from .models import User, Restaurant, Review
-
 from .models import User, Restaurant, Review, ApprovalPendingUsers, User_Profile
 from .utils import (
     get_restaurant_list,
