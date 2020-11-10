@@ -450,6 +450,9 @@ def restaurant_detail_view(request, business_id):
                 day["end"] = end[:2] + ":" + end[2:]
                 hours.append(day)
 
+        comment_form = CommentForm()
+        user = request.user
+
         context = {
             "restaurant": restaurant,
             "restaurant_data": restaurant_data,
@@ -481,6 +484,7 @@ def restaurant_detail_view(request, business_id):
             "accessible_path_rating_full": accessible_path_rating_full,
             "accessible_path_rating_half": accessible_path_rating_half,
             "accessible_path_rating_null": accessible_path_rating_null,
+            "comment_form": comment_form,
         }
         return render(request, "restaurants/detail.html", context)
 
