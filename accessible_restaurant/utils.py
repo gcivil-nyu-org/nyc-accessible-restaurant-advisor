@@ -92,7 +92,6 @@ def get_local_restaurant_reviews(business_id):
     reviews = Review.objects.filter(restaurant=target_restaurant)
     response = []
     for review in reversed(list(reviews)):
-        print(review.__dict__)
         user = review.user
         comments = review.comments.all()
         if user.is_user:
