@@ -452,9 +452,7 @@ def restaurant_detail_view(request, business_id):
 
         comment_form = CommentForm()
         user = request.user
-        if restaurant.user:
-            print(restaurant.user.username)
-            print(restaurant.user.id)
+
         context = {
             "restaurant": restaurant,
             "restaurant_data": restaurant_data,

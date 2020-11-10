@@ -161,7 +161,7 @@
 									<span class="image fit"><img src="{{ review.photo.url }}" alt="" /></span>
 								</div>
 								<div class="row">
-                                    <a href = '{% url "accessible_restaurant:public_facing"  user.id%}'>
+                                    <a href = "{% url 'accessible_restaurant:public_facing' review.user_id %}">
                                         <h4>{{ review.username }}</h4>
                                     </a>
 								</div>
@@ -215,7 +215,9 @@
                                                         </div>
                                                     {% endif %}
                                                     <div class="row">
-                                                        <h4>{{ comment.user.username }}</h4>
+                                                        <a href = "{% url 'accessible_restaurant:public_facing' comment.user.id %}">
+                                                            <h4>{{ comment.user.username }}</h4>
+                                                        </a>
                                                     </div>
                                                 </div>
 

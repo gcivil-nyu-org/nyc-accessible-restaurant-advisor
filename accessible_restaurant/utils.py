@@ -92,10 +92,12 @@ def get_local_restaurant_reviews(business_id):
     reviews = Review.objects.filter(restaurant=target_restaurant)
     response = []
     for review in reversed(list(reviews)):
+        print(review.__dict__)
         user = review.user
         comments = review.comments.all()
         profile = User_Profile.objects.get(user=user)
         photo = profile.photo
+        review.user_id = user.id
         review.username = user.username
         review.photo = photo
         review.comments_set = reversed(list(comments))
