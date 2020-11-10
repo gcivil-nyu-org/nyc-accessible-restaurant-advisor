@@ -20,9 +20,12 @@
 				<div class="8u 12u$(medium)">
                     <div class="row uniform">
                         <img src="{{ photo.url }}" alt="" />
-                        <h1><strong>Username:</strong> {{ username }}</h1>
-                        <h2><strong>State:</strong> {{ state }}</h2>
-                        <h2><strong>City:</strong> {{ city }}</h2>
+                        <div class="row uniform">
+                            <h2><strong>Username:</strong> {{ username }}</h2>
+                        </div>
+                        <div class="row uniform">
+                            <h2>{{ city }} {{ state }} </h2>
+                        </div>
 
                     </div>
 
