@@ -59,5 +59,10 @@ urlpatterns = [
         "restaurants/detail/<business_id>/<review_id>/",
         views.add_comment_view,
         name="add_comment",
-    )
+    ),
+
+    path("user_detail/<user>", views.user_detail_view, name="public_facing"),
+    # admin manage the certificate
+    path("manage/", views.authentication_view, name="authenticate"),
+
 ]

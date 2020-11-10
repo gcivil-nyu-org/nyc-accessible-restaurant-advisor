@@ -23,11 +23,14 @@ from .forms import (
     UserProfileUpdateForm,
     RestaurantProfileUpdateForm,
     ReviewPostForm,
+    UserCertUpdateForm,
+    UserCertVerifyForm,
     CommentForm,
 )
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
 
-from .models import User, Restaurant, Review
+from .models import User, Restaurant, Review, ApprovalPendingUsers, User_Profile
 from .utils import (
     get_restaurant_list,
     get_filter_restaurant,
@@ -35,6 +38,8 @@ from .utils import (
     get_page_range,
     get_star_list,
     get_search_restaurant,
+    get_public_user_detail,
+    get_user_reviews,
 )
 
 
@@ -72,7 +77,7 @@ def activate_account(request, uidb64, token):
         user.is_active = True
         user.save()
         return render(request, "accounts/activate_confirmation.html")
-    return render(request, "accounts/signup.html")
+    return render(request, "accounts/register.html")
 
 
 class UserSignUpView(CreateView):
@@ -162,23 +167,108 @@ class RestaurantSignUpView(CreateView):
 @login_required
 def user_profile_view(request):
     if request.method == "POST":
-        u_form = UserUpdateForm(request.POST, instance=request.user)
-        p_form = UserProfileUpdateForm(
-            request.POST, request.FILES, instance=request.user.uprofile
-        )
-        if u_form.is_valid() and p_form.is_valid():
-            u_form.save()
-            p_form.save()
+        if "submit-certificate" in request.POST:
+            auth_form = UserCertUpdateForm(request.POST, request.FILES)
+            if auth_form.is_valid():
+                tmp_auth = auth_form.save(commit=False)
+                tmp_auth.user = request.user
+                tmp_auth.auth_status = "pending"
+                prev_auth_len = ApprovalPendingUsers.objects.filter(
+                    user=request.user
+                ).count()
+                if prev_auth_len > 0:
+                    prev_auth = ApprovalPendingUsers.objects.get(user=request.user)
+                    prev_auth.auth_documents.delete()
+                    prev_auth.delete()
+                auth_form.save()
+                p_instance = User_Profile.objects.get(user=request.user)
+                p_instance.auth_status = "pending"
+                p_instance.save()
+                messages.success(
+                    request, f'{"Your certificate has been sent to administrator!"}'
+                )
+                return redirect("accessible_restaurant:user_profile")
+            else:
+                u_form = UserUpdateForm(instance=request.user)
+                p_form = UserProfileUpdateForm(instance=request.user.uprofile)
 
-            messages.success(request, f'{"Your profile has been updated!"}')
-            return redirect("accessible_restaurant:user_profile")
+        elif "submit-info" in request.POST:
+            u_form = UserUpdateForm(request.POST, instance=request.user)
+            p_form = UserProfileUpdateForm(
+                request.POST, request.FILES, instance=request.user.uprofile
+            )
+
+            if u_form.is_valid() and p_form.is_valid():
+                u_form.save()
+                p_form.save()
+                messages.success(request, f'{"Your profile has been updated!"}')
+                return redirect("accessible_restaurant:user_profile")
+            else:
+                queue = ApprovalPendingUsers.objects.filter(user=request.user).count()
+                if queue > 0:
+                    q = ApprovalPendingUsers.objects.get(user=request.user)
+                    auth_form = UserCertUpdateForm(instance=q.user.auth)
+                else:
+                    auth_form = UserCertUpdateForm()
 
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = UserProfileUpdateForm(instance=request.user.uprofile)
+        queue = ApprovalPendingUsers.objects.filter(user=request.user).count()
+        if queue > 0:
+            q = ApprovalPendingUsers.objects.get(user=request.user)
+            auth_form = UserCertUpdateForm(instance=q.user.auth)
+        else:
+            auth_form = UserCertUpdateForm()
 
-    context = {"user_form": u_form, "profile_form": p_form}
+    action = request.GET.get("action")
+    if action == "Edit Profile":
+        profile_action = "edit"
+    else:
+        profile_action = "view"
+
+    context = {
+        "user_form": u_form,
+        "profile_form": p_form,
+        "auth_form": auth_form,
+        "profile_action": profile_action,
+    }
     return render(request, "profile/user_profile.html", context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def authentication_view(request):
+    if request.method == "POST":
+        auth_form = UserCertVerifyForm(request.POST)
+        user_id = request.POST.get("user_id")
+        if auth_form.is_valid():
+            auth_status = auth_form.cleaned_data["auth_status"]
+            if auth_status != "pending" and auth_status != "N/A":
+                p_instance = User_Profile.objects.get(user=user_id)
+                if auth_status == "approve":
+                    p_instance.auth_status = "certified"
+                else:
+                    p_instance.auth_status = "uncertified"
+                p_instance.save()
+                curr_user = ApprovalPendingUsers.objects.get(user=user_id)
+                # delete document from the database
+                curr_user.auth_documents.delete()
+                curr_user.delete()
+                if auth_status == "approve":
+                    messages.success(request, f'{"Approved!"}')
+                else:
+                    messages.success(request, f'{"Disapproved!"}')
+            return redirect("accessible_restaurant:authenticate")
+
+    certificate_list = ApprovalPendingUsers.objects.order_by("time_created")
+    form_list = []
+    for c in certificate_list:
+        curr = UserCertVerifyForm(instance=c.user.auth)
+        form_list.append(curr)
+    context = {
+        "certificate_list": form_list,
+    }
+    return render(request, "admin/manage.html", context)
 
 
 @login_required
@@ -406,6 +496,7 @@ def restaurant_detail_view(request, business_id):
 
 
 @login_required
+@user_passes_test(lambda u: not u.is_superuser)
 def write_review_view(request, business_id):
     if request.method == "GET":
         review_form = ReviewPostForm(request.GET)
@@ -416,7 +507,6 @@ def write_review_view(request, business_id):
             temp.user = request.user
             temp.restaurant = restaurant_instance
             review_form.save()
-            messages.success(request, f'{"Your review has been updated!"}')
             return redirect("accessible_restaurant:detail", business_id)
 
     else:
@@ -464,3 +554,28 @@ def get_client_ip(request):
     else:
         ip = request.META.get("REMOTE_ADDR")
     return ip
+
+
+def user_detail_view(request, user):
+    response_info = get_public_user_detail(user)
+    response_review = get_user_reviews(user)
+    star_list = get_star_list()
+    for review in response_review:
+        r_full, r_half, r_null = star_list[float(review["rating"])]
+        review["full"] = r_full
+        review["half"] = r_half
+        review["null"] = r_null
+    context = {
+        "username": response_info.get("username"),
+        "email": response_info.get("email"),
+        "first_name": response_info.get("first_name"),
+        "last_name": response_info.get("last_name"),
+        "address": response_info.get("address"),
+        "phone": response_info.get("phone"),
+        "zip_code": response_info.get("zip_code"),
+        "state": response_info.get("state"),
+        "city": response_info.get("city"),
+        "photo": response_info.get("photo"),
+        "user_review": response_review,
+    }
+    return render(request, "publicface/public_user_detail.html", context)

@@ -3,6 +3,11 @@
 {% block staticlink %}
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/profile_style.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
 {% endblock %}
 
 {% block title %} User Account Profile {% endblock %}
@@ -10,59 +15,284 @@
 {% block body %}<body class="subpage">{% endblock %}
 
 {% block content %}
-    <div class="wrapper fl">
-        <div class="main">
-            <div class="head">
-                <p>User Account Profile</p>
-            </div>
-            <div class="media">
-                <img class="rounded-circle account-img" src="{{ user.uprofile.photo.url }}">
-                <div class="media-body">
-                  <h2 class="account-heading">{{ user.username }}</h2>
-                  <p class="text-secondary">{{ user.email }}</p>
+<!--    <div class="wrapper fl">-->
+<!--        <div class="main">-->
+<!--            <div class="head">-->
+<!--                <p>User Account Profile</p>-->
+<!--            </div>-->
+<!--            <div class="media">-->
+<!--                <img class="rounded-circle account-img" src="{{ user.uprofile.photo.url }}">-->
+<!--                <div class="media-body">-->
+<!--                  <h2 class="account-heading">{{ user.username }}</h2>-->
+<!--                  <p class="text-secondary">{{ user.email }}</p>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="form fl">-->
+<!--                <form method="POST" enctype="multipart/form-data">-->
+<!--                    {% csrf_token %}-->
+<!--                    {{ user_form|crispy }}-->
+<!--                    {{ profile_form|crispy }}-->
+<!--                    <fieldset class="form-group">-->
+<!--                        <legend class="border-bottom mb-4">Profile Info</legend>-->
+
+<!--                    </fieldset>-->
+<!--                    <div class="submit-wrap">-->
+<!--                        <input type="submit" id="submit" name="sb" value="SUBMIT">-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--                <form method="POST" enctype="multipart/form-data">-->
+<!--                    {% csrf_token %}-->
+<!--                    {{ auth_form|crispy }}-->
+<!--                    <fieldset class="form-group">-->
+<!--                        <legend class="border-bottom mb-4">Upload Certificate Info</legend>-->
+
+<!--                    </fieldset>-->
+<!--                    <div class="submit-wrap">-->
+<!--                        <input type="submit" id="submit" name="sb" value="SUBMIT">-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+    <div class="container emp-profile">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="profile-img">
+                        <img src="{{ user.uprofile.photo.url }}" alt=""/>
+<!--                        <div class="file btn btn-lg btn-primary">-->
+<!--                            Change Photo-->
+<!--                            <input type="file" name="file"/>-->
+<!--                        </div>-->
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="profile-head">
+                        <h5>
+                            {{ user.username }}
+                        </h5>
+                        {% if messages %}
+                            {% for message in messages %}
+                                {% if message.tags %}
+                                    <script>alert("{{ message }}")</script>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        <h6>
+                            Authentication Status: {{ user.uprofile.auth_status }}
+                        </h6>
+
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            {% if profile_action == 'view' %}
+                            <li class="nav-item">
+                                <a class="nav-link active" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Profile</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="certificate-tab" data-toggle="tab" href="#certificate" role="tab" aria-controls="certificate" aria-selected="false">Certificate</a>
+                            </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="info-tab-edit" data-toggle="tab" href="#info-edit" role="tab" aria-controls="info-edit" aria-selected="true">Profile</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="certificate-tab-edit" data-toggle="tab" href="#certificate-edit" role="tab" aria-controls="certificate-edit" aria-selected="false">Certificate</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    {% if profile_action == 'view' %}
+                        <form method="get" action="{% url 'accessible_restaurant:user_profile' %}?{{ request.GET.urlencode }}">
+                            {% csrf_token %}
+                            <input type="submit" class="profile-edit-btn" name="action" value="Edit Profile"/>
+                        </form>
+                    {% else %}
+                        <form method="get" action="{% url 'accessible_restaurant:user_profile' %}?{{ request.GET.urlencode }}">
+                            {% csrf_token %}
+                            <input type="submit" class="profile-edit-btn" name="action" value="View Profile"/>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
-            <div class="form fl">
-                <form method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {{ user_form|crispy }}
-                    {{ profile_form|crispy }}
-                    <fieldset class="form-group">
-                        <legend class="border-bottom mb-4">Profile Info</legend>
+            <div class="row">
+                <div class="col-md-4">
+                </div>
+                <div class="col-md-8">
+                    <div class="tab-content profile-tab" id="myTabContent">
+                        {% if profile_action == 'view' %}
+                            <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
+                                {% for field in user_form %}
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>{{ field.label_tag }}</label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <p>{{ field.value }}</p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                {% for field in profile_form %}
+                                    {% if field.label != 'Authentication Status' %}
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label>{{ field.label_tag }}</label>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <p>{{ field.value }}</p>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
 
-                    </fieldset>
-                    <div class="submit-wrap">
-                        <input type="submit" id="submit" name="sb" value="SUBMIT">
+                            <div class="tab-pane fade" id="certificate" role="tabpanel" aria-labelledby="certificate-tab">
+                                {% for field in auth_form %}
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>{{ field.label_tag }}</label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <p>{{ field.value }}</p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="tab-pane fade show active" id="info-edit" role="tabpanel" aria-labelledby="info-tab-edit">
+                                <form method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    {% for field in user_form %}
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label>{{ field.label_tag }}</label>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <p>{{ field }}</p>
+                                                {% for error in field.errors %}
+                                                    <div class="alert alert-danger">
+                                                        <strong>{{ error|escape }}</strong>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    {% if user_form.errors %}
+                                        {% for error in user_form.non_field_errors %}
+                                            <div class="alert alert-danger">
+                                                <strong>{{ error|escape }}</strong>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% for field in profile_form %}
+                                        {% if field.label != 'Authentication Status' %}
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label>{{ field.label_tag }}</label>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <p>{{ field }}</p>
+                                                    {% for error in field.errors %}
+                                                        <div class="alert alert-danger">
+                                                            <strong>{{ error|escape }}</strong>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <div class="row" style="display: none">
+                                                <div class="col-md-4">
+                                                    <label>{{ field.label_tag }}</label>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <p>{{ field }}</p>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if profile_form.errors %}
+                                        {% for error in profile_form.non_field_errors %}
+                                            <div class="alert alert-danger">
+                                                <strong>{{ error|escape }}</strong>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <div class="submit-wrap">
+                                        <input type="submit" id="submit-info" name="submit-info" value="SUBMIT">
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="tab-pane fade" id="certificate-edit" role="tabpanel" aria-labelledby="certificate-tab-edit">
+                                <form method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    {% for field in auth_form %}
+                                        {% if field.label != 'Authentication Status' %}
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label>{{ field.label_tag }}</label>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <p>{{ field }}</p>
+                                                    {% for error in field.errors %}
+                                                        <div class="alert alert-danger">
+                                                            <strong>{{ error|escape }}</strong>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <div class="row" style="display: none">
+                                                <div class="col-md-4">
+                                                    <label>{{ field.label_tag }}</label>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <p>{{ field }}</p>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <div class="submit-wrap">
+                                        <input type="submit" id="submit-certificate" name="submit-certificate" value="SUBMIT">
+                                    </div>
+                                </form>
+                                {% if auth_form.errors %}
+                                    {% for error in auth_form.non_field_errors %}
+                                        <div class="alert alert-danger">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
                     </div>
-                </form>
+                </div>
             </div>
-        </div>
     </div>
 {% endblock content %}
 
 
-{#{% extends "base.html" %}#}
-{#{% load crispy_forms_tags %}#}
-{#{% block body %}<body class="subpage">{% endblock %}#}
-{#{% block content %}#}
-{#    <div class="content-section">#}
-{#      <div class="media">#}
-{#        <img class="rounded-circle account-img" src="{{ user.uprofile.photo.url }}">#}
-{#        <div class="media-body">#}
-{#          <h2 class="account-heading">{{ user.username }}</h2>#}
-{#          <p class="text-secondary">{{ user.email }}</p>#}
-{#        </div>#}
-{#      </div>#}
-{#      <form method="POST" enctype="multipart/form-data">#}
-{#          {% csrf_token %}#}
-{#          <fieldset class="form-group">#}
-{#              <legend class="border-bottom mb-4">Profile Info</legend>#}
-{#              {{ user_form|crispy }}#}
-{#              {{ profile_form|crispy }}#}
-{#          </fieldset>#}
-{#          <div class="form-group">#}
-{#              <button class="btn btn-outline-info" type="submit">Update</button>#}
-{#          </div>#}
-{#      </form>#}
-{#    </div>#}
-{#{% endblock content %}#}
+<!--{#{% extends "base.html" %}#}-->
+<!--{#{% load crispy_forms_tags %}#}-->
+<!--{#{% block body %}<body class="subpage">{% endblock %}#}-->
+<!--{#{% block content %}#}-->
+<!--{#    <div class="content-section">#}-->
+<!--{#      <div class="media">#}-->
+<!--{#        <img class="rounded-circle account-img" src="{{ user.uprofile.photo.url }}">#}-->
+<!--{#        <div class="media-body">#}-->
+<!--{#          <h2 class="account-heading">{{ user.username }}</h2>#}-->
+<!--{#          <p class="text-secondary">{{ user.email }}</p>#}-->
+<!--{#        </div>#}-->
+<!--{#      </div>#}-->
+<!--{#      <form method="POST" enctype="multipart/form-data">#}-->
+<!--{#          {% csrf_token %}#}-->
+<!--{#          <fieldset class="form-group">#}-->
+<!--{#              <legend class="border-bottom mb-4">Profile Info</legend>#}-->
+<!--{#              {{ user_form|crispy }}#}-->
+<!--{#              {{ profile_form|crispy }}#}-->
+<!--{#          </fieldset>#}-->
+<!--{#          <div class="form-group">#}-->
+<!--{#              <button class="btn btn-outline-info" type="submit">Update</button>#}-->
+<!--{#          </div>#}-->
+<!--{#      </form>#}-->
+<!--{#    </div>#}-->
+<!--{#{% endblock content %}#}-->

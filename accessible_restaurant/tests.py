@@ -116,7 +116,7 @@ class TestForms(TestCase):
                 "city": "New York",
                 "Zip Code": "11220",
                 "state": "NY",
-                "Authorization Documents": "auth_documents",
+                "auth_status": "uncertified",
             }
         )
         self.assertTrue(form.is_valid())
@@ -316,6 +316,7 @@ class TestViews(TestCase):
         self.review_url = reverse(
             "accessible_restaurant:write_review", args=["FaPtColHYcTnZAxtoM33cA"]
         )
+        self.public_url = reverse("accessible_restaurant:public_facing", args=["8"])
 
     def test_index_view_GET(self):
         response = self.client.get(self.index_url)
@@ -375,7 +376,6 @@ class TestViews(TestCase):
         self.user.uprofile = User_Profile.objects.create(
             photo="default.jpg",
             phone="3474223609",
-            auth_documents="documents/pdfs/test.pdf",
             address="35 River Drive South",
             city="Jersey City",
             zip_code="07310",
@@ -386,7 +386,6 @@ class TestViews(TestCase):
             {
                 "photo": "default.jpg",
                 "phone": "3474223609",
-                "auth_documents": "documents/pdfs/test.pdf",
                 "address": "35 River Drive South",
                 "city": "Jersey City",
                 "zip_code": "07310",
@@ -442,6 +441,14 @@ class TestViews(TestCase):
         response = self.client.get(self.review_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "review/write_review.html")
+
+    def test_public_facing_view(self):
+        self.user = User.objects.create_user(
+            "huanjin", "zhanghuanjin97@gmail.com", "test123456"
+        )
+        response = self.client.get(self.public_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "publicface/public_user_detail.html")
 
     # def test_review_form_valid_view_GET(self):
     #     self.user = User.objects.create_user(
@@ -688,3 +695,18 @@ class TestModels(TestCase):
         )
 
         self.assertEqual(str(self.Restaurant), "Just Salad")
+
+
+class TestManageCertificate(TestCase):
+    def setUp(self):
+        self.management_url = reverse("accessible_restaurant:authenticate")
+        return super().setUp()
+
+    def test_can_view_management_page_correctly(self):
+        self.user = User.objects.create_superuser(
+            "admin", "shonna.x.tang@gmail.com", "accessible"
+        )
+        self.client.login(username="admin", password="accessible")
+        management_response = self.client.get(self.management_url)
+        self.assertEqual(management_response.status_code, 200)
+        self.assertTemplateUsed(management_response, "admin/manage.html")
