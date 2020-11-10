@@ -38,6 +38,8 @@ from .utils import (
     get_page_range,
     get_star_list,
     get_search_restaurant,
+    get_public_user_detail,
+    get_user_reviews,
 )
 
 
@@ -484,6 +486,7 @@ def restaurant_detail_view(request, business_id):
 
 
 @login_required
+@user_passes_test(lambda u: not u.is_superuser)
 def write_review_view(request, business_id):
     if request.method == "GET":
         review_form = ReviewPostForm(request.GET)
@@ -494,7 +497,6 @@ def write_review_view(request, business_id):
             temp.user = request.user
             temp.restaurant = restaurant_instance
             review_form.save()
-            messages.success(request, f'{"Your review has been updated!"}')
             return redirect("accessible_restaurant:detail", business_id)
 
     else:
@@ -542,3 +544,28 @@ def get_client_ip(request):
     else:
         ip = request.META.get("REMOTE_ADDR")
     return ip
+
+
+def user_detail_view(request, user):
+    response_info = get_public_user_detail(user)
+    response_review = get_user_reviews(user)
+    star_list = get_star_list()
+    for review in response_review:
+        r_full, r_half, r_null = star_list[float(review["rating"])]
+        review["full"] = r_full
+        review["half"] = r_half
+        review["null"] = r_null
+    context = {
+        "username": response_info.get("username"),
+        "email": response_info.get("email"),
+        "first_name": response_info.get("first_name"),
+        "last_name": response_info.get("last_name"),
+        "address": response_info.get("address"),
+        "phone": response_info.get("phone"),
+        "zip_code": response_info.get("zip_code"),
+        "state": response_info.get("state"),
+        "city": response_info.get("city"),
+        "photo": response_info.get("photo"),
+        "user_review": response_review,
+    }
+    return render(request, "publicface/public_user_detail.html", context)
