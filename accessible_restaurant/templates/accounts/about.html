@@ -1,18 +1,17 @@
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="stylesheet" href="style.css"> -->
+{% block staticlink %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'accessible_restaurant/about_style.css' %}" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/
         4.7.0/css/font-awesome.min.css">
-    <title>Our-Team</title>
-</head>
+{% endblock %}
 
-</body>
+{% block title %}<title>Our-Team</title>{% endblock %}
 
+{% block body %}<body class="subpage">{% endblock %}
+
+{% block content %}
 <body>
     <div class="container">
         <div class="header">
@@ -100,5 +99,4 @@
         </div>
     </div>
 </body>
-
-</html>
+{% endblock %}
