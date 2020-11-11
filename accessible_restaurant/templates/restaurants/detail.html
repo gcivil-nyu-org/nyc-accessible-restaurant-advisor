@@ -23,6 +23,18 @@
 				<div class="8u 12u$(medium)">
 					<header>
 						<ul class="actions">
+                            {% if messages %}
+                                <ul class="messages">
+                                    {% for message in messages %}
+                                        <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            <strong>{{ message.tags }}: </strong>{{ message }}
+                                        </div>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
 							<li><h2><strong>{{ restaurant.name }}</strong></h2></li>
 							{% if restaurant.compliant %}
 								<li><h4><i class="icon far fa-check-circle"></i>compliant</h4></li>
@@ -161,6 +173,16 @@
 									<span class="image fit"><img src="{{ review.photo.url }}" alt="" /></span>
 								</div>
 								<div class="row">
+                                    {% if review.auth_status and review.auth_status == 'certified' %}
+                                        <h5>
+                                            <i class="icon fas fa-wheelchair"></i>
+                                            Certified User
+                                        </h5>
+                                        <div class="help-tip">
+{#                                            <i class="icon fas fa-question help-tip"></i>#}
+                                            <p>Users who are certified to have disability by system.</p>
+                                        </div>
+                                    {% endif %}
                                     <a href = "{% url 'accessible_restaurant:public_facing' review.user_id %}">
                                         <h4>{{ review.username }}</h4>
                                     </a>

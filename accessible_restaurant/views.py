@@ -526,11 +526,24 @@ def write_review_view(request, business_id):
 
 
 @login_required
+@user_passes_test(lambda u: not u.is_superuser)
 def add_comment_view(request, business_id, review_id):
     if request.method == "POST":
         comment_form = CommentForm(request.POST)
         review = Review.objects.get(id=review_id)
         user = request.user
+
+        print(review.restaurant.user)
+        if user.is_restaurant:
+            if (
+                review.restaurant.user == None
+                or request.user.id != review.restaurant.user.id
+            ):
+                messages.warning(
+                    request,
+                    f'{"Sorry, as a restaurant user, you can only make comments under your own restaurants and this one is not yours. "}',
+                )
+                return redirect("accessible_restaurant:detail", business_id)
 
         if comment_form.is_valid():
             temp_form = comment_form.save(commit=False)
