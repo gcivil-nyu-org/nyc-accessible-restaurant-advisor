@@ -710,3 +710,9 @@ class TestManageCertificate(TestCase):
         management_response = self.client.get(self.management_url)
         self.assertEqual(management_response.status_code, 200)
         self.assertTemplateUsed(management_response, "admin/manage.html")
+
+
+# add test
+class TestPublicFacing(TestCase):
+    def setUp(self):
+        return super().setUp()
