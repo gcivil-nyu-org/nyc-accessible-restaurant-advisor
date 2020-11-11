@@ -30,7 +30,14 @@ from .forms import (
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 
-from .models import User, Restaurant, Review, ApprovalPendingUsers, User_Profile
+from .models import (
+    User,
+    Restaurant,
+    Review,
+    ApprovalPendingUsers,
+    User_Profile,
+    Restaurant_Profile,
+)
 from .utils import (
     get_restaurant_list,
     get_filter_restaurant,
@@ -450,6 +457,8 @@ def restaurant_detail_view(request, business_id):
                 day["end"] = end[:2] + ":" + end[2:]
                 hours.append(day)
 
+        comment_form = CommentForm()
+
         context = {
             "restaurant": restaurant,
             "restaurant_data": restaurant_data,
@@ -481,6 +490,7 @@ def restaurant_detail_view(request, business_id):
             "accessible_path_rating_full": accessible_path_rating_full,
             "accessible_path_rating_half": accessible_path_rating_half,
             "accessible_path_rating_null": accessible_path_rating_null,
+            "comment_form": comment_form,
         }
         return render(request, "restaurants/detail.html", context)
 
@@ -488,35 +498,51 @@ def restaurant_detail_view(request, business_id):
 @login_required
 @user_passes_test(lambda u: not u.is_superuser)
 def write_review_view(request, business_id):
-    if request.method == "GET":
-        review_form = ReviewPostForm(request.GET)
-        restaurant_instance = Restaurant.objects.get(business_id=business_id)
+    if request.user.is_user:
+        if request.method == "GET":
+            review_form = ReviewPostForm(request.GET)
+            restaurant_instance = Restaurant.objects.get(business_id=business_id)
 
-        if review_form.is_valid():
-            temp = review_form.save(commit=False)
-            temp.user = request.user
-            temp.restaurant = restaurant_instance
-            review_form.save()
-            return redirect("accessible_restaurant:detail", business_id)
+            if review_form.is_valid():
+                temp = review_form.save(commit=False)
+                temp.user = request.user
+                temp.restaurant = restaurant_instance
+                review_form.save()
+                return redirect("accessible_restaurant:detail", business_id)
 
+        else:
+            review_form = ReviewPostForm(request.GET)
+            # restaurant_instance = Restaurant.objects.get(business_id=business_id)
+
+        context = {
+            "user": request.user,
+            "restaurant": restaurant_instance,
+            "review_form": review_form,
+        }
+        return render(request, "review/write_review.html", context)
     else:
-        review_form = ReviewPostForm(request.GET)
-        # restaurant_instance = Restaurant.objects.get(business_id=business_id)
-
-    context = {
-        "user": request.user,
-        "restaurant": restaurant_instance,
-        "review_form": review_form,
-    }
-    return render(request, "review/write_review.html", context)
+        return redirect("accessible_restaurant:detail", business_id)
 
 
 @login_required
+@user_passes_test(lambda u: not u.is_superuser)
 def add_comment_view(request, business_id, review_id):
     if request.method == "POST":
         comment_form = CommentForm(request.POST)
         review = Review.objects.get(id=review_id)
         user = request.user
+
+        print(review.restaurant.user)
+        if user.is_restaurant:
+            if (
+                review.restaurant.user == None
+                or request.user.id != review.restaurant.user.id
+            ):
+                messages.warning(
+                    request,
+                    f'{"Sorry, as a restaurant user, you can only make comments under your own restaurants and this one is not yours. "}',
+                )
+                return redirect("accessible_restaurant:detail", business_id)
 
         if comment_form.is_valid():
             temp_form = comment_form.save(commit=False)

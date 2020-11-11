@@ -58,8 +58,9 @@
 }
 
 .about {
-    margin: 20px 0;
+    margin: 20px 50px;
     font-weight: lighter;
+    line-height: 1.5;
     color: #4e4e4e;
 }
 

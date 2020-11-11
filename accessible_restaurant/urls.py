@@ -52,12 +52,14 @@ urlpatterns = [
     path(
         "restaurants/detail/<business_id>", views.restaurant_detail_view, name="detail"
     ),
+    # Review and comments
     path("writeareview/<business_id>", views.write_review_view, name="write_review"),
+    path(
+        "restaurants/detail/<business_id>/<review_id>/",
+        views.add_comment_view,
+        name="add_comment",
+    ),
     path("user_detail/<user>", views.user_detail_view, name="public_facing"),
-    # # Search restaurant
-    # path(
-    #     "restaurants/browse/search/<page>", views.search_restaurant_view, name="search"
-    # )
     # admin manage the certificate
     path("manage/", views.authentication_view, name="authenticate"),
 ]
