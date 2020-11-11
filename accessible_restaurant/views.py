@@ -458,7 +458,6 @@ def restaurant_detail_view(request, business_id):
                 hours.append(day)
 
         comment_form = CommentForm()
-        user = request.user
 
         context = {
             "restaurant": restaurant,
