@@ -303,6 +303,12 @@ def restaurant_profile_view(request):
 
 
 def restaurant_list_view(request, page, sort_property):
+    if sort_property == "nearest":
+        # print("Hello")
+        messages.warning(
+            request,
+            f'{"Your current IP address will be used for this feature. "}',
+        )
     page = int(page)
     client_ip = get_client_ip(request)
     restaurants = Restaurant.objects.all()
