@@ -98,6 +98,7 @@ def get_local_restaurant_reviews(business_id):
             profile = User_Profile.objects.get(user=user)
             photo = profile.photo
             review.user_id = user.id
+            review.auth_status = profile.auth_status
             review.username = user.username
             review.photo = photo
             review.comments_set = reversed(list(comments))
