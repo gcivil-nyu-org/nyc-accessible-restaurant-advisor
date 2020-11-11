@@ -316,7 +316,6 @@ class TestViews(TestCase):
         self.review_url = reverse(
             "accessible_restaurant:write_review", args=["FaPtColHYcTnZAxtoM33cA"]
         )
-        self.public_url = reverse("accessible_restaurant:public_facing", args=["8"])
 
     def test_index_view_GET(self):
         response = self.client.get(self.index_url)
