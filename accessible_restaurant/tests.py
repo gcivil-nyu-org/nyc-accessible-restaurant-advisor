@@ -744,6 +744,7 @@ class TestPublicFacing(TestCase):
             category3="Vegetarian",
         )
         Review.objects.create(
+            user=self.user,
             restaurant=self.restaurant,
             review_date="2020-01-01 00:00:00",
             review_context="test review",
