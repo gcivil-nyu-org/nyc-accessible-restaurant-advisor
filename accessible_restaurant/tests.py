@@ -417,7 +417,10 @@ class TestViews(TestCase):
 
     def test_write_review_view_GET(self):
         self.user = User.objects.create_user(
-            "huanjin", "zhanghuanjin97@gmail.com", "test123456"
+            "huanjin",
+            "zhanghuanjin97@gmail.com",
+            "test123456",
+            is_user=True,
         )
         self.client.login(username="huanjin", password="test123456")
 
@@ -439,8 +442,8 @@ class TestViews(TestCase):
             category3="Juice Bars & Smoothies",
         )
         response = self.client.get(self.review_url)
-        self.assertEqual(response.status_code, 302)
-        # self.assertTemplateUsed(response, "review/write_review.html")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "review/write_review.html")
 
     # def test_public_facing_view(self):
     #     self.user = User.objects.create_user(
@@ -712,7 +715,15 @@ class TestManageCertificate(TestCase):
         self.assertTemplateUsed(management_response, "admin/manage.html")
 
 
-# add test
-class TestPublicFacing(TestCase):
-    def setUp(self):
-        return super().setUp()
+# class TestPublicFacing(TestCase):
+#     def setUp(self):
+#         User_Profile.objects.create(
+#
+#         )
+#         Review.objects.create(
+#
+#         )
+#         self.publicface_url = reverse("accessible_restaurant:public_facing", args=["user"])
+#         return super().setUp()
+#
+#     def test_can_view_public_facing_page_correctly(self):
