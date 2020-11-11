@@ -84,6 +84,9 @@ class UserCertUpdateForm(forms.ModelForm):
             "auth_documents": "Authentication Documents",
             "auth_status": "Authentication Status",
         }
+        help_texts = {
+            "auth_documents": ("Doctor's certificates and SSID allowed"),
+        }
 
 
 class UserCertVerifyForm(forms.ModelForm):
