@@ -32,6 +32,11 @@ class User_Profile(models.Model):
     auth_status = models.CharField(
         max_length=16, choices=AUTH_STATUS_CHOICES, default="uncertified"
     )
+    latitude = models.DecimalField(max_digits=15, decimal_places=5,default=0.0)
+    longitude = models.DecimalField(max_digits=15, decimal_places=5,default=0.0)
+    curr_lat = models.DecimalField(max_digits=15, decimal_places=5,default=0.0)
+    curr_lon = models.DecimalField(max_digits=15, decimal_places=5,default=0.0)
+
 
     def __str__(self):
         return f"{self.user.username} User Profile"
