@@ -43,6 +43,13 @@
 
 /* Containers */
 
+    .leaflet-container {  /* all maps */
+        min-width:  400px;
+        min-height: 600px;
+        height: 600px;
+        width: 75%;
+    }
+
 	.container {
 		margin-left: auto;
 		margin-right: auto;
