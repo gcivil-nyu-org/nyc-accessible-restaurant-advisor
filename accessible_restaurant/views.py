@@ -12,6 +12,8 @@ from django.utils.encoding import force_bytes, force_text
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.mail import send_mail, BadHeaderError
+from django.conf import settings
 
 # from .token_generator import generate_token
 from django.core.mail import EmailMessage
@@ -26,6 +28,7 @@ from .forms import (
     UserCertUpdateForm,
     UserCertVerifyForm,
     CommentForm,
+    ContactForm,
 )
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
@@ -52,7 +55,22 @@ from .utils import (
 
 # Create your views here.
 def index_view(request):
-    return render(request, "index.html")
+    if request.method == "GET":
+        form = ContactForm()
+    else:
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            subject = form.data.get("Subject")
+            from_email = form.data.get("Email")
+            message = form.data.get("Message")
+            try:
+                send_mail(
+                    subject, message, from_email, ["nyc.accessible.rest@gmail.com"]
+                )
+            except BadHeaderError:
+                return HttpResponse("Invalid header found.")
+            return redirect("accessible_restaurant:index")
+    return render(request, "index.html", {"form": form})
 
 
 def about_view(request):
@@ -601,3 +619,7 @@ def user_detail_view(request, user):
         "user_review": response_review,
     }
     return render(request, "publicface/public_user_detail.html", context)
+
+
+def faq_view(request):
+    return render(request, "faq/faq.html")
