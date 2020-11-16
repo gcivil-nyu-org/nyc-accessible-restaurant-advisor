@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+</html>
+
+{% extends "base.html" %}
+
+{% block staticlink %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'accessible_restaurant/faq_style.css' %}" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+{% endblock %}
+
+{% block title %}Frequently Asked Questions{% endblock %}
+
+{% block body %}<body class="subpage">{% endblock %}
+
+{% block content %}
+<body>
+    <div class="container-fluid">
+        <div class="inner">
+        <div class="row">
+            <div class = "col-md-10">
+                <div class="header">
+                    <h1><strong>General Questions</strong></h1>
+                </div>
+                <button type="button" class="collapsible">Q: What does certified user mean?</button>
+                <div class="content">
+                    <p>Certified users refer to users with disabilities who have been certified by us by providing some materials. The reviews of these certified users can help others who have the same experience. </p>
+                </div>
+                <button type="button" class="collapsible">Q: Would my authentication files be viewed by other users?</button>
+                <div class="content">
+                    <p>When you provide your disability certificate, we will temporarily save it in the background so that the website staff can approve your application. After the approval, your certification documents will no longer be stored in our database. We emphasize that we will protect your privacy at all times. Except for the necessary staff, other users will never be able to view your certification documents.</p>
+                </div>
+                <button type="button" class="collapsible">Q: How do I reply a review?</button>
+                <div class="content">
+                    <p>When the user clicks to enter the restaurant’s homepage, some reviews from other users will be found below. If the user has more questions about the review, they can click comments under the review to write reply.</p>
+                </div>
+                <button type="button" class="collapsible">Q: How do I change or reset my password if I can not login the website?</button>
+                <div class="content">
+                    <p>When you forget your login password or username, you can reset your password by clicking on the forgot password on the login page. You only need to provide your registered email address, and we will send a verification email to your email address. After that, you can reset username or password.</p>
+                </div>
+                <button type="button" class="collapsible">Q: What does accessible service rating mean?</button>
+                <div class="content">
+                    <p>It includes some aspects of accessible services, such as the width of the door, the width of the aisle, etc. The user can score these aspects when leaving a review, so that other users can intuitively see whether the hotel provides relevant accessible services.</p>
+                </div>
+                <button type="button" class="collapsible">Q: How can I upload my authentication files?</button>
+                <div class="content">
+                    <p>If users want to upload their certification files, they can click on the profile in the upper right corner to enter the personal homepage, click on edit profile, and then select certificate to upload the files.</p>
+                </div>
+                <button type="button" class="collapsible">Q: Will I be informed if my IP address is used?</button>
+                <div class="content">
+                    <p>When browsing restaurants, each time the user chooses to sort by distance, we will notify you that we are using your location</p>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="header">
+                    <h1><strong>Contact</strong></h1>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="form-actions">
+                        <button class="btn btn-wide btn-dark" type="submit">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        });
+    }
+</script>
+{% endblock %}
