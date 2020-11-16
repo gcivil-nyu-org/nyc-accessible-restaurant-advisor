@@ -14,52 +14,90 @@
 {% block body %}<body class="subpage">{% endblock %}
 
 {% block content %}
-    <div class="container-fluid mt-100">
-     <div class="row">
-         <div class="col-md-12">
-             <div class="card mb-3">
-                 <div class="card-header pr-0 pl-0">
-                     <div class="row no-gutters align-items-center w-100">
-                         <div class="col font-weight-bold pl-3">Username</div>
-                         <div class="d-none d-md-block col-9 text-muted">
-                             <div class="row no-gutters align-items-center">
-                                 <div class="col-6">Certificate</div>
-                                 <div class="col-2">Status</div>
-                                 <div class="col-2">Creation Time</div>
-                                 <div class="col-2">Actions</div>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-                 {% if messages %}
-                    {% for message in messages %}
-                        {% if message.tags %}
-                            <script>alert("{{ message }}")</script>
-                        {% endif %}
-                    {% endfor %}
-                 {% endif %}
-                 {% for curr_form in certificate_list %}
-                     <form method="post" action="{% url 'accessible_restaurant:authenticate' %}">
-                         {% csrf_token %}
-                         <div class="card-body py-3">
-                             <div class="row no-gutters align-items-center w-100">
-                                 <input type="text" class="profile-edit-btn" name="user_id" value="{{ curr_form.instance.user.id }}" style="display: none"/>
-                                 <div class="col"><a class="text-big font-weight-semibold" data-abc="true">{{ curr_form.instance.user.username }}</a></div>
-                                 <div class="d-none d-md-block col-9">
-                                     <div class="row no-gutters align-items-center">
-                                         <div class="col-6"><a href="{{ curr_form.instance.auth_documents.url }}">{{ curr_form.instance.auth_documents.url }}</a></div>
-                                         <div class="col-2">{{ curr_form.auth_status }}</div>
-                                         <div class="col-2">{{ curr_form.instance.time_created }}</div>
-                                         <div class="col-2"><input type="submit" id="submit-info" name="sb" value="SUBMIT"></div>
-                                     </div>
-                                 </div>
-                             </div>
-                         </div>
-                     </form>
-                     <hr class="m-0">
-                 {% endfor %}
-             </div>
-         </div>
-     </div>
- </div>
+    <section id="tabs" class="project-tab">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if message.tags %}
+                                <script>alert("{{ message }}")</script>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    <nav>
+                        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-user-tab" data-toggle="tab" href="#nav-user" role="tab" aria-controls="nav-user" aria-selected="true">User Authentication</a>
+                            <a class="nav-item nav-link" id="nav-restaurant-tab" data-toggle="tab" href="#nav-restaurant" role="tab" aria-controls="nav-restaurant" aria-selected="false">Restaurant Authentication</a>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-user" role="tabpanel" aria-labelledby="nav-user-tab">
+                            <table class="table" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 15%">Username</th>
+                                        <th style="width: 15%">Name</th>
+                                        <th style="width: 20%">Certificate</th>
+                                        <th style="width: 15%">Status</th>
+                                        <th style="width: 25%">Creation Time</th>
+                                        <th style="width: 10%">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for curr_form in user_certificate_list %}
+                                     <form method="post" action="{% url 'accessible_restaurant:authenticate' %}">
+                                         {% csrf_token %}
+                                         <input type="text" class="profile-edit-btn" name="user_id" value="{{ curr_form.instance.user.id }}" style="display: none"/>
+                                         <tr>
+                                             <td>{{ curr_form.instance.user.username }}</td>
+                                             <td>{{ curr_form.instance.user.first_name }} {{ curr_form.instance.user.last_name }}</td>
+                                             <td><a href="{{ curr_form.instance.auth_documents.url }}">Certificate File</a></td>
+                                             <td>{{ curr_form.auth_status }}</td>
+                                             <td>{{ curr_form.instance.time_created }}</td>
+                                             <td><input type="submit" id="submit-user" name="submit-user" value="SUBMIT"></td>
+                                         </tr>
+                                     </form>
+                                     <hr class="m-0">
+                                 {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                            <div class="tab-pane fade" id="nav-restaurant" role="tabpanel" aria-labelledby="nav-restaurant-tab">
+                                <table class="table table-hover" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 15%">Username</th>
+                                            <th style="width: 23%">Restaurant</th>
+                                            <th style="width: 16%">Business License</th>
+                                            <th style="width: 16%">Status</th>
+                                            <th style="width: 20%">Creation Time</th>
+                                            <th style="width: 10%">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for curr_form in restaurant_certificate_list %}
+                                         <form method="post" action="{% url 'accessible_restaurant:authenticate' %}">
+                                             {% csrf_token %}
+                                             <input type="text" class="profile-edit-btn" name="owner_id" value="{{ curr_form.instance.user.id }}" style="display: none"/>
+                                             <input type="text" class="profile-edit-btn" name="restaurant_id" value="{{ curr_form.instance.restaurant.business_id }}" style="display: none"/>
+                                             <tr>
+                                                 <td>{{ curr_form.instance.user.username }}</td>
+                                                 <td>{{ curr_form.instance.restaurant.name }}</td>
+                                                 <td><a href="{{ curr_form.instance.auth_documents.url }}">Permit File</a></td>
+                                                 <td>{{ curr_form.auth_status }}</td>
+                                                 <td>{{ curr_form.instance.time_created }}</td>
+                                                 <td><input type="submit" id="submit-restaurant" name="submit-restaurant" value="SUBMIT"></td>
+                                             </tr>
+                                         </form>
+                                         <hr class="m-0">
+                                     {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 {% endblock %}
