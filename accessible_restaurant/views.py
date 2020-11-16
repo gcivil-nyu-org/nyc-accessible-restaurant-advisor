@@ -55,22 +55,7 @@ from .utils import (
 
 # Create your views here.
 def index_view(request):
-    if request.method == "GET":
-        form = ContactForm()
-    else:
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            subject = form.data.get("Subject")
-            from_email = form.data.get("Email")
-            message = form.data.get("Message")
-            try:
-                send_mail(
-                    subject, message, from_email, ["nyc.accessible.rest@gmail.com"]
-                )
-            except BadHeaderError:
-                return HttpResponse("Invalid header found.")
-            return redirect("accessible_restaurant:index")
-    return render(request, "index.html", {"form": form})
+    return render(request, "index.html")
 
 
 def about_view(request):
@@ -622,4 +607,19 @@ def user_detail_view(request, user):
 
 
 def faq_view(request):
-    return render(request, "faq/faq.html")
+    if request.method == "GET":
+        form = ContactForm()
+    else:
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            subject = form.data.get("Subject")
+            from_email = form.data.get("Email")
+            message = form.data.get("Message")
+            try:
+                send_mail(
+                    subject, message, from_email, ["nyc.accessible.rest@gmail.com"]
+                )
+            except BadHeaderError:
+                return HttpResponse("Invalid header found.")
+            return redirect("accessible_restaurant:faq")
+    return render(request, "faq/faq.html", {"form": form})
