@@ -127,6 +127,25 @@ class Restaurant(models.Model):
         return f"{self.name}"
 
 
+class ApprovalPendingRestaurants(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, related_name="auth_user"
+    )
+    restaurant = models.ForeignKey(
+        Restaurant, on_delete=models.CASCADE, null=True, related_name="auth_rest"
+    )
+    auth_documents = models.FileField(blank=False, upload_to="documents/pdfs/")
+    AUTH_STATUS_CHOICES = [
+        ("approve", "Approve"),
+        ("pending", "Pending"),
+        ("disapprove", "Disapprove"),
+    ]
+    auth_status = models.CharField(
+        max_length=16, choices=AUTH_STATUS_CHOICES, default="N/A"
+    )
+    time_created = models.DateTimeField(auto_now_add=True)
+
+
 class Review(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, null=True, related_name="review_user"
