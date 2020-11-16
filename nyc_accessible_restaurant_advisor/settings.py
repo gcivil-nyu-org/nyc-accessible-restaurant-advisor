@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "import_export",
     "django_filters",
     "leaflet",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -123,10 +124,30 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+
 STATIC_URL = "/static/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
+
+# AWS settings
+AWS_ACCESS_KEY_ID = 'AKIAR4MJX54OQDOW2X6E'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'accessible-restaurant'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+# AWS_DEFAULT_ACL = 'public-read'
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
+AWS_MEDIA_LOCATION = 'media'
+MEDIAFILES_DIRS = [
+    os.path.join(BASE_DIR, 'media'),
+]
+MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_MEDIA_LOCATION)
+DEFAULT_FILE_STORAGE = 'accessible_restaurant.storage_backends.MediaStorage'
+
+
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
