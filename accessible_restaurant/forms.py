@@ -8,6 +8,8 @@ from accessible_restaurant.models import (
     Restaurant_Profile,
     Review,
     ApprovalPendingUsers,
+    ApprovalPendingRestaurants,
+    Restaurant,
     Comment,
 )
 from django.utils.safestring import mark_safe
@@ -118,6 +120,43 @@ class RestaurantProfileUpdateForm(forms.ModelForm):
         }
 
 
+class RestaurantCertUpdateForm(forms.ModelForm):
+    class Meta:
+        model = ApprovalPendingRestaurants
+        restaurant = forms.ModelChoiceField(
+            queryset=Restaurant.objects.filter(user=None), widget=forms.Select
+        )
+        fields = [
+            "restaurant",
+            "auth_documents",
+        ]
+        labels = {
+            "restaurant": "Restaurant Choices",
+            "auth_documents": "Authentication Documents",
+        }
+        help_texts = {
+            "auth_documents": "Business Licenses Allowed",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(RestaurantCertUpdateForm, self).__init__(*args, **kwargs)
+        self.fields["restaurant"].label_from_instance = self.label_from_instance
+        self.fields["restaurant"].empty_label = "Select a restaurant"
+
+    @staticmethod
+    def label_from_instance(obj):
+        return "%s, %s, %s" % (obj.name, obj.address, obj.city)
+
+
+class RestaurantCertVerifyForm(forms.ModelForm):
+    class Meta:
+        model = ApprovalPendingRestaurants
+        fields = [
+            "auth_status",
+        ]
+        labels = {"auth_status": "Authentication Status"}
+
+
 class HorizontalRadioSelect(forms.RadioSelect):
     template_name = "horizontal_select.html"
 
@@ -175,3 +214,9 @@ class CommentForm(forms.ModelForm):
         labels = {
             "text": "New Comments",
         }
+
+
+class ContactForm(forms.Form):
+    Email = forms.EmailField(required=True)
+    Subject = forms.CharField(required=True)
+    Message = forms.CharField(widget=forms.Textarea, required=True)
