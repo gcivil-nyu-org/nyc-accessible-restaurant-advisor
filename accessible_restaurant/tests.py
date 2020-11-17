@@ -23,6 +23,7 @@ from accessible_restaurant.forms import (
     UserUpdateForm,
     RestaurantProfileUpdateForm,
     ReviewPostForm,
+    ContactForm,
 )
 
 from django.test import TestCase, Client
@@ -833,3 +834,24 @@ class TestPublicFacing(TestCase):
         self.assertEqual(isres_response.status_code, 200)
         self.assertEqual(isuser_response.status_code, 200)
         self.assertTemplateUsed(isuser_response, "publicface/public_user_detail.html")
+
+
+class TestFaqContact(TestCase):
+    def setUp(self):
+        self.faq_url = reverse("accessible_restaurant:faq")
+        return super().setUp()
+
+    def test_can_view_faq_page(self):
+        form_data = {
+            "Email": "zhanghuanjin97@gmail.com",
+            "Subject": "Test Subject",
+            "Message": "Test Message",
+        }
+        form = ContactForm(form_data)
+        self.assertTrue(form.is_valid())
+        get_response = self.client.get(self.faq_url)
+        post_response = self.client.post(self.faq_url)
+        self.assertEqual(post_response.status_code, 200)
+        self.assertTemplateUsed(post_response, "faq/faq.html")
+        self.assertEqual(get_response.status_code, 200)
+        self.assertTemplateUsed(get_response, "faq/faq.html")
