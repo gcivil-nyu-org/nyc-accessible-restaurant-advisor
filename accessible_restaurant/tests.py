@@ -300,6 +300,7 @@ class TestViews(TestCase):
         self.client = Client()
         self.index_url = reverse("accessible_restaurant:index")
         self.logout_url = reverse("accessible_restaurant:logout")
+        self.about_url = reverse("accessible_restaurant:about")
         self.signup_url = reverse("accessible_restaurant:signup")
         self.emailsent_url = reverse("accessible_restaurant:emailsent")
         self.activate_url = reverse(
@@ -326,6 +327,11 @@ class TestViews(TestCase):
     def test_logout_view_GET(self):
         response = self.client.get(self.logout_url)
         self.assertEqual(response.status_code, 302)
+
+    def test_about_view_GET(self):
+        response = self.client.get(self.about_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/about.html")
 
     def test_signup_view_GET(self):
         response = self.client.get(self.signup_url)
