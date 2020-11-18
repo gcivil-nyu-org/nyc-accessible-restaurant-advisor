@@ -16,6 +16,12 @@
 {% block body %}<body class="subpage">{% endblock %}
 
 {% block content %}
+    <style>
+    #map {
+        width: 960px;
+        height:500px;
+    }
+    </style>
     <section id="main" class="wrapper">
         <div class="inner">
             <header class="align-center">
@@ -23,19 +29,7 @@
                 {% leaflet_css %}
                 {% leaflet_js %}
             </header>
-            {% if messages %}
-                <ul class="messages">
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <strong>{{ message.tags }}: </strong>{{ message }}
-                        </div>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
+            
             <div class="row 200%">
                 <div class="3u 12u$(medium)">
                     <h3>Filters</h3>
@@ -136,6 +130,18 @@
                     <a href="{% url 'accessible_restaurant:browse' 0 'default' %}" class="button">Clear</a >
                 </div>
                 <div class="9u 12u$(medium)">
+                    {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <strong>{{ message.tags }}: </strong>{{ message }}
+                                </div>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                     <form method="get" action="{% url 'accessible_restaurant:browse' 0 'default' %}">
                         {% csrf_token %}
                         <div class="row uniform">
@@ -164,13 +170,152 @@
                     </div>
                     <div class = "container">
                         <!-- Search input -->
-                      <input id="searchInput" class="controls" type="text" placeholder="Enter a location">
-              
+                      <input id="searchInput" class="controls" type="text" placeholder="Enter your current location">
+                
                       <!-- Google map -->
                       <div id="map"></div>
+                
+                      <!-- Display geolocation data -->
+                      <!-- <ul class="geo-data"> 
+                          <li>Full Address: <span id="location"></span></li>
+                          <li>Postal Code: <span id="postal_code"></span></li>
+                          <li>Country: <span id="country"></span></li>
+                          <li>Latitude: <span id="lat"></span></li>
+                          <li>Longitude: <span id="lon"></span></li>
+                      </ul> -->
+                    </div>
+                    <!-- <div id="mapid">
+                    <ul class="alt"> -->
+                    <!-- <div id="map"></div> -->
+                    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyDldJIuqREsdZZqcb3ZY8S5kuFWS0DUjc4&callback=initMap" async defer></script>
+                    <script type = "text/javascript">
+                        var u_latitude;
+                        var u_longitude;
+                        function initMap(map) {
+                            var lat1;
+                            var long1;
+                            {% for restaurant in restaurants %}
+                                var lat1 = {{ restaurant.latitude }};
+                                var long1 = {{ restaurant.longitude }};
+                            {% endfor %}
+                            
+                            var map = new google.maps.Map(document.getElementById('map'), {
+                            center: {lat: lat1, lng: long1},
+                            zoom: 14
+                            });
+                            var input = document.getElementById('searchInput');
+                            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+                        
+                            var autocomplete = new google.maps.places.Autocomplete(input);
+                            autocomplete.bindTo('bounds', map);
+                        
+                            var infowindow = new google.maps.InfoWindow();
+                            var marker = new google.maps.Marker({
+                                map: map,
+                                anchorPoint: new google.maps.Point(0, -29)
+                            });
+                            // if ({{user.uprofile.latitude}})
+                            // const myLatLng = { lat: {{user.uprofile.latitude}},  lng: {{user.uprofile.longitude}} };
+                            // new google.maps.Marker({
+                            //     position: myLatLng,
+                            //     map,
+                            //     title: "Your location",
+                            // });
+                            const image = "https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/32x32/plain/disability.png";
+                            {% for restaurant in restaurants %}
+                                var lat_restaurant = {{ restaurant.latitude }};
+                                var long_restaurant = {{ restaurant.longitude }};
+                                var restaurant_name = "{{ restaurant.name }}";
+                                console.log(restaurant_name);
+                                // console.log(typeof(lat_restaurant))
+                                // lat_restaurant = int(lat_restaurant)
+                                // var myLatLng1 = { lat: {{ restaurant.latitude }},  lng: {{ restaurant.longitude }} };
+                                // long_restaurant = int(long_restaurant)
+                                // console.log({{ restaurant.latitude }},{{ restaurant.longitude }})
+                                addMarker({lat:lat_restaurant, lng:long_restaurant}, restaurant_name)
+                                // addMarker({lat:40.709569, lng:-74.006834})
+                                 
+                            {% endfor %}
+                            
+
+                            function addMarker(coords, restaurant_name){
+                                var marker = new google.maps.Marker({
+                                    position:coords,
+                                    map,
+                                    title: restaurant_name,
+                                    icon: image
+                                })
+                            }
+                        
+                            autocomplete.addListener('place_changed', function() {
+                                infowindow.close();
+                                marker.setVisible(false);
+                                var place = autocomplete.getPlace();
+                                if (!place.geometry) {
+                                    window.alert("Autocomplete's returned place contains no geometry");
+                                    return;
+                                }
+                        
+                                // If the place has a geometry, then present it on a map.
+                                if (place.geometry.viewport) {
+                                    map.fitBounds(place.geometry.viewport);
+                                } else {
+                                    map.setCenter(place.geometry.location);
+                                    map.setZoom(17);
+                                }
+                                marker.setIcon(({
+                                    url: place.icon,
+                                    size: new google.maps.Size(71, 71),
+                                    origin: new google.maps.Point(0, 0),
+                                    anchor: new google.maps.Point(17, 34),
+                                    scaledSize: new google.maps.Size(35, 35)
+                                }));
+                                marker.setPosition(place.geometry.location);
+                                marker.setPosition([43.64701, -79.39425]);
+                                marker.setVisible(true);
+                            
+                                var address = '';
+                                if (place.address_components) {
+                                    address = [
+                                    (place.address_components[0] && place.address_components[0].short_name || ''),
+                                    (place.address_components[1] && place.address_components[1].short_name || ''),
+                                    (place.address_components[2] && place.address_components[2].short_name || '')
+                                    ].join(' ');
+                                }
+                            
+                                infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+                                infowindow.open(map, marker);
+                            
+                                // Location details
+                                // for (var i = 0; i < place.address_components.length; i++) {
+                                //     if(place.address_components[i].types[0] == 'postal_code'){
+                                //         document.getElementById('postal_code').innerHTML = place.address_components[i].long_name;
+                                //     }
+                                //     if(place.address_components[i].types[0] == 'country'){
+                                //         document.getElementById('country').innerHTML = place.address_components[i].long_name;
+                                //     }
+                                // }
+                                // console.log(document.getElementById('location').innerHTML);
+                                // document.getElementById('location').innerHTML = place.formatted_address;
+                                // document.getElementById('lat').innerHTML = place.geometry.location.lat();
+                                // document.getElementById('lon').innerHTML = place.geometry.location.lng();
+                                // u_latitude = place.geometry.location.lat();
+                                // u_longitude = place.geometry.location.lng();
+                                // console.log(u_latitude, u_longitude);  
+                                
+                            });
+                        }
+                    </script>
+                
+                    <!-- <div class = "container">
+
+                      <input id="searchInput" class="controls" type="text" placeholder="Enter a location"> -->
+              
+                      <!-- Google map -->
+                      <!-- <div id="map"></div> -->
               
                       <!-- Display geolocation data -->
-                      <ul class="geo-data">
+                      <!-- <ul class="geo-data">
                           <li>Full Address: <span id="location"></span></li>
                           <li>Postal Code: <span id="postal_code"></span></li>
                           <li>Country: <span id="country"></span></li>
@@ -181,7 +326,7 @@
                     <div id="mapid">
                     <ul class="alt">
                     <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyDldJIuqREsdZZqcb3ZY8S5kuFWS0DUjc4&callback=initMap" async defer></script>
-                    <script>
+                    <script type = "text/javascript">
                         var u_latitude;
                         var u_longitude;
                         function initMap(map) {
@@ -237,96 +382,12 @@
                                 }
                             
                                 infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
-                                infowindow.open(map, marker);
+                                infowindow.open(map, marker); -->
                             
-                                // Location details
-                                for (var i = 0; i < place.address_components.length; i++) {
-                                    if(place.address_components[i].types[0] == 'postal_code'){
-                                        document.getElementById('postal_code').innerHTML = place.address_components[i].long_name;
-                                    }
-                                    if(place.address_components[i].types[0] == 'country'){
-                                        document.getElementById('country').innerHTML = place.address_components[i].long_name;
-                                    }
-                                }
-                                console.log(document.getElementById('location').innerHTML);
-                                document.getElementById('location').innerHTML = place.formatted_address;
-                                document.getElementById('lat').innerHTML = place.geometry.location.lat();
-                                document.getElementById('lon').innerHTML = place.geometry.location.lng();
-                                u_latitude = place.geometry.location.lat();
-                                u_longitude = place.geometry.location.lat();
-                                console.log(u_latitude, u_longitude);  
-                            
-                            //     map.setView([u_latitude, u_longitude], 11);
-                            //     map.options.minZoom = 10;
-                            //     map.options.maxZoom = 14;
-                            //     var homeIcon = new L.Icon({
-                            //     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
-                            //     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                            //     iconSize: [25, 41],
-                            //     iconAnchor: [12, 41],
-                            //     popupAnchor: [1, -34],
-                            //     shadowSize: [41, 41]
-                            // });
-                            // L.marker([u_latitude, u_longitude]).addTo(map);
-                            });
-                        }
-                        
-                            function distance(lat1, lon1, lat2, lon2, unit) {
-                                if ((lat1 == lat2) && (lon1 == lon2)) {
-                                    return 0;
-                                }
-                                else {
-                                    var radlat1 = Math.PI * lat1/180;
-                                    var radlat2 = Math.PI * lat2/180;
-                                    var theta = lon1-lon2;
-                                    var radtheta = Math.PI * theta/180;
-                                    var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-                                    if (dist > 1) {
-                                        dist = 1;
-                                    }
-                                    dist = Math.acos(dist);
-                                    dist = dist * 180/Math.PI;
-                                    dist = dist * 60 * 1.1515;
-                                    if (unit=="K") { dist = dist * 1.609344 }
-                                    if (unit=="N") { dist = dist * 0.8684 }
-                                    return dist;
-                                }
-                            }
-                            function map_init(map, options) {
-                            console.log("next",u_latitude, u_longitude);
-                            var user_lat = "{{user.uprofile.latitude}}";
-                            var user_long = "{{user.uprofile.longitude}}";
-
-                            var mapboxUrl = 'https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
-                            var accessToken = 'pk.eyJ1IjoicnJyb3NzeTMxMiIsImEiOiJja2gwMjkxZ2swNjh2MnltaGN3eW54Zm9mIn0.75YK7P3nQxVJhbYwX8cwNw';
-                            
-                            map.setView([user_lat, user_long], 11);
-                            map.options.minZoom = 10;
-                            map.options.maxZoom = 14;
-                            var homeIcon = new L.Icon({
-                              iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
-                              shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                              iconSize: [25, 41],
-                              iconAnchor: [12, 41],
-                              popupAnchor: [1, -34],
-                              shadowSize: [41, 41]
-                            });
-                            L.marker([user_lat, user_long], {icon: homeIcon}).bindPopup("Your Location").addTo(map);
-                            // {% for restaurant in restaurants %}
-                            //     var lat_restaurant = "{{ restaurant.latitude }}";
-                            //     var long_restaurant = "{{ restaurant.longitude }}";
-                            //     var distance_from_user = distance(user_lat,user_long,lat_restaurant,long_restaurant,'M');
-                            //     var distance_rounded = distance_from_user.toFixed(2);
-                            //     L.marker([lat_restaurant, long_restaurant]).addTo(map).bindPopup("<b><a href={% url 'accessible_restaurant:detail' restaurant.business_id %}> {{ restaurant.name }} </a></b>"+
-                            //         "<br/>Rating: {{ restaurant.rating }}"+
-                            //         "<br/>Distance: "+distance_rounded+" miles");
-                            // {% endfor %}
-                            L.tileLayer(mapboxUrl, {id: 'outdoors-v11',
-                                attribution: '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>', maxZoom: 20, accessToken: accessToken}).addTo(map);
-                            }</script>
-                            {% leaflet_map "mymap" callback="map_init" %}
-                            </ul>
-                        </div>
+                                
+                            <!-- // {% leaflet_map "mymap" callback="map_init" %} -->
+                            <!-- </ul>    -->
+                        <!-- </div> -->
                     {% for restaurant in restaurants %}
                         <a href = '{% url "accessible_restaurant:detail" restaurant.business_id %}'>
                             <div class="box">

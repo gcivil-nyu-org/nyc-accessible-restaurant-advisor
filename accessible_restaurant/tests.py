@@ -33,6 +33,7 @@ from accessible_restaurant.models import (
     Restaurant_Profile,
     Restaurant,
     Review,
+    ApprovalPendingUsers,
 )
 import json
 
@@ -298,9 +299,11 @@ class TestViews(TestCase):
     def setUp(self):
         self.client = Client()
         self.index_url = reverse("accessible_restaurant:index")
+        self.about_url = reverse("accessible_restaurant:about")
         self.logout_url = reverse("accessible_restaurant:logout")
         self.signup_url = reverse("accessible_restaurant:signup")
         self.emailsent_url = reverse("accessible_restaurant:emailsent")
+        self.user_profile_url = reverse("accessible_restaurant:user_profile")
         self.activate_url = reverse(
             "accessible_restaurant:activate", args=["uid", "token"]
         )
@@ -316,6 +319,16 @@ class TestViews(TestCase):
         self.review_url = reverse(
             "accessible_restaurant:write_review", args=["FaPtColHYcTnZAxtoM33cA"]
         )
+
+    def test_about_view(self):
+        response = self.client.get(self.about_url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/about.html")
+
+    def test_logout_view(self):
+        response = self.client.get(self.logout_url)
+        self.assertEquals(response.status_code, 302)
+        # self.assertTemplateUsed(response, 'accounts/logout.html')
 
     def test_index_view_GET(self):
         response = self.client.get(self.index_url)
@@ -668,10 +681,22 @@ class TestModels(TestCase):
         self.assertEqual(str(self.user.rprofile), "huanjin Restaurant Profile")
         # self.assertEquals(self.user.rprofile.photo.path , "\media\default.jpg")
 
+    def test_ApprovalPendingUsers_correctly(self):
+        self.user = User.objects.create_user(
+            "huanjin", "zhanghuanjin97@gmail.com", "test123456"
+        )
+
+        self.user.auth = ApprovalPendingUsers.objects.create(
+            auth_documents="documents/pdfs/test.pdf",
+            auth_status="N/A",
+            time_created="",
+        )
+
     def test_save_user_profile_image_correctly(self):
         self.user = User.objects.create_user(
             "huanjin", "zhanghuanjin97@gmail.com", "test123456"
         )
+
         # self.client.login(username="huanjin", password="test123456")
         self.user.uprofile = User_Profile.objects.create(
             photo="default.jpg",

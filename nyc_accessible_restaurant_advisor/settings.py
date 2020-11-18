@@ -13,7 +13,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -151,4 +150,4 @@ LOGOUT_REDIRECT_URL = "/"
 GEOIP_PATH = os.path.join(BASE_DIR, "geoip")
 GDAL_LIBRARY_PATH = os.environ.get("GDAL_LIBRARY_PATH")
 # Leaflet parameters
-LEAFLET_CONFIG = {"SCALE": None, 'RESET_VIEW': False}
+LEAFLET_CONFIG = {"SCALE": None, "RESET_VIEW": False}
