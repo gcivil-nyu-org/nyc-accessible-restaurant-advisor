@@ -12,6 +12,8 @@ from django.utils.encoding import force_bytes, force_text
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.mail import send_mail, BadHeaderError
+from django.conf import settings
 
 # from .token_generator import generate_token
 from django.core.mail import EmailMessage
@@ -23,10 +25,25 @@ from .forms import (
     UserProfileUpdateForm,
     RestaurantProfileUpdateForm,
     ReviewPostForm,
+    UserCertUpdateForm,
+    UserCertVerifyForm,
+    RestaurantCertUpdateForm,
+    RestaurantCertVerifyForm,
+    CommentForm,
+    ContactForm,
 )
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
 
-from .models import User, Restaurant
+from .models import (
+    User,
+    Restaurant,
+    Review,
+    ApprovalPendingUsers,
+    ApprovalPendingRestaurants,
+    User_Profile,
+    Restaurant_Profile,
+)
 from .utils import (
     get_restaurant_list,
     get_filter_restaurant,
@@ -34,12 +51,18 @@ from .utils import (
     get_page_range,
     get_star_list,
     get_search_restaurant,
+    get_public_user_detail,
+    get_user_reviews,
 )
 
 
 # Create your views here.
 def index_view(request):
     return render(request, "index.html")
+
+
+def about_view(request):
+    return render(request, "accounts/about.html")
 
 
 def logout_view(request):
@@ -67,7 +90,7 @@ def activate_account(request, uidb64, token):
         user.is_active = True
         user.save()
         return render(request, "accounts/activate_confirmation.html")
-    return render(request, "accounts/signup.html")
+    return render(request, "accounts/register.html")
 
 
 class UserSignUpView(CreateView):
@@ -157,50 +180,205 @@ class RestaurantSignUpView(CreateView):
 @login_required
 def user_profile_view(request):
     if request.method == "POST":
-        u_form = UserUpdateForm(request.POST, instance=request.user)
-        p_form = UserProfileUpdateForm(
-            request.POST, request.FILES, instance=request.user.uprofile
-        )
-        if u_form.is_valid() and p_form.is_valid():
-            u_form.save()
-            p_form.save()
+        if "submit-certificate" in request.POST:
+            auth_form = UserCertUpdateForm(request.POST, request.FILES)
+            if auth_form.is_valid():
+                tmp_auth = auth_form.save(commit=False)
+                tmp_auth.user = request.user
+                tmp_auth.auth_status = "pending"
+                prev_auth_len = ApprovalPendingUsers.objects.filter(
+                    user=request.user
+                ).count()
+                if prev_auth_len > 0:
+                    prev_auth = ApprovalPendingUsers.objects.get(user=request.user)
+                    prev_auth.auth_documents.delete()
+                    prev_auth.delete()
+                auth_form.save()
+                p_instance = User_Profile.objects.get(user=request.user)
+                p_instance.auth_status = "pending"
+                p_instance.save()
+                messages.success(
+                    request, f'{"Your certificate has been sent to administrator!"}'
+                )
+                return redirect("accessible_restaurant:user_profile")
+            else:
+                u_form = UserUpdateForm(instance=request.user)
+                p_form = UserProfileUpdateForm(instance=request.user.uprofile)
 
-            messages.success(request, f'{"Your profile has been updated!"}')
-            return redirect("accessible_restaurant:user_profile")
+        elif "submit-info" in request.POST:
+            u_form = UserUpdateForm(request.POST, instance=request.user)
+            p_form = UserProfileUpdateForm(
+                request.POST, request.FILES, instance=request.user.uprofile
+            )
+
+            if u_form.is_valid() and p_form.is_valid():
+                u_form.save()
+                p_form.save()
+                messages.success(request, f'{"Your profile has been updated!"}')
+                return redirect("accessible_restaurant:user_profile")
+            else:
+                queue = ApprovalPendingUsers.objects.filter(user=request.user).count()
+                if queue > 0:
+                    q = ApprovalPendingUsers.objects.get(user=request.user)
+                    auth_form = UserCertUpdateForm(instance=q.user.auth)
+                else:
+                    auth_form = UserCertUpdateForm()
 
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = UserProfileUpdateForm(instance=request.user.uprofile)
+        queue = ApprovalPendingUsers.objects.filter(user=request.user).count()
+        if queue > 0:
+            q = ApprovalPendingUsers.objects.get(user=request.user)
+            auth_form = UserCertUpdateForm(instance=q.user.auth)
+        else:
+            auth_form = UserCertUpdateForm()
 
-    context = {"user_form": u_form, "profile_form": p_form}
+    action = request.GET.get("action")
+    if action == "Edit Profile":
+        profile_action = "edit"
+    else:
+        profile_action = "view"
+
+    context = {
+        "user_form": u_form,
+        "profile_form": p_form,
+        "auth_form": auth_form,
+        "profile_action": profile_action,
+    }
     return render(request, "profile/user_profile.html", context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def authentication_view(request):
+    if request.method == "POST":
+        if "submit-user" in request.POST:
+            user_auth_form = UserCertVerifyForm(request.POST)
+            if user_auth_form.is_valid():
+                user_id = request.POST.get("user_id")
+                auth_status = user_auth_form.cleaned_data["auth_status"]
+                if auth_status != "pending" and auth_status != "N/A":
+                    p_instance = User_Profile.objects.get(user=user_id)
+                    if auth_status == "approve":
+                        p_instance.auth_status = "certified"
+                    else:
+                        p_instance.auth_status = "uncertified"
+                    p_instance.save()
+                    curr_user = ApprovalPendingUsers.objects.get(user=user_id)
+                    # delete document from the database
+                    curr_user.auth_documents.delete()
+                    curr_user.delete()
+                    if auth_status == "approve":
+                        messages.success(request, f'{"Approved!"}')
+                    else:
+                        messages.success(request, f'{"Disapproved!"}')
+                return redirect("accessible_restaurant:authenticate")
+
+        elif "submit-restaurant" in request.POST:
+            restaurant_auth_form = RestaurantCertVerifyForm(request.POST)
+            if restaurant_auth_form.is_valid():
+                owner_id = request.POST.get("owner_id")
+                rest_id = request.POST.get("restaurant_id")
+                auth_status = restaurant_auth_form.cleaned_data["auth_status"]
+                if auth_status != "pending" and auth_status != "N/A":
+                    if auth_status == "approve":
+                        Restaurant.objects.filter(business_id=rest_id).update(
+                            user=owner_id
+                        )
+                    rest = Restaurant.objects.get(business_id=rest_id)
+                    curr_user = ApprovalPendingRestaurants.objects.get(
+                        user=owner_id, restaurant=rest
+                    )
+                    # delete document from the database
+                    curr_user.auth_documents.delete()
+                    curr_user.delete()
+                    if auth_status == "approve":
+                        messages.success(request, f'{"Approved!"}')
+                    else:
+                        messages.success(request, f'{"Disapproved!"}')
+                return redirect("accessible_restaurant:authenticate")
+
+    user_certificate_list = ApprovalPendingUsers.objects.order_by("time_created")
+    restaurant_certificate_list = ApprovalPendingRestaurants.objects.order_by(
+        "time_created"
+    )
+    user_form_list = []
+    for c in user_certificate_list:
+        curr = UserCertVerifyForm(instance=c.user.auth)
+        user_form_list.append(curr)
+    restaurant_form_list = []
+    for c in restaurant_certificate_list:
+        curr = RestaurantCertVerifyForm(instance=c)
+        restaurant_form_list.append(curr)
+    context = {
+        "user_certificate_list": user_form_list,
+        "restaurant_certificate_list": restaurant_form_list,
+    }
+    return render(request, "admin/manage.html", context)
 
 
 @login_required
 def restaurant_profile_view(request):
     if request.method == "POST":
-        u_form = UserUpdateForm(request.POST, instance=request.user)
-        p_form = RestaurantProfileUpdateForm(
-            request.POST, request.FILES, instance=request.user.rprofile
-        )
-        if u_form.is_valid() and p_form.is_valid():
-            u_form.save()
-            p_form.save()
-            messages.success(request, f'{"Your profile has been updated!"}')
-            return redirect("accessible_restaurant:restaurant_profile")
+        if "submit-certificate" in request.POST:
+            auth_form = RestaurantCertUpdateForm(request.POST, request.FILES)
+            if auth_form.is_valid():
+                tmp_auth = auth_form.save(commit=False)
+                tmp_auth.user = request.user
+                tmp_auth.auth_status = "pending"
+                auth_form.save()
+                messages.success(
+                    request, f'{"Your certificate has been sent to administrator!"}'
+                )
+                return redirect("accessible_restaurant:restaurant_profile")
+            else:
+                u_form = UserUpdateForm(instance=request.user)
+                p_form = UserProfileUpdateForm(instance=request.user.rprofile)
+
+        elif "submit-info" in request.POST:
+            u_form = UserUpdateForm(request.POST, instance=request.user)
+            p_form = UserProfileUpdateForm(
+                request.POST, request.FILES, instance=request.user.rprofile
+            )
+
+            if u_form.is_valid() and p_form.is_valid():
+                u_form.save()
+                p_form.save()
+                messages.success(request, f'{"Your profile has been updated!"}')
+                return redirect("accessible_restaurant:restaurant_profile")
+            else:
+                auth_form = RestaurantCertUpdateForm()
 
     else:
         u_form = UserUpdateForm(instance=request.user)
-        p_form = RestaurantProfileUpdateForm(instance=request.user.rprofile)
+        p_form = UserProfileUpdateForm(instance=request.user.rprofile)
+        auth_form = RestaurantCertUpdateForm()
+
+    action = request.GET.get("action")
+    if action == "Edit Profile":
+        profile_action = "edit"
+    else:
+        profile_action = "view"
+
+    restaurant_list = Restaurant.objects.filter(user=request.user)
 
     context = {
         "user_form": u_form,
         "profile_form": p_form,
+        "auth_form": auth_form,
+        "profile_action": profile_action,
+        "restaurant_list": restaurant_list,
     }
     return render(request, "profile/restaurant_profile.html", context)
 
 
 def restaurant_list_view(request, page, sort_property):
+    if sort_property == "nearest":
+        # print("Hello")
+        messages.warning(
+            request,
+            f'{"Your current IP address will be used for this feature. "}',
+        )
     page = int(page)
     client_ip = get_client_ip(request)
     restaurants = Restaurant.objects.all()
@@ -214,10 +392,13 @@ def restaurant_list_view(request, page, sort_property):
     korean = request.GET.get("Korean", "")
     salad = request.GET.get("Salad", "")
     pizza = request.GET.get("Pizza", "")
+    sandwiches = request.GET.get("Sandwiches", "")
+    brunch = request.GET.get("Brunch", "")
+    coffee = request.GET.get("Coffee", "")
 
     filters = {
         "prices": [price1, price2, price3, price4],
-        "categories": [chinese, korean, salad, pizza],
+        "categories": [chinese, korean, salad, pizza, sandwiches, brunch, coffee],
     }
 
     if keyword:
@@ -266,6 +447,9 @@ def restaurant_list_view(request, page, sort_property):
         "Korean": korean,
         "Salad": salad,
         "Pizza": pizza,
+        "Sandwiches": sandwiches,
+        "Brunch": brunch,
+        "Coffee": coffee,
     }
     return render(request, "restaurants/browse.html", context)
 
@@ -344,16 +528,21 @@ def restaurant_detail_view(request, business_id):
         hours = []
         is_open_now = False
         weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-        if restaurant_data["hours"]:
-            is_open_now = restaurant_data["hours"][0]["is_open_now"]
-            for day in restaurant_data["hours"][0]["open"]:
-                index = int(day["day"])
-                day["weekday"] = weekdays[index]
-                start = day["start"]
-                end = day["end"]
-                day["start"] = start[:2] + ":" + start[2:]
-                day["end"] = end[:2] + ":" + end[2:]
-                hours.append(day)
+        if "hours" in restaurant_data:
+            if restaurant_data["hours"]:
+                is_open_now = restaurant_data["hours"][0]["is_open_now"]
+                for day in restaurant_data["hours"][0]["open"]:
+                    index = int(day["day"])
+                    day["weekday"] = weekdays[index]
+                    start = day["start"]
+                    end = day["end"]
+                    day["start"] = start[:2] + ":" + start[2:]
+                    day["end"] = end[:2] + ":" + end[2:]
+                    hours.append(day)
+        else:
+            hours = None
+
+        comment_form = CommentForm()
 
         context = {
             "restaurant": restaurant,
@@ -386,33 +575,75 @@ def restaurant_detail_view(request, business_id):
             "accessible_path_rating_full": accessible_path_rating_full,
             "accessible_path_rating_half": accessible_path_rating_half,
             "accessible_path_rating_null": accessible_path_rating_null,
+            "comment_form": comment_form,
         }
         return render(request, "restaurants/detail.html", context)
 
 
 @login_required
+@user_passes_test(lambda u: not u.is_superuser)
 def write_review_view(request, business_id):
-    if request.method == "GET":
-        review_form = ReviewPostForm(request.GET)
-        restaurant_instance = Restaurant.objects.get(business_id=business_id)
+    if request.user.is_user:
+        if request.method == "GET":
+            review_form = ReviewPostForm(request.GET)
+            restaurant_instance = Restaurant.objects.get(business_id=business_id)
 
-        if review_form.is_valid():
-            temp = review_form.save(commit=False)
-            temp.user = request.user
-            temp.restaurant = restaurant_instance
-            review_form.save()
-            messages.success(request, f'{"Your review has been updated!"}')
+            if review_form.is_valid():
+                temp = review_form.save(commit=False)
+                temp.user = request.user
+                temp.restaurant = restaurant_instance
+                review_form.save()
+                return redirect("accessible_restaurant:detail", business_id)
+
+        else:
+            review_form = ReviewPostForm(request.GET)
+            # restaurant_instance = Restaurant.objects.get(business_id=business_id)
+
+        context = {
+            "user": request.user,
+            "restaurant": restaurant_instance,
+            "review_form": review_form,
+        }
+        return render(request, "review/write_review.html", context)
+    else:
+        return redirect("accessible_restaurant:detail", business_id)
+
+
+@login_required
+@user_passes_test(lambda u: not u.is_superuser)
+def add_comment_view(request, business_id, review_id):
+    if request.method == "POST":
+        comment_form = CommentForm(request.POST)
+        review = Review.objects.get(id=review_id)
+        user = request.user
+
+        print(review.restaurant.user)
+        if user.is_restaurant:
+            if (
+                review.restaurant.user is None
+                or request.user.id != review.restaurant.user.id
+            ):
+                messages.warning(
+                    request,
+                    f'{"Sorry, as a restaurant user, you can only make comments under your own restaurants and this one is not yours. "}',
+                )
+                return redirect("accessible_restaurant:detail", business_id)
+
+        if comment_form.is_valid():
+            temp_form = comment_form.save(commit=False)
+            temp_form.user = user
+            temp_form.review = review
+            temp_form.save()
+            messages.success(request, f'{"Your comment is successfully made!"}')
             return redirect("accessible_restaurant:detail", business_id)
 
     else:
-        review_form = ReviewPostForm(request.GET)
-        # restaurant_instance = Restaurant.objects.get(business_id=business_id)
+        comment_form = CommentForm()
 
     context = {
-        "user": request.user,
-        "restaurant": restaurant_instance,
-        "review_form": review_form,
+        "comment_form": comment_form,
     }
+    # TODO: add a page for writing comments or embed the comment form under each review
     return render(request, "review/write_review.html", context)
 
 
@@ -424,3 +655,47 @@ def get_client_ip(request):
     else:
         ip = request.META.get("REMOTE_ADDR")
     return ip
+
+
+def user_detail_view(request, user):
+    response_info = get_public_user_detail(user)
+    response_review = get_user_reviews(user)
+    star_list = get_star_list()
+    for review in response_review:
+        r_full, r_half, r_null = star_list[float(review["rating"])]
+        review["full"] = r_full
+        review["half"] = r_half
+        review["null"] = r_null
+    context = {
+        "username": response_info.get("username"),
+        "email": response_info.get("email"),
+        "first_name": response_info.get("first_name"),
+        "last_name": response_info.get("last_name"),
+        "address": response_info.get("address"),
+        "phone": response_info.get("phone"),
+        "zip_code": response_info.get("zip_code"),
+        "state": response_info.get("state"),
+        "city": response_info.get("city"),
+        "photo": response_info.get("photo"),
+        "user_review": response_review,
+    }
+    return render(request, "publicface/public_user_detail.html", context)
+
+
+def faq_view(request):
+    if request.method == "GET":
+        form = ContactForm()
+    else:
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            subject = form.data.get("Subject")
+            from_email = form.data.get("Email")
+            message = form.data.get("Message")
+            try:
+                send_mail(
+                    subject, message, from_email, ["nyc.accessible.rest@gmail.com"]
+                )
+            except BadHeaderError:
+                return HttpResponse("Invalid header found.")
+            return redirect("accessible_restaurant:faq")
+    return render(request, "faq/faq.html", {"form": form})

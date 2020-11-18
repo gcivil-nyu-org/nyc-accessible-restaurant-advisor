@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block staticlink %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'accessible_restaurant/about_style.css' %}" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/
+        4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
+{% block title %}<title>Our-Team</title>{% endblock %}
+
+{% block body %}<body class="subpage">{% endblock %}
+
+{% block content %}
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Mission Statement</h1>
+        </div>
+        <div class="about">We want to develop a project that provides a special platform for people, 
+            especially for people with disabilities, to get accessibility accommodation information 
+            about local businesses around them. People are able to read other people’s reviews and 
+            suggestions when they choose a restaurant so that they can have a better experience. 
+            This project also gives a way for businesses to help people to get to know them, especially 
+            information about accommodation for people with disabilities. 
+             </div>  
+        <div class="header">
+            <h1>Our Team</h1>
+        </div>
+        <div class="sub-container">
+            <div class="teams">
+                <img src="../static/accessible_restaurant/images/Mine.jpg" alt="">
+                <div class="name">Ritu Kuklani</div>
+                <div class="desig">Developer</div>
+                <div class="about">Ritu Kuklani is a second-year student studying CSE at NYU. Her favourite place to dine in NYC is Chote Nawab (you should definitely try out the dum biryani there!) </div>
+
+                <div class="social-links">
+                    <a href="#"><i class="fa fa-facebook"></i></a>
+                    <a href="#"><i class="fa fa-instagram"></i></a>
+                    <a href="#"><i class="fa fa-twitter"></i></a>
+                    <a href="#"><i class="fa fa-github"></i></a>
+                </div>
+            </div>
+
+            <div class="teams">
+                <img src="../static/accessible_restaurant/images/KatieEdited.png" alt="">
+                <div class="name">Katie Rosman </div>
+                <div class="desig">Product Owner</div>
+              <div class="about">Katie Rosman is a second-year Tandon student studying CSE. Her favorite places to eat in NYC include Westville (for dinner) and Magnolia Bakery (for dessert).</div>
+
+                <div class="social-links">
+                    <a href="#"><i class="fa fa-facebook"></i></a>
+                    <a href="#"><i class="fa fa-instagram"></i></a>
+                    <a href="#"><i class="fa fa-twitter"></i></a>
+                    <a href="#"><i class="fa fa-github"></i></a>
+                </div>
+            </div>
+            <div class="teams">
+                <img src="../static/accessible_restaurant/images/BruceEdited.jpeg" alt="">
+                <div class="name">Xuanyu Chen </div>
+                <div class="desig">Developer</div>
+                <div class="about">Xuanyu Chen is a second-year student studying CSE in Tandon. His favorite places to dine in NYC include Shanghai21 and Macao Trading (also a huge fan of hot pot). </div>
+
+                <div class="social-links">
+                    <a href="#"><i class="fa fa-facebook"></i></a>
+                    <a href="#"><i class="fa fa-instagram"></i></a>
+                    <a href="#"><i class="fa fa-twitter"></i></a>
+                    <a href="#"><i class="fa fa-github"></i></a>
+                </div>    
+            </div>
+            <div class="teams">
+                <img src="../static/accessible_restaurant/images/XiaodanEdited.png" alt="">
+                <div class="name">Xiaodan Tang </div>
+                <div class="desig">Developer</div>
+                <div class="about">Xiaodan Tang is a second-year Tandon student studying CSE. Her favorite place to eat in NYC is Han Dynasty.</div>
+
+                <div class="social-links">
+                    <a href="#"><i class="fa fa-facebook"></i></a>
+                    <a href="#"><i class="fa fa-instagram"></i></a>
+                    <a href="#"><i class="fa fa-twitter"></i></a>
+                    <a href="#"><i class="fa fa-github"></i></a>
+                </div>
+            </div>
+            
+            <div class="teams">
+                <img src="../static/accessible_restaurant/images/Image from iOS.jpg" alt="">
+                <div class="name">Huanjin Zhang </div>
+                <div class="desig">Developer</div>
+                <div class="about">Huanjin Zhang is a second-year Tandon student studying CSE. His favorite places to eat in NYC include Yaso Tangbao and LongHorn.</div>
+
+                <div class="social-links">
+                    <a href="#"><i class="fa fa-facebook"></i></a>
+                    <a href="#"><i class="fa fa-instagram"></i></a>
+                    <a href="#"><i class="fa fa-twitter"></i></a>
+                    <a href="#"><i class="fa fa-github"></i></a>
+                </div>    
+            </div>
+
+        </div>
+    </div>
+</body>
+{% endblock %}

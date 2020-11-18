@@ -1,6 +1,10 @@
 from django.conf import settings
 
-from .models import Restaurant, Review, User_Profile
+
+from .models import Restaurant, Review, User_Profile, User
+
+from .models import Restaurant, Review, User_Profile, Comment
+
 from django.db.models import Q
 from .models import Restaurant
 import requests
@@ -78,18 +82,29 @@ def get_local_restaurant_data(business_id):
 
 
 def get_local_restaurant_reviews(business_id):
+    """
+    @ Return: Dictionary of local reviews of specific restaurant
+        Each review also contain a comment list
+    """
     if not business_id:
         return None
     target_restaurant = Restaurant.objects.get(business_id=business_id)
     reviews = Review.objects.filter(restaurant=target_restaurant)
     response = []
-    for review in reviews:
+    for review in reversed(list(reviews)):
         user = review.user
-        profile = User_Profile.objects.get(user=user)
-        photo = profile.photo
-        review.username = user.username
-        review.photo = photo
-        response.append(review.__dict__)
+        comments = review.comments.all()
+        if user.is_user:
+            profile = User_Profile.objects.get(user=user)
+            photo = profile.photo
+            review.user_id = user.id
+            review.auth_status = profile.auth_status
+            review.username = user.username
+            review.photo = photo
+            review.comments_set = reversed(list(comments))
+            response.append(review.__dict__)
+        elif user.is_restaurant:
+            response.append(review.__dict__)
     return response
 
 
@@ -107,9 +122,9 @@ def get_restaurant(business_id):
 
 def get_restaurant_list(page, size, sort_property, client_ip, restaurants):
     if sort_property == "lowestPrice":
-        restaurants = restaurants.order_by("price")
+        restaurants = restaurants.order_by("price", "business_id")
     elif sort_property == "highestPrice":
-        restaurants = restaurants.order_by("-price")
+        restaurants = restaurants.order_by("-price", "business_id")
     elif sort_property == "nearest":
         g = GeoIP2()
         try:
@@ -119,8 +134,8 @@ def get_restaurant_list(page, size, sort_property, client_ip, restaurants):
             client_position = g.lat_lon(client_ip)
         restaurants = sorted(
             restaurants,
-            key=lambda x: math.sqrt(client_position[0] - float(x.latitude))
-            + math.sqrt(client_position[1] - float(x.longitude)),
+            key=lambda x: (client_position[0] - float(x.latitude)) ** 2
+            + (client_position[1] - float(x.longitude)) ** 2,
             reverse=False,
         )
 
@@ -222,7 +237,7 @@ def get_filter_restaurant(filters, restaurants):
             categories[i] = "#"
 
     price1, price2, price3, price4 = prices
-    chinese, korean, salad, pizza = categories
+    chinese, korean, salad, pizza, sandwiches, brunch, coffee = categories
 
     if price_flag:
 
@@ -244,5 +259,51 @@ def get_filter_restaurant(filters, restaurants):
             | Q(category1__icontains=pizza)
             | Q(category2__icontains=pizza)
             | Q(category3__icontains=pizza)
+            | Q(category1__icontains=sandwiches)
+            | Q(category2__icontains=sandwiches)
+            | Q(category3__icontains=sandwiches)
+            | Q(category1__icontains=brunch)
+            | Q(category2__icontains=brunch)
+            | Q(category3__icontains=brunch)
+            | Q(category1__icontains=coffee)
+            | Q(category2__icontains=coffee)
+            | Q(category3__icontains=coffee)
         )
     return restaurants
+
+
+def get_public_user_detail(user):
+    if not user:
+        return None
+    user_instance = User.objects.get(pk=user)
+    if user_instance.is_user:
+        response = {
+            "username": user_instance.username,
+            "email": user_instance.email,
+            "first_name": user_instance.first_name,
+            "last_name": user_instance.last_name,
+            "address": user_instance.uprofile.address,
+            "phone": user_instance.uprofile.phone,
+            "zip_code": user_instance.uprofile.zip_code,
+            "state": user_instance.uprofile.state,
+            "city": user_instance.uprofile.city,
+            "photo": user_instance.uprofile.photo,
+        }
+    elif user_instance.is_restaurant:
+        response = {}
+
+    return response
+
+
+def get_user_reviews(user):
+    if not user:
+        return None
+    all_reviews = Review.objects.filter(user=user)
+    response = []
+    for review in all_reviews:
+        restaurant = review.restaurant
+        review.business_id = restaurant.business_id
+        review.res_name = restaurant.name
+        review.res_url = restaurant.img_url
+        response.append(review.__dict__)
+    return response

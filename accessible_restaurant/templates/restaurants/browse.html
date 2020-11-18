@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load leaflet_tags %}
 
 {% block staticlink %}
     {% load static %}
@@ -15,11 +16,20 @@
 {% block body %}<body class="subpage">{% endblock %}
 
 {% block content %}
+    <style>
+    #map {
+        width: 960px;
+        height:500px;
+    }
+    </style>
     <section id="main" class="wrapper">
         <div class="inner">
             <header class="align-center">
                 <h2><strong>Browse Restaurants</strong></h2>
+                {% leaflet_css %}
+                {% leaflet_js %}
             </header>
+            
             <div class="row 200%">
                 <div class="3u 12u$(medium)">
                     <h3>Filters</h3>
@@ -114,14 +124,54 @@
                                     Pizza
                                     </label>
                                 </div>
+                                <div class="form-check">
+                                    {% if Sandwiches %}
+                                        <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Sandwiches" id="Sandwiches" name="Sandwiches">
+                                    {% else %}
+                                        <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Sandwiches" id="Sandwiches" name="Sandwiches">
+                                    {% endif %}
+                                    <label class="form-check-label" for="Sandwiches">
+                                    Sandwiches
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    {% if Brunch %}
+                                        <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Brunch" id="Brunch" name="Brunch">
+                                    {% else %}
+                                        <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Brunch" id="Brunch" name="Brunch">
+                                    {% endif %}
+                                    <label class="form-check-label" for="Brunch">
+                                    Breakfast & Brunch
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    {% if Coffee %}
+                                        <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Coffee" id="Coffee" name="Coffee">
+                                    {% else %}
+                                        <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Coffee" id="Coffee" name="Coffee">
+                                    {% endif %}
+                                    <label class="form-check-label" for="Coffee">
+                                    Coffee & Tea
+                                    </label>
+                                </div>
                      </div>
                     </form>
                     <hr />
                     <a href="{% url 'accessible_restaurant:browse' 0 'default' %}" class="button">Clear</a >
                 </div>
-
-
                 <div class="9u 12u$(medium)">
+                    {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <strong>{{ message.tags }}: </strong>{{ message }}
+                                </div>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                     <form method="get" action="{% url 'accessible_restaurant:browse' 0 'default' %}">
                         {% csrf_token %}
                         <div class="row uniform">
@@ -148,7 +198,226 @@
                             <a class="dropdown-item" href='{% url "accessible_restaurant:browse" 0 "nearest" %}'>nearest</a>
                         </div>
                     </div>
+                    <div class = "container">
+                        <!-- Search input -->
+                      <input id="searchInput" class="controls" type="text" placeholder="Enter your current location">
+                
+                      <!-- Google map -->
+                      <div id="map"></div>
+                
+                      <!-- Display geolocation data -->
+                      <!-- <ul class="geo-data"> 
+                          <li>Full Address: <span id="location"></span></li>
+                          <li>Postal Code: <span id="postal_code"></span></li>
+                          <li>Country: <span id="country"></span></li>
+                          <li>Latitude: <span id="lat"></span></li>
+                          <li>Longitude: <span id="lon"></span></li>
+                      </ul> -->
+                    </div>
+                    <!-- <div id="mapid">
+                    <ul class="alt"> -->
+                    <!-- <div id="map"></div> -->
+                    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyDldJIuqREsdZZqcb3ZY8S5kuFWS0DUjc4&callback=initMap" async defer></script>
+                    <script type = "text/javascript">
+                        var u_latitude;
+                        var u_longitude;
+                        function initMap(map) {
+                            var lat1;
+                            var long1;
+                            {% for restaurant in restaurants %}
+                                var lat1 = {{ restaurant.latitude }};
+                                var long1 = {{ restaurant.longitude }};
+                            {% endfor %}
+                            
+                            var map = new google.maps.Map(document.getElementById('map'), {
+                            center: {lat: lat1, lng: long1},
+                            zoom: 14
+                            });
+                            var input = document.getElementById('searchInput');
+                            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+                        
+                            var autocomplete = new google.maps.places.Autocomplete(input);
+                            autocomplete.bindTo('bounds', map);
+                        
+                            var infowindow = new google.maps.InfoWindow();
+                            var marker = new google.maps.Marker({
+                                map: map,
+                                anchorPoint: new google.maps.Point(0, -29)
+                            });
+                            // if ({{user.uprofile.latitude}})
+                            // const myLatLng = { lat: {{user.uprofile.latitude}},  lng: {{user.uprofile.longitude}} };
+                            // new google.maps.Marker({
+                            //     position: myLatLng,
+                            //     map,
+                            //     title: "Your location",
+                            // });
+                            const image = "https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/32x32/plain/disability.png";
+                            {% for restaurant in restaurants %}
+                                var lat_restaurant = {{ restaurant.latitude }};
+                                var long_restaurant = {{ restaurant.longitude }};
+                                var restaurant_name = "{{ restaurant.name }}";
+                                console.log(restaurant_name);
+                                // console.log(typeof(lat_restaurant))
+                                // lat_restaurant = int(lat_restaurant)
+                                // var myLatLng1 = { lat: {{ restaurant.latitude }},  lng: {{ restaurant.longitude }} };
+                                // long_restaurant = int(long_restaurant)
+                                // console.log({{ restaurant.latitude }},{{ restaurant.longitude }})
+                                addMarker({lat:lat_restaurant, lng:long_restaurant}, restaurant_name)
+                                // addMarker({lat:40.709569, lng:-74.006834})
+                                 
+                            {% endfor %}
+                            
 
+                            function addMarker(coords, restaurant_name){
+                                var marker = new google.maps.Marker({
+                                    position:coords,
+                                    map,
+                                    title: restaurant_name,
+                                    icon: image
+                                })
+                            }
+                        
+                            autocomplete.addListener('place_changed', function() {
+                                infowindow.close();
+                                marker.setVisible(false);
+                                var place = autocomplete.getPlace();
+                                if (!place.geometry) {
+                                    window.alert("Autocomplete's returned place contains no geometry");
+                                    return;
+                                }
+                        
+                                // If the place has a geometry, then present it on a map.
+                                if (place.geometry.viewport) {
+                                    map.fitBounds(place.geometry.viewport);
+                                } else {
+                                    map.setCenter(place.geometry.location);
+                                    map.setZoom(17);
+                                }
+                                marker.setIcon(({
+                                    url: place.icon,
+                                    size: new google.maps.Size(71, 71),
+                                    origin: new google.maps.Point(0, 0),
+                                    anchor: new google.maps.Point(17, 34),
+                                    scaledSize: new google.maps.Size(35, 35)
+                                }));
+                                marker.setPosition(place.geometry.location);
+                                marker.setPosition([43.64701, -79.39425]);
+                                marker.setVisible(true);
+                            
+                                var address = '';
+                                if (place.address_components) {
+                                    address = [
+                                    (place.address_components[0] && place.address_components[0].short_name || ''),
+                                    (place.address_components[1] && place.address_components[1].short_name || ''),
+                                    (place.address_components[2] && place.address_components[2].short_name || '')
+                                    ].join(' ');
+                                }
+                            
+                                infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+                                infowindow.open(map, marker);
+                            
+                                // Location details
+                                // for (var i = 0; i < place.address_components.length; i++) {
+                                //     if(place.address_components[i].types[0] == 'postal_code'){
+                                //         document.getElementById('postal_code').innerHTML = place.address_components[i].long_name;
+                                //     }
+                                //     if(place.address_components[i].types[0] == 'country'){
+                                //         document.getElementById('country').innerHTML = place.address_components[i].long_name;
+                                //     }
+                                // }
+                                // console.log(document.getElementById('location').innerHTML);
+                                // document.getElementById('location').innerHTML = place.formatted_address;
+                                // document.getElementById('lat').innerHTML = place.geometry.location.lat();
+                                // document.getElementById('lon').innerHTML = place.geometry.location.lng();
+                                // u_latitude = place.geometry.location.lat();
+                                // u_longitude = place.geometry.location.lng();
+                                // console.log(u_latitude, u_longitude);  
+                                
+                            });
+                        }
+                    </script>
+                
+                    <!-- <div class = "container">
+
+                      <input id="searchInput" class="controls" type="text" placeholder="Enter a location"> -->
+              
+                      <!-- Google map -->
+                      <!-- <div id="map"></div> -->
+              
+                      <!-- Display geolocation data -->
+                      <!-- <ul class="geo-data">
+                          <li>Full Address: <span id="location"></span></li>
+                          <li>Postal Code: <span id="postal_code"></span></li>
+                          <li>Country: <span id="country"></span></li>
+                          <li>Latitude: <span id="lat"></span></li>
+                          <li>Longitude: <span id="lon"></span></li>
+                      </ul>
+                    </div>
+                    <div id="mapid">
+                    <ul class="alt">
+                    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyDldJIuqREsdZZqcb3ZY8S5kuFWS0DUjc4&callback=initMap" async defer></script>
+                    <script type = "text/javascript">
+                        var u_latitude;
+                        var u_longitude;
+                        function initMap(map) {
+                            var map = new google.maps.Map(document.getElementById('map'), {
+                            center: {lat: -33.8688, lng: 151.2195},
+                            zoom: 13
+                            });
+                            var input = document.getElementById('searchInput');
+                            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+                        
+                            var autocomplete = new google.maps.places.Autocomplete(input);
+                            autocomplete.bindTo('bounds', map);
+                        
+                            var infowindow = new google.maps.InfoWindow();
+                            var marker = new google.maps.Marker({
+                                map: map,
+                                anchorPoint: new google.maps.Point(0, -29)
+                            });
+                        
+                            autocomplete.addListener('place_changed', function() {
+                                infowindow.close();
+                                marker.setVisible(false);
+                                var place = autocomplete.getPlace();
+                                if (!place.geometry) {
+                                    window.alert("Autocomplete's returned place contains no geometry");
+                                    return;
+                                }
+                        
+                                // If the place has a geometry, then present it on a map.
+                                if (place.geometry.viewport) {
+                                    map.fitBounds(place.geometry.viewport);
+                                } else {
+                                    map.setCenter(place.geometry.location);
+                                    map.setZoom(17);
+                                }
+                                marker.setIcon(({
+                                    url: place.icon,
+                                    size: new google.maps.Size(71, 71),
+                                    origin: new google.maps.Point(0, 0),
+                                    anchor: new google.maps.Point(17, 34),
+                                    scaledSize: new google.maps.Size(35, 35)
+                                }));
+                                marker.setPosition(place.geometry.location);
+                                marker.setVisible(true);
+                            
+                                var address = '';
+                                if (place.address_components) {
+                                    address = [
+                                    (place.address_components[0] && place.address_components[0].short_name || ''),
+                                    (place.address_components[1] && place.address_components[1].short_name || ''),
+                                    (place.address_components[2] && place.address_components[2].short_name || '')
+                                    ].join(' ');
+                                }
+                            
+                                infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+                                infowindow.open(map, marker); -->
+                            
+                                
+                            <!-- // {% leaflet_map "mymap" callback="map_init" %} -->
+                            <!-- </ul>    -->
+                        <!-- </div> -->
                     {% for restaurant in restaurants %}
                         <a href = '{% url "accessible_restaurant:detail" restaurant.business_id %}'>
                             <div class="box">

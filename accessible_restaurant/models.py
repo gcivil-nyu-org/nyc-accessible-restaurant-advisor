@@ -24,20 +24,44 @@ class User_Profile(models.Model):
     city = models.CharField(max_length=64, blank=True)
     zip_code = models.CharField(max_length=16, blank=True)
     state = models.CharField(max_length=32, blank=True)
+    AUTH_STATUS_CHOICES = [
+        ("certified", "Certified"),
+        ("pending", "Pending"),
+        ("uncertified", "Uncertified"),
+    ]
+    auth_status = models.CharField(
+        max_length=16, choices=AUTH_STATUS_CHOICES, default="uncertified"
+    )
 
     def __str__(self):
         return f"{self.user.username} User Profile"
 
-    def save(self, *args, **kwargs):
-        super(User_Profile, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     super(User_Profile, self).save(*args, **kwargs)
+    #
+    #     img = Image.open(self.photo.path)
+    #     img = img.convert("RGB")
+    #
+    #     if img.height > 300 or img.width > 300:
+    #         output_size = (300, 300)
+    #         img.thumbnail(output_size)
+    #         img.save(self.photo.path)
 
-        img = Image.open(self.photo.path)
-        img = img.convert("RGB")
 
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.photo.path)
+class ApprovalPendingUsers(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, null=True, related_name="auth"
+    )
+    auth_documents = models.FileField(blank=False, upload_to="documents/pdfs/")
+    AUTH_STATUS_CHOICES = [
+        ("approve", "Approve"),
+        ("pending", "Pending"),
+        ("disapprove", "Disapprove"),
+    ]
+    auth_status = models.CharField(
+        max_length=16, choices=AUTH_STATUS_CHOICES, default="N/A"
+    )
+    time_created = models.DateTimeField(auto_now_add=True)
 
 
 class Restaurant_Profile(models.Model):
@@ -58,19 +82,22 @@ class Restaurant_Profile(models.Model):
     def __str__(self):
         return f"{self.user.username} Restaurant Profile"
 
-    def save(self, *args, **kwargs):
-        super(Restaurant_Profile, self).save(*args, **kwargs)
-
-        img = Image.open(self.photo.path)
-        img = img.convert("RGB")
-
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.photo.path)
+    # def save(self, *args, **kwargs):
+    #     super(Restaurant_Profile, self).save(*args, **kwargs)
+    #
+    #     img = Image.open(self.photo.path)
+    #     img = img.convert("RGB")
+    #
+    #     if img.height > 300 or img.width > 300:
+    #         output_size = (300, 300)
+    #         img.thumbnail(output_size)
+    #         img.save(self.photo.path)
 
 
 class Restaurant(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, blank=True, related_name="owner"
+    )
     business_id = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=80)
     img_url = models.URLField(
@@ -100,6 +127,25 @@ class Restaurant(models.Model):
         return f"{self.name}"
 
 
+class ApprovalPendingRestaurants(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, related_name="auth_user"
+    )
+    restaurant = models.ForeignKey(
+        Restaurant, on_delete=models.CASCADE, null=True, related_name="auth_rest"
+    )
+    auth_documents = models.FileField(blank=False, upload_to="documents/pdfs/")
+    AUTH_STATUS_CHOICES = [
+        ("approve", "Approve"),
+        ("pending", "Pending"),
+        ("disapprove", "Disapprove"),
+    ]
+    auth_status = models.CharField(
+        max_length=16, choices=AUTH_STATUS_CHOICES, default="N/A"
+    )
+    time_created = models.DateTimeField(auto_now_add=True)
+
+
 class Review(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, null=True, related_name="review_user"
@@ -118,3 +164,20 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.user} review on {self.restaurant}"
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
+    review = models.ForeignKey(
+        Review, on_delete=models.CASCADE, null=True, related_name="comments"
+    )
+    text = models.CharField(max_length=256)
+    time = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["time"]
+
+    def __str__(self):
+        return "Comment {} by {} ".format(
+            self.review.review_context, self.user.username
+        )

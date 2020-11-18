@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block staticlink %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/public_style.css' %}">
+	<script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
+{% block title %} User Detail {% endblock %}
+
+{% block body %}
+    <body class="subpage">
+{% endblock %}
+
+{% block content %}
+    <section id="main" class="wrapper">
+		<div class="inner">
+			<div class="row 200%">
+				<div class="8u 12u$(medium)">
+                    <div class="row uniform">
+                        <img src="{{ photo.url }}" alt="" />
+                        <div class="row uniform">
+                            <h2><strong>Username:</strong> {{ username }}</h2>
+                        </div>
+                        <div class="row uniform">
+                            <h2>{{ city }} {{ state }} </h2>
+                        </div>
+
+                    </div>
+
+                    <h3>Related Reviews</h3>
+                    {% for review in user_review %}
+                        <div class="row uniform">
+                            <div class="3u 12u$(medium)">
+                                <div class="row uniform">
+                                    <span class="image fit"><img src="{{ review.res_url }}" alt="" /></span>
+                                </div>
+
+                            </div>
+                            <div class="9u 12u$(medium)">
+
+                                <div class="row uniform">
+                                    <ul class="icons">
+                                        <li>
+                                            <a href = '{% url "accessible_restaurant:detail"  review.business_id%}'>
+                                                <h4>{{ review.res_name }}</h4>
+                                            </a>
+                                        </li>
+                                        {% for _ in review.full %}
+                                            <li><i class="icon fas fa-star"></i></li>
+                                        {% endfor %}
+                                        {% for _ in review.half %}
+                                            <li><i class="icon fas fa-star-half-alt"></i></li>
+                                        {% endfor %}
+                                        {% for _ in review.null %}
+                                            <li><i class="icon far fa-star"></i></li>
+                                        {% endfor %}
+                                        <li><h4>{{ review.review_date | date:"Y-m-d" }}</h4></li>
+                                    </ul>
+                                </div>
+                                <div class="row uniform">
+                                    <p>{{ review.review_context }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
