@@ -23,6 +23,8 @@ from accessible_restaurant.forms import (
     UserUpdateForm,
     RestaurantProfileUpdateForm,
     ReviewPostForm,
+    UserCertUpdateForm,
+    UserCertVerifyForm,
 )
 
 from django.test import TestCase, Client
@@ -160,17 +162,18 @@ class TestForms(TestCase):
         )
         self.assertTrue(form.is_valid())
 
-    # def test_UserCertUpdateForm_is_valid(self):
-    #     form = UserCertUpdateForm(
-    #         data={"auth_documents": "sample_pdf", "auth_status": "approved"}
-    #     )
-    #     self.assertTrue(form.is_valid())
+    # Supply no file for certification 
+    def test_UserCertUpdateForm_is_valid(self):
+        form = UserCertUpdateForm(
+            data={"auth_documents": "", "auth_status": "pending"}
+        )
+        self.assertFalse(form.is_valid())
 
-    # def test_UserCertVerifyForm_is_valid(self):
-    #     form = UserCertVerifyForm(
-    #         data={"auth_status": "approved"}
-    #     )
-    #     self.assertTrue(form.is_valid())
+    def test_UserCertVerifyForm_is_valid(self):
+        form = UserCertVerifyForm(
+            data={"auth_status": "pending"}
+        )
+        self.assertTrue(form.is_valid())
 
 
 class TestUrls(SimpleTestCase):
@@ -1169,6 +1172,19 @@ class TestManageCertificate(TestCase):
         self.assertNotEquals(self.restaurant_user, restaurant_owner)
         self.client.logout()
 
+        # Check to make sure user1 is now certified
+        self.client.login(username="normal_user_1", password="123456test")
+        self.assertEqual(
+            User_Profile.objects.get(user=self.normal_user_1).auth_status, "certified"
+        )
+        self.client.logout()
+
+        # Check to make sure user2 is now certified
+        self.client.login(username="normal_user_2", password="123456test")
+        self.assertEqual(
+            User_Profile.objects.get(user=self.normal_user_2).auth_status, "uncertified"
+        )
+        self.client.logout()
 
 class TestPublicFacing(TestCase):
     def setUp(self):
