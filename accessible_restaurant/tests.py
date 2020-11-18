@@ -162,17 +162,13 @@ class TestForms(TestCase):
         )
         self.assertTrue(form.is_valid())
 
-    # Supply no file for certification 
+    # Supply no file for certification
     def test_UserCertUpdateForm_is_valid(self):
-        form = UserCertUpdateForm(
-            data={"auth_documents": "", "auth_status": "pending"}
-        )
+        form = UserCertUpdateForm(data={"auth_documents": "", "auth_status": "pending"})
         self.assertFalse(form.is_valid())
 
     def test_UserCertVerifyForm_is_valid(self):
-        form = UserCertVerifyForm(
-            data={"auth_status": "pending"}
-        )
+        form = UserCertVerifyForm(data={"auth_status": "pending"})
         self.assertTrue(form.is_valid())
 
 
@@ -317,9 +313,11 @@ class TestViews(TestCase):
     def setUp(self):
         self.client = Client()
         self.index_url = reverse("accessible_restaurant:index")
+        self.about_url = reverse("accessible_restaurant:about")
         self.logout_url = reverse("accessible_restaurant:logout")
         self.signup_url = reverse("accessible_restaurant:signup")
         self.emailsent_url = reverse("accessible_restaurant:emailsent")
+        self.user_profile_url = reverse("accessible_restaurant:user_profile")
         self.activate_url = reverse(
             "accessible_restaurant:activate", args=["uid", "token"]
         )
@@ -335,6 +333,16 @@ class TestViews(TestCase):
         self.review_url = reverse(
             "accessible_restaurant:write_review", args=["FaPtColHYcTnZAxtoM33cA"]
         )
+
+    def test_about_view(self):
+        response = self.client.get(self.about_url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/about.html")
+
+    def test_logout_view(self):
+        response = self.client.get(self.logout_url)
+        self.assertEquals(response.status_code, 302)
+        # self.assertTemplateUsed(response, 'accounts/logout.html')
 
     def test_index_view_GET(self):
         response = self.client.get(self.index_url)
@@ -812,13 +820,18 @@ class FilterTest(TestCase):
 
         self.assertEqual(response_filter_category.status_code, 200)
 
-        self.assertNotIn("jkl1ukPtVM2UZqMLSJdWFw",string_response) # Greenwich Steakhouse
-        self.assertNotIn("zuD-iB7hV_dnf_JzBk_DCQ",string_response) # Juku
-        self.assertIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_response) # Joe's Pizza
-
-        self.assertNotIn("jkl1ukPtVM2UZqMLSJdWFw", string_response)  # Greenwich Steakhouse
+        self.assertNotIn(
+            "jkl1ukPtVM2UZqMLSJdWFw", string_response
+        )  # Greenwich Steakhouse
         self.assertNotIn("zuD-iB7hV_dnf_JzBk_DCQ", string_response)  # Juku
         self.assertIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_response)  # Joe's Pizza
+
+        self.assertNotIn(
+            "jkl1ukPtVM2UZqMLSJdWFw", string_response
+        )  # Greenwich Steakhouse
+        self.assertNotIn("zuD-iB7hV_dnf_JzBk_DCQ", string_response)  # Juku
+        self.assertIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_response)  # Joe's Pizza
+
 
 class TestModels(TestCase):
     def test_save_restaurant_profile_image_correctly(self):
@@ -842,10 +855,22 @@ class TestModels(TestCase):
         self.assertEqual(str(self.user.rprofile), "huanjin Restaurant Profile")
         # self.assertEquals(self.user.rprofile.photo.path , "\media\default.jpg")
 
+    def test_ApprovalPendingUsers_correctly(self):
+        self.user = User.objects.create_user(
+            "huanjin", "zhanghuanjin97@gmail.com", "test123456"
+        )
+
+        self.user.auth = ApprovalPendingUsers.objects.create(
+            auth_documents="documents/pdfs/test.pdf",
+            auth_status="N/A",
+            time_created="",
+        )
+
     def test_save_user_profile_image_correctly(self):
         self.user = User.objects.create_user(
             "huanjin", "zhanghuanjin97@gmail.com", "test123456"
         )
+
         # self.client.login(username="huanjin", password="test123456")
         self.user.uprofile = User_Profile.objects.create(
             photo="default.jpg",
@@ -1185,6 +1210,7 @@ class TestManageCertificate(TestCase):
             User_Profile.objects.get(user=self.normal_user_2).auth_status, "uncertified"
         )
         self.client.logout()
+
 
 class TestPublicFacing(TestCase):
     def setUp(self):
