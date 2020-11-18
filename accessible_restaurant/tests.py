@@ -156,6 +156,18 @@ class TestForms(TestCase):
         )
         self.assertTrue(form.is_valid())
 
+    def test_UserCertUpdateForm_is_valid(self):
+        form = UserCertUpdateForm(
+            data={"auth_documents": "sample_pdf", "auth_status": "approved"}
+        )
+        self.assertTrue(form.is_valid())
+
+    def test_UserCertVerifyForm_is_valid(self):
+        form = UserCertVerifyForm(
+            data={"auth_status": "approved"}
+        )
+        self.assertTrue(form.is_valid())
+
 
 class TestUrls(SimpleTestCase):
     def test_index_url_is_resolved(self):
@@ -765,8 +777,6 @@ class FilterTest(TestCase):
         self.assertNotIn("jkl1ukPtVM2UZqMLSJdWFw",string_response) # Greenwich Steakhouse
         self.assertNotIn("zuD-iB7hV_dnf_JzBk_DCQ",string_response) # Juku
         self.assertIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_response) # Joe's Pizza
-
-
 
 
 class TestModels(TestCase):
