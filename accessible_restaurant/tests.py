@@ -23,6 +23,7 @@ from accessible_restaurant.forms import (
     UserUpdateForm,
     RestaurantProfileUpdateForm,
     ReviewPostForm,
+    ContactForm,
     UserCertUpdateForm,
     UserCertVerifyForm,
 )
@@ -315,6 +316,7 @@ class TestViews(TestCase):
         self.index_url = reverse("accessible_restaurant:index")
         self.about_url = reverse("accessible_restaurant:about")
         self.logout_url = reverse("accessible_restaurant:logout")
+        self.about_url = reverse("accessible_restaurant:about")
         self.signup_url = reverse("accessible_restaurant:signup")
         self.emailsent_url = reverse("accessible_restaurant:emailsent")
         self.user_profile_url = reverse("accessible_restaurant:user_profile")
@@ -352,6 +354,11 @@ class TestViews(TestCase):
     def test_logout_view_GET(self):
         response = self.client.get(self.logout_url)
         self.assertEqual(response.status_code, 302)
+
+    def test_about_view_GET(self):
+        response = self.client.get(self.about_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/about.html")
 
     def test_signup_view_GET(self):
         response = self.client.get(self.signup_url)
@@ -1285,6 +1292,27 @@ class TestPublicFacing(TestCase):
         self.assertEqual(isres_response.status_code, 200)
         self.assertEqual(isuser_response.status_code, 200)
         self.assertTemplateUsed(isuser_response, "publicface/public_user_detail.html")
+
+
+class TestFaqContact(TestCase):
+    def setUp(self):
+        self.faq_url = reverse("accessible_restaurant:faq")
+        return super().setUp()
+
+    def test_can_view_faq_page(self):
+        form_data = {
+            "Email": "zhanghuanjin97@gmail.com",
+            "Subject": "Test Subject",
+            "Message": "Test Message",
+        }
+        form = ContactForm(form_data)
+        self.assertTrue(form.is_valid())
+        get_response = self.client.get(self.faq_url)
+        post_response = self.client.post(self.faq_url)
+        self.assertEqual(post_response.status_code, 200)
+        self.assertTemplateUsed(post_response, "faq/faq.html")
+        self.assertEqual(get_response.status_code, 200)
+        self.assertTemplateUsed(get_response, "faq/faq.html")
 
 
 class TestComment(TestCase):

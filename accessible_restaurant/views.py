@@ -620,7 +620,7 @@ def add_comment_view(request, business_id, review_id):
         print(review.restaurant.user)
         if user.is_restaurant:
             if (
-                review.restaurant.user == None
+                review.restaurant.user is None
                 or request.user.id != review.restaurant.user.id
             ):
                 messages.warning(
