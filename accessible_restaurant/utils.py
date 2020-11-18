@@ -237,7 +237,7 @@ def get_filter_restaurant(filters, restaurants):
             categories[i] = "#"
 
     price1, price2, price3, price4 = prices
-    chinese, korean, salad, pizza = categories
+    chinese, korean, salad, pizza, sandwiches, brunch, coffee = categories
 
     if price_flag:
 
@@ -259,6 +259,15 @@ def get_filter_restaurant(filters, restaurants):
             | Q(category1__icontains=pizza)
             | Q(category2__icontains=pizza)
             | Q(category3__icontains=pizza)
+            | Q(category1__icontains=sandwiches)
+            | Q(category2__icontains=sandwiches)
+            | Q(category3__icontains=sandwiches)
+            | Q(category1__icontains=brunch)
+            | Q(category2__icontains=brunch)
+            | Q(category3__icontains=brunch)
+            | Q(category1__icontains=coffee)
+            | Q(category2__icontains=coffee)
+            | Q(category3__icontains=coffee)
         )
     return restaurants
 

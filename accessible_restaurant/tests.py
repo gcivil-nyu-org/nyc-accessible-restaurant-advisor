@@ -650,6 +650,129 @@ class SearchTest(TestCase):
         self.assertTemplateUsed(response_filter_category, "restaurants/browse.html")
 
 
+class FilterTest(TestCase):
+    def setUp(self) -> None:
+        Restaurant.objects.create(
+            business_id="jkl1ukPtVM2UZqMLSJdWFw",
+            name="Greenwich Steakhouse",
+            img_url="https://s3-media2.fl.yelpcdn.com/bphoto/uN7IpkwZrL7f2jYXbHPDIA/o.jpg",
+            rating="4.5",
+            latitude="40.73608",
+            longitude="-74.00058",
+            address="62 Greenwich Ave",
+            city="New York",
+            zip_code="10011",
+            compliant=False,
+            price="$$$$",
+            category1="Steakhouses",
+            category2="Seafood",
+            category3="Cocktail Bars",
+        )
+
+        Restaurant.objects.create(
+            business_id="zuD-iB7hV_dnf_JzBk_DCQ",
+            name="Juku",
+            img_url="https://s3-media3.fl.yelpcdn.com/bphoto/y1sYBIZzPgPFot9OZeKV8Q/o.jpg",
+            rating="4",
+            latitude="40.71461",
+            longitude="-73.999528",
+            address="32 Mulberry St",
+            city="New York",
+            zip_code="10013",
+            phone="16465902111",
+            compliant=True,
+            price="$$$",
+            category1="Sushi Bars",
+            category2="Izakaya",
+            category3="Cocktail Bars",
+        )
+
+        Restaurant.objects.create(
+            business_id="4h4Tuuc56YPO6lWfZ1bdSQ",
+            name="Joe's Pizza",
+            img_url="https://s3-media3.fl.yelpcdn.com/bphoto/iiFPnKfxI2_UjJHbCd2iCQ/o.jpg",
+            rating="4",
+            latitude="40.71012977",
+            longitude="-74.00772069",
+            address="124 Fulton St",
+            city="New York",
+            zip_code="10038",
+            phone="12122670860",
+            compliant=True,
+            price="$",
+            category1="Pizza"
+        )
+
+        self.filter_url = reverse("accessible_restaurant:browse", args=["0", "default"])
+
+    def test_individual_filter_price(self):
+
+        response_filter_most_expensive = self.client.get(self.filter_url, {"price4": "$$$$"})
+        response_filter_less_expensive = self.client.get(self.filter_url, {"price3": "$$$"})
+        response_filter_least_expensive = self.client.get(self.filter_url, {"price1": "$"})
+
+        string_most_expensive = response_filter_most_expensive.content.decode(encoding='UTF-8')
+        string_less_expensive = response_filter_less_expensive.content.decode(encoding='UTF-8')
+        string_least_expensive = response_filter_least_expensive.content.decode(encoding='UTF-8')
+
+        self.assertEqual(response_filter_most_expensive.status_code, 200)
+        self.assertEqual(response_filter_less_expensive.status_code, 200)
+        self.assertEqual(response_filter_least_expensive.status_code, 200)
+
+        self.assertIn("jkl1ukPtVM2UZqMLSJdWFw",string_most_expensive) # Greenwich Steakhouse
+        self.assertNotIn("zuD-iB7hV_dnf_JzBk_DCQ",string_most_expensive) # Juku
+        self.assertNotIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_most_expensive) # Joe's Pizza
+
+        self.assertIn("zuD-iB7hV_dnf_JzBk_DCQ",string_less_expensive) # Juku
+        self.assertNotIn("jkl1ukPtVM2UZqMLSJdWFw",string_less_expensive) # Greenwich Steakhouse
+        self.assertNotIn("4h4Tuuc56YPO6lWfZ1bdSQ",string_less_expensive) # Joe's Pizza
+
+        self.assertIn("4h4Tuuc56YPO6lWfZ1bdSQ",string_least_expensive) # Joe's Pizza
+        self.assertNotIn("jkl1ukPtVM2UZqMLSJdWFw",string_least_expensive) # Greenwich Steakhouse
+        self.assertNotIn("zuD-iB7hV_dnf_JzBk_DCQ",string_least_expensive) # Juku
+
+    def test_group_filter_price(self):
+
+        response_filter_more_expensive = self.client.get(self.filter_url, {"price4": "$$$$","price3": "$$$"})
+        response_filter_less_expensive = self.client.get(self.filter_url, {"price3": "$$$", "price1": "$"})
+        response_filter_all = self.client.get(self.filter_url, {"price1": "$", "price3": "$$$", "price4": "$$$$"})
+
+        string_more_expensive = response_filter_more_expensive.content.decode(encoding='UTF-8')
+        string_less_expensive = response_filter_less_expensive.content.decode(encoding='UTF-8')
+        string_all = response_filter_all.content.decode(encoding='UTF-8')
+
+        self.assertEqual(response_filter_more_expensive.status_code, 200)
+        self.assertEqual(response_filter_less_expensive.status_code, 200)
+        self.assertEqual(response_filter_all.status_code, 200)
+
+        self.assertIn("jkl1ukPtVM2UZqMLSJdWFw",string_more_expensive) # Greenwich Steakhouse
+        self.assertIn("zuD-iB7hV_dnf_JzBk_DCQ",string_more_expensive) # Juku
+        self.assertNotIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_more_expensive) # Joe's Pizza
+
+        self.assertNotIn("jkl1ukPtVM2UZqMLSJdWFw",string_less_expensive) # Greenwich Steakhouse
+        self.assertIn("zuD-iB7hV_dnf_JzBk_DCQ",string_less_expensive) # Juku
+        self.assertIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_less_expensive) # Joe's Pizza
+
+        self.assertIn("jkl1ukPtVM2UZqMLSJdWFw",string_all) # Greenwich Steakhouse
+        self.assertIn("zuD-iB7hV_dnf_JzBk_DCQ",string_all) # Juku
+        self.assertIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_all) # Joe's Pizza
+
+
+    def test_category_filter(self):
+
+        response_filter_category = self.client.get(self.filter_url, {"Pizza": "Pizza"})
+
+        string_response = response_filter_category.content.decode(encoding='UTF-8')
+
+        self.assertEqual(response_filter_category.status_code, 200)
+
+        self.assertNotIn("jkl1ukPtVM2UZqMLSJdWFw",string_response) # Greenwich Steakhouse
+        self.assertNotIn("zuD-iB7hV_dnf_JzBk_DCQ",string_response) # Juku
+        self.assertIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_response) # Joe's Pizza
+
+
+
+
 class TestModels(TestCase):
     def test_save_restaurant_profile_image_correctly(self):
         self.user = User.objects.create_user(

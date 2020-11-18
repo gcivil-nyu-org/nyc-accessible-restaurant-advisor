@@ -392,10 +392,13 @@ def restaurant_list_view(request, page, sort_property):
     korean = request.GET.get("Korean", "")
     salad = request.GET.get("Salad", "")
     pizza = request.GET.get("Pizza", "")
+    sandwiches = request.GET.get("Sandwiches", "")
+    brunch = request.GET.get("Brunch")
+    coffee = request.GET.get("Coffee", "")
 
     filters = {
         "prices": [price1, price2, price3, price4],
-        "categories": [chinese, korean, salad, pizza],
+        "categories": [chinese, korean, salad, pizza, sandwiches, brunch, coffee],
     }
 
     if keyword:
@@ -444,6 +447,9 @@ def restaurant_list_view(request, page, sort_property):
         "Korean": korean,
         "Salad": salad,
         "Pizza": pizza,
+        "Sandwiches": sandwiches,
+        "Brunch": brunch,
+        "Coffee": coffee,
     }
     return render(request, "restaurants/browse.html", context)
 
