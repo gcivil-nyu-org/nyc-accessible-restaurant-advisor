@@ -33,8 +33,12 @@ from accessible_restaurant.models import (
     Restaurant_Profile,
     Restaurant,
     Review,
+    ApprovalPendingUsers,
+    ApprovalPendingRestaurants,
 )
 import json
+
+from django.conf import settings
 
 
 # Create your tests here.
@@ -870,17 +874,216 @@ class TestModels(TestCase):
 
 class TestManageCertificate(TestCase):
     def setUp(self):
+        # set up three urls
+        self.user_profile_url = reverse("accessible_restaurant:user_profile")
+        self.restaurant_profile_url = reverse("accessible_restaurant:restaurant_profile")
         self.management_url = reverse("accessible_restaurant:authenticate")
-        return super().setUp()
 
-    def test_can_view_management_page_correctly(self):
-        self.user = User.objects.create_superuser(
+        self.client = Client()
+
+        # create three types of user accounts
+        self.super_user = User.objects.create_superuser(
             "admin", "shonna.x.tang@gmail.com", "accessible"
         )
+        self.normal_user_1 = User.objects.create_user(
+            username="normal_user_1", email="shonna.x.tang@gmail.com", password="123456test", is_user=True
+        )
+        self.normal_user_2 = User.objects.create_user(
+            username="normal_user_2", email="shonna.x.tang@gmail.com", password="123456test", is_user=True
+        )
+        self.restaurant_user = User.objects.create_user(
+            username="rest_user", email="shonna.x.tang@gmail.com", password="123456test", is_restaurant=True
+        )
+
+        # create two restaurants
+        self.Restaurant1 = Restaurant.objects.create(
+            business_id="De_10VF2CrC2moWaPA81mg",
+            name="Just Salad",
+            img_url="https://s3-media1.fl.yelpcdn.com/bphoto/xX9UzyMKSao3qfsufH9SnA/o.jpg",
+            rating="3.5",
+            latitude="40.669429",
+            longitude="-73.979494",
+            address="252 7th Ave",
+            city="Brooklyn",
+            zip_code="11215",
+            phone="+18666733757",
+            compliant=True,
+            price="$$",
+            category1="Salad",
+            category2="Wraps",
+            category3="Vegetarian",
+        )
+
+        self.Restaurant2 = Restaurant.objects.create(
+            business_id="FaPtColHYcTnZAxtoM33cA",
+            name="Chu Tea",
+            img_url="https://s3-media4.fl.yelpcdn.com/bphoto/05Q6eHDSpXmytCf4JHR7AQ/o.jpg",
+            rating="4.0",
+            latitude="40.668253",
+            longitude="-73.986898",
+            address="471 5th Ave",
+            city="Brooklyn",
+            zip_code="11215",
+            phone="+17187881113",
+            compliant=True,
+            price="$",
+            category1="Bubble Tea",
+            category2="Poke",
+            category3="Juice Bars & Smoothies",
+        )
+
+        # set up test file path and form data
+        self.certificate_file = settings.MEDIA_ROOT + "/documents/pdfs/test.pdf"
+
+        return super().setUp()
+
+    def test_can_upload_and_manage_certificate_correctly(self):
+        # Admin can view the manage page correctly
         self.client.login(username="admin", password="accessible")
         management_response = self.client.get(self.management_url)
         self.assertEqual(management_response.status_code, 200)
         self.assertTemplateUsed(management_response, "admin/manage.html")
+        self.client.logout()
+
+        # Check authentication request in models
+        user_auth_request = ApprovalPendingUsers.objects.all()
+        self.assertEqual(len(user_auth_request), 0)
+        restaurant_auth_request = ApprovalPendingRestaurants.objects.all()
+        self.assertEqual(len(restaurant_auth_request), 0)
+
+
+        # User upload disability certificate
+        self.client.login(username="normal_user_1", password="123456test")
+        with open(self.certificate_file, 'rb') as fp:
+            upload_user_form_data_1 = {
+                'submit-certificate': True,
+                'auth_documents': fp,
+                'auth_status': 'pending',
+            }
+            user_upload_certificate_response_1 = self.client.post(
+                self.user_profile_url,
+                upload_user_form_data_1,
+                HTTP_ACCEPT='application/json',
+            )
+        self.assertEqual(user_upload_certificate_response_1.status_code, 302)
+        self.assertEqual(user_upload_certificate_response_1.url, "/accounts/user-profile/")
+        self.assertEqual(User_Profile.objects.get(user=self.normal_user_1).auth_status, 'pending')
+        self.client.logout()
+
+        self.client.login(username="normal_user_2", password="123456test")
+        with open(self.certificate_file, 'rb') as fp:
+            upload_user_form_data_2 = {
+                'submit-certificate': True,
+                'auth_documents': fp,
+                'auth_status': 'pending',
+            }
+            user_upload_certificate_response_2 = self.client.post(
+                self.user_profile_url,
+                upload_user_form_data_2,
+                HTTP_ACCEPT='application/json',
+            )
+        self.assertEqual(user_upload_certificate_response_2.status_code, 302)
+        self.assertEqual(user_upload_certificate_response_2.url, "/accounts/user-profile/")
+        self.assertEqual(User_Profile.objects.get(user=self.normal_user_2).auth_status, 'pending')
+        self.client.logout()
+
+
+        # Restaurant owner upload business license of the restaurant
+        self.client.login(username="rest_user", password="123456test")
+        with open(self.certificate_file, 'rb') as fp:
+            upload_restaurant_form_data_1 = {
+                'submit-certificate': True,
+                'auth_documents': fp,
+                'restaurant': self.Restaurant1.id,
+            }
+            restaurant_upload_certificate_response_1 = self.client.post(
+                self.restaurant_profile_url,
+                upload_restaurant_form_data_1,
+                HTTP_ACCEPT='application/json',
+            )
+        self.assertEqual(restaurant_upload_certificate_response_1.status_code, 302)
+        self.assertEqual(restaurant_upload_certificate_response_1.url, "/accounts/restaurant-profile/")
+
+        with open(self.certificate_file, 'rb') as fp:
+            upload_restaurant_form_data_2 = {
+                'submit-certificate': True,
+                'auth_documents': fp,
+                'restaurant': self.Restaurant2.id,
+            }
+            restaurant_upload_certificate_response_2 = self.client.post(
+                self.restaurant_profile_url,
+                upload_restaurant_form_data_2,
+                HTTP_ACCEPT='application/json',
+            )
+        self.assertEqual(restaurant_upload_certificate_response_2.status_code, 302)
+        self.assertEqual(restaurant_upload_certificate_response_2.url, "/accounts/restaurant-profile/")
+        self.client.logout()
+
+
+        # Admin check the user certificate ans restaurant business license
+        self.client.login(username="admin", password="accessible")
+        management_response = self.client.get(self.management_url)
+        self.assertEqual(management_response.status_code, 200)
+        self.assertTemplateUsed(management_response, "admin/manage.html")
+
+        # Check authentication request in models
+        user_auth_request = ApprovalPendingUsers.objects.all()
+        self.assertEqual(len(user_auth_request), 2)
+        restaurant_auth_request = ApprovalPendingRestaurants.objects.all()
+        self.assertEqual(len(restaurant_auth_request), 2)
+
+
+        # Admin approve the user certificate
+        manage_user_form_data_1 = {
+            'submit-user': True,
+            'user_id': self.normal_user_1.id,
+            'auth_status': 'approve',
+        }
+        admin_approve_user_response = self.client.post(self.management_url, manage_user_form_data_1, HTTP_ACCEPT='application/json')
+        self.assertEqual(admin_approve_user_response.status_code, 302)
+        self.assertEqual(admin_approve_user_response.url, "/manage/")
+        normal_user_1_auth_status = User_Profile.objects.get(user=self.normal_user_1).auth_status
+        self.assertEqual(normal_user_1_auth_status, "certified")
+
+        # Admin approve the restaurant business license
+        manage_restaurant_form_data_1 = {
+            'submit-restaurant': True,
+            'owner_id': self.restaurant_user.id,
+            'restaurant_id': self.Restaurant1.business_id,
+            'auth_status': 'approve',
+        }
+        admin_approve_restaurant_response = self.client.post(self.management_url, manage_restaurant_form_data_1, HTTP_ACCEPT='application/json')
+        self.assertEqual(admin_approve_restaurant_response.status_code, 302)
+        self.assertEqual(admin_approve_restaurant_response.url, "/manage/")
+        restaurant_owner = Restaurant.objects.get(business_id=self.Restaurant1.business_id).user
+        self.assertEqual(self.restaurant_user, restaurant_owner)
+
+
+        # Admin disapprove the user certificate
+        manage_user_form_data_2 = {
+            'submit-user': True,
+            'user_id': self.normal_user_2.id,
+            'auth_status': 'disapprove',
+        }
+        admin_disapprove_user_response = self.client.post(self.management_url, manage_user_form_data_2, HTTP_ACCEPT='application/json')
+        self.assertEqual(admin_disapprove_user_response.status_code, 302)
+        self.assertEqual(admin_disapprove_user_response.url, "/manage/")
+        normal_user_2_auth_status = User_Profile.objects.get(user=self.normal_user_2).auth_status
+        self.assertEqual(normal_user_2_auth_status, "uncertified")
+
+        # Admin disapprove the restaurant business license
+        manage_restaurant_form_data_2 = {
+            'submit-restaurant': True,
+            'owner_id': self.restaurant_user.id,
+            'restaurant_id': self.Restaurant2.business_id,
+            'auth_status': 'disapprove',
+        }
+        admin_disapprove_restaurant_response = self.client.post(self.management_url, manage_restaurant_form_data_2, HTTP_ACCEPT='application/json')
+        self.assertEqual(admin_disapprove_restaurant_response.status_code, 302)
+        self.assertEqual(admin_disapprove_restaurant_response.url, "/manage/")
+        restaurant_owner = Restaurant.objects.get(business_id=self.Restaurant2.business_id).user
+        self.assertNotEquals(self.restaurant_user, restaurant_owner)
+        self.client.logout()
 
 
 class TestPublicFacing(TestCase):

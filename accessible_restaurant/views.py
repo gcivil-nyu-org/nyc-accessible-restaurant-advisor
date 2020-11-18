@@ -393,7 +393,7 @@ def restaurant_list_view(request, page, sort_property):
     salad = request.GET.get("Salad", "")
     pizza = request.GET.get("Pizza", "")
     sandwiches = request.GET.get("Sandwiches", "")
-    brunch = request.GET.get("Brunch")
+    brunch = request.GET.get("Brunch", "")
     coffee = request.GET.get("Coffee", "")
 
     filters = {
