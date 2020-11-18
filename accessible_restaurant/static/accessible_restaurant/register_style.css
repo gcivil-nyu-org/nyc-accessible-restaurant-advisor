@@ -227,3 +227,17 @@
         background-color: #E94601;
         color: #fff;
     }
+
+
+/* The alert message box */
+.alert {
+  padding: 5px;
+  margin-bottom: 15px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+.alert-danger {
+  background-color: #f2dede;
+  border-color: #ebccd1;
+  color: #a94442;
+}

@@ -17,6 +17,11 @@
             </div>
             {% load crispy_forms_tags %}
             <div class="form fl">
+                {% if error_message %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ error_message }}
+                    </div>
+                {% endif %}
                 <form method="POST">
                     {% csrf_token %}
                     {{ form|crispy }}
