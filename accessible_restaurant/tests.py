@@ -700,77 +700,108 @@ class FilterTest(TestCase):
             phone="12122670860",
             compliant=True,
             price="$",
-            category1="Pizza"
+            category1="Pizza",
         )
 
         self.filter_url = reverse("accessible_restaurant:browse", args=["0", "default"])
 
     def test_individual_filter_price(self):
 
-        response_filter_most_expensive = self.client.get(self.filter_url, {"price4": "$$$$"})
-        response_filter_less_expensive = self.client.get(self.filter_url, {"price3": "$$$"})
-        response_filter_least_expensive = self.client.get(self.filter_url, {"price1": "$"})
+        response_filter_most_expensive = self.client.get(
+            self.filter_url, {"price4": "$$$$"}
+        )
+        response_filter_less_expensive = self.client.get(
+            self.filter_url, {"price3": "$$$"}
+        )
+        response_filter_least_expensive = self.client.get(
+            self.filter_url, {"price1": "$"}
+        )
 
-        string_most_expensive = response_filter_most_expensive.content.decode(encoding='UTF-8')
-        string_less_expensive = response_filter_less_expensive.content.decode(encoding='UTF-8')
-        string_least_expensive = response_filter_least_expensive.content.decode(encoding='UTF-8')
+        string_most_expensive = response_filter_most_expensive.content.decode(
+            encoding="UTF-8"
+        )
+        string_less_expensive = response_filter_less_expensive.content.decode(
+            encoding="UTF-8"
+        )
+        string_least_expensive = response_filter_least_expensive.content.decode(
+            encoding="UTF-8"
+        )
 
         self.assertEqual(response_filter_most_expensive.status_code, 200)
         self.assertEqual(response_filter_less_expensive.status_code, 200)
         self.assertEqual(response_filter_least_expensive.status_code, 200)
 
-        self.assertIn("jkl1ukPtVM2UZqMLSJdWFw",string_most_expensive) # Greenwich Steakhouse
-        self.assertNotIn("zuD-iB7hV_dnf_JzBk_DCQ",string_most_expensive) # Juku
-        self.assertNotIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_most_expensive) # Joe's Pizza
+        self.assertIn(
+            "jkl1ukPtVM2UZqMLSJdWFw", string_most_expensive
+        )  # Greenwich Steakhouse
+        self.assertNotIn("zuD-iB7hV_dnf_JzBk_DCQ", string_most_expensive)  # Juku
+        self.assertNotIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_most_expensive)  # Joe's Pizza
 
-        self.assertIn("zuD-iB7hV_dnf_JzBk_DCQ",string_less_expensive) # Juku
-        self.assertNotIn("jkl1ukPtVM2UZqMLSJdWFw",string_less_expensive) # Greenwich Steakhouse
-        self.assertNotIn("4h4Tuuc56YPO6lWfZ1bdSQ",string_less_expensive) # Joe's Pizza
+        self.assertIn("zuD-iB7hV_dnf_JzBk_DCQ", string_less_expensive)  # Juku
+        self.assertNotIn(
+            "jkl1ukPtVM2UZqMLSJdWFw", string_less_expensive
+        )  # Greenwich Steakhouse
+        self.assertNotIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_less_expensive)  # Joe's Pizza
 
-        self.assertIn("4h4Tuuc56YPO6lWfZ1bdSQ",string_least_expensive) # Joe's Pizza
-        self.assertNotIn("jkl1ukPtVM2UZqMLSJdWFw",string_least_expensive) # Greenwich Steakhouse
-        self.assertNotIn("zuD-iB7hV_dnf_JzBk_DCQ",string_least_expensive) # Juku
+        self.assertIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_least_expensive)  # Joe's Pizza
+        self.assertNotIn(
+            "jkl1ukPtVM2UZqMLSJdWFw", string_least_expensive
+        )  # Greenwich Steakhouse
+        self.assertNotIn("zuD-iB7hV_dnf_JzBk_DCQ", string_least_expensive)  # Juku
 
     def test_group_filter_price(self):
 
-        response_filter_more_expensive = self.client.get(self.filter_url, {"price4": "$$$$","price3": "$$$"})
-        response_filter_less_expensive = self.client.get(self.filter_url, {"price3": "$$$", "price1": "$"})
-        response_filter_all = self.client.get(self.filter_url, {"price1": "$", "price3": "$$$", "price4": "$$$$"})
+        response_filter_more_expensive = self.client.get(
+            self.filter_url, {"price4": "$$$$", "price3": "$$$"}
+        )
+        response_filter_less_expensive = self.client.get(
+            self.filter_url, {"price3": "$$$", "price1": "$"}
+        )
+        response_filter_all = self.client.get(
+            self.filter_url, {"price1": "$", "price3": "$$$", "price4": "$$$$"}
+        )
 
-        string_more_expensive = response_filter_more_expensive.content.decode(encoding='UTF-8')
-        string_less_expensive = response_filter_less_expensive.content.decode(encoding='UTF-8')
-        string_all = response_filter_all.content.decode(encoding='UTF-8')
+        string_more_expensive = response_filter_more_expensive.content.decode(
+            encoding="UTF-8"
+        )
+        string_less_expensive = response_filter_less_expensive.content.decode(
+            encoding="UTF-8"
+        )
+        string_all = response_filter_all.content.decode(encoding="UTF-8")
 
         self.assertEqual(response_filter_more_expensive.status_code, 200)
         self.assertEqual(response_filter_less_expensive.status_code, 200)
         self.assertEqual(response_filter_all.status_code, 200)
 
-        self.assertIn("jkl1ukPtVM2UZqMLSJdWFw",string_more_expensive) # Greenwich Steakhouse
-        self.assertIn("zuD-iB7hV_dnf_JzBk_DCQ",string_more_expensive) # Juku
-        self.assertNotIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_more_expensive) # Joe's Pizza
+        self.assertIn(
+            "jkl1ukPtVM2UZqMLSJdWFw", string_more_expensive
+        )  # Greenwich Steakhouse
+        self.assertIn("zuD-iB7hV_dnf_JzBk_DCQ", string_more_expensive)  # Juku
+        self.assertNotIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_more_expensive)  # Joe's Pizza
 
-        self.assertNotIn("jkl1ukPtVM2UZqMLSJdWFw",string_less_expensive) # Greenwich Steakhouse
-        self.assertIn("zuD-iB7hV_dnf_JzBk_DCQ",string_less_expensive) # Juku
-        self.assertIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_less_expensive) # Joe's Pizza
+        self.assertNotIn(
+            "jkl1ukPtVM2UZqMLSJdWFw", string_less_expensive
+        )  # Greenwich Steakhouse
+        self.assertIn("zuD-iB7hV_dnf_JzBk_DCQ", string_less_expensive)  # Juku
+        self.assertIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_less_expensive)  # Joe's Pizza
 
-        self.assertIn("jkl1ukPtVM2UZqMLSJdWFw",string_all) # Greenwich Steakhouse
-        self.assertIn("zuD-iB7hV_dnf_JzBk_DCQ",string_all) # Juku
-        self.assertIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_all) # Joe's Pizza
-
+        self.assertIn("jkl1ukPtVM2UZqMLSJdWFw", string_all)  # Greenwich Steakhouse
+        self.assertIn("zuD-iB7hV_dnf_JzBk_DCQ", string_all)  # Juku
+        self.assertIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_all)  # Joe's Pizza
 
     def test_category_filter(self):
 
         response_filter_category = self.client.get(self.filter_url, {"Pizza": "Pizza"})
 
-        string_response = response_filter_category.content.decode(encoding='UTF-8')
+        string_response = response_filter_category.content.decode(encoding="UTF-8")
 
         self.assertEqual(response_filter_category.status_code, 200)
 
-        self.assertNotIn("jkl1ukPtVM2UZqMLSJdWFw",string_response) # Greenwich Steakhouse
-        self.assertNotIn("zuD-iB7hV_dnf_JzBk_DCQ",string_response) # Juku
-        self.assertIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_response) # Joe's Pizza
-
-
+        self.assertNotIn(
+            "jkl1ukPtVM2UZqMLSJdWFw", string_response
+        )  # Greenwich Steakhouse
+        self.assertNotIn("zuD-iB7hV_dnf_JzBk_DCQ", string_response)  # Juku
+        self.assertIn("4h4Tuuc56YPO6lWfZ1bdSQ", string_response)  # Joe's Pizza
 
 
 class TestModels(TestCase):
@@ -876,7 +907,9 @@ class TestManageCertificate(TestCase):
     def setUp(self):
         # set up three urls
         self.user_profile_url = reverse("accessible_restaurant:user_profile")
-        self.restaurant_profile_url = reverse("accessible_restaurant:restaurant_profile")
+        self.restaurant_profile_url = reverse(
+            "accessible_restaurant:restaurant_profile"
+        )
         self.management_url = reverse("accessible_restaurant:authenticate")
 
         self.client = Client()
@@ -886,13 +919,22 @@ class TestManageCertificate(TestCase):
             "admin", "shonna.x.tang@gmail.com", "accessible"
         )
         self.normal_user_1 = User.objects.create_user(
-            username="normal_user_1", email="shonna.x.tang@gmail.com", password="123456test", is_user=True
+            username="normal_user_1",
+            email="shonna.x.tang@gmail.com",
+            password="123456test",
+            is_user=True,
         )
         self.normal_user_2 = User.objects.create_user(
-            username="normal_user_2", email="shonna.x.tang@gmail.com", password="123456test", is_user=True
+            username="normal_user_2",
+            email="shonna.x.tang@gmail.com",
+            password="123456test",
+            is_user=True,
         )
         self.restaurant_user = User.objects.create_user(
-            username="rest_user", email="shonna.x.tang@gmail.com", password="123456test", is_restaurant=True
+            username="rest_user",
+            email="shonna.x.tang@gmail.com",
+            password="123456test",
+            is_restaurant=True,
         )
 
         # create two restaurants
@@ -951,74 +993,85 @@ class TestManageCertificate(TestCase):
         restaurant_auth_request = ApprovalPendingRestaurants.objects.all()
         self.assertEqual(len(restaurant_auth_request), 0)
 
-
         # User upload disability certificate
         self.client.login(username="normal_user_1", password="123456test")
-        with open(self.certificate_file, 'rb') as fp:
+        with open(self.certificate_file, "rb") as fp:
             upload_user_form_data_1 = {
-                'submit-certificate': True,
-                'auth_documents': fp,
-                'auth_status': 'pending',
+                "submit-certificate": True,
+                "auth_documents": fp,
+                "auth_status": "pending",
             }
             user_upload_certificate_response_1 = self.client.post(
                 self.user_profile_url,
                 upload_user_form_data_1,
-                HTTP_ACCEPT='application/json',
+                HTTP_ACCEPT="application/json",
             )
         self.assertEqual(user_upload_certificate_response_1.status_code, 302)
-        self.assertEqual(user_upload_certificate_response_1.url, "/accounts/user-profile/")
-        self.assertEqual(User_Profile.objects.get(user=self.normal_user_1).auth_status, 'pending')
+        self.assertEqual(
+            user_upload_certificate_response_1.url, "/accounts/user-profile/"
+        )
+        self.assertEqual(
+            User_Profile.objects.get(user=self.normal_user_1).auth_status, "pending"
+        )
         self.client.logout()
 
         self.client.login(username="normal_user_2", password="123456test")
-        with open(self.certificate_file, 'rb') as fp:
+        with open(self.certificate_file, "rb") as fp:
             upload_user_form_data_2 = {
-                'submit-certificate': True,
-                'auth_documents': fp,
-                'auth_status': 'pending',
+                "submit-certificate": True,
+                "auth_documents": fp,
+                "auth_status": "pending",
             }
             user_upload_certificate_response_2 = self.client.post(
                 self.user_profile_url,
                 upload_user_form_data_2,
-                HTTP_ACCEPT='application/json',
+                HTTP_ACCEPT="application/json",
             )
         self.assertEqual(user_upload_certificate_response_2.status_code, 302)
-        self.assertEqual(user_upload_certificate_response_2.url, "/accounts/user-profile/")
-        self.assertEqual(User_Profile.objects.get(user=self.normal_user_2).auth_status, 'pending')
+        self.assertEqual(
+            user_upload_certificate_response_2.url, "/accounts/user-profile/"
+        )
+        self.assertEqual(
+            User_Profile.objects.get(user=self.normal_user_2).auth_status, "pending"
+        )
         self.client.logout()
-
 
         # Restaurant owner upload business license of the restaurant
         self.client.login(username="rest_user", password="123456test")
-        with open(self.certificate_file, 'rb') as fp:
+        with open(self.certificate_file, "rb") as fp:
             upload_restaurant_form_data_1 = {
-                'submit-certificate': True,
-                'auth_documents': fp,
-                'restaurant': self.Restaurant1.id,
+                "submit-certificate": True,
+                "auth_documents": fp,
+                "restaurant": self.Restaurant1.id,
             }
             restaurant_upload_certificate_response_1 = self.client.post(
                 self.restaurant_profile_url,
                 upload_restaurant_form_data_1,
-                HTTP_ACCEPT='application/json',
+                HTTP_ACCEPT="application/json",
             )
         self.assertEqual(restaurant_upload_certificate_response_1.status_code, 302)
-        self.assertEqual(restaurant_upload_certificate_response_1.url, "/accounts/restaurant-profile/")
+        self.assertEqual(
+            restaurant_upload_certificate_response_1.url,
+            "/accounts/restaurant-profile/",
+        )
 
-        with open(self.certificate_file, 'rb') as fp:
+        with open(self.certificate_file, "rb") as fp:
             upload_restaurant_form_data_2 = {
-                'submit-certificate': True,
-                'auth_documents': fp,
-                'restaurant': self.Restaurant2.id,
+                "submit-certificate": True,
+                "auth_documents": fp,
+                "restaurant": self.Restaurant2.id,
             }
             restaurant_upload_certificate_response_2 = self.client.post(
                 self.restaurant_profile_url,
                 upload_restaurant_form_data_2,
-                HTTP_ACCEPT='application/json',
+                HTTP_ACCEPT="application/json",
             )
         self.assertEqual(restaurant_upload_certificate_response_2.status_code, 302)
-        self.assertEqual(restaurant_upload_certificate_response_2.url, "/accounts/restaurant-profile/")
+        self.assertEqual(
+            restaurant_upload_certificate_response_2.url,
+            "/accounts/restaurant-profile/",
+        )
         self.client.logout()
-
 
         # Admin check the user certificate ans restaurant business license
         self.client.login(username="admin", password="accessible")
@@ -1032,56 +1085,74 @@ class TestManageCertificate(TestCase):
         restaurant_auth_request = ApprovalPendingRestaurants.objects.all()
         self.assertEqual(len(restaurant_auth_request), 2)
 
-
         # Admin approve the user certificate
         manage_user_form_data_1 = {
-            'submit-user': True,
-            'user_id': self.normal_user_1.id,
-            'auth_status': 'approve',
+            "submit-user": True,
+            "user_id": self.normal_user_1.id,
+            "auth_status": "approve",
         }
-        admin_approve_user_response = self.client.post(self.management_url, manage_user_form_data_1, HTTP_ACCEPT='application/json')
+        admin_approve_user_response = self.client.post(
+            self.management_url, manage_user_form_data_1, HTTP_ACCEPT="application/json"
+        )
         self.assertEqual(admin_approve_user_response.status_code, 302)
         self.assertEqual(admin_approve_user_response.url, "/manage/")
-        normal_user_1_auth_status = User_Profile.objects.get(user=self.normal_user_1).auth_status
+        normal_user_1_auth_status = User_Profile.objects.get(
+            user=self.normal_user_1
+        ).auth_status
         self.assertEqual(normal_user_1_auth_status, "certified")
 
         # Admin approve the restaurant business license
         manage_restaurant_form_data_1 = {
-            'submit-restaurant': True,
-            'owner_id': self.restaurant_user.id,
-            'restaurant_id': self.Restaurant1.business_id,
-            'auth_status': 'approve',
+            "submit-restaurant": True,
+            "owner_id": self.restaurant_user.id,
+            "restaurant_id": self.Restaurant1.business_id,
+            "auth_status": "approve",
         }
-        admin_approve_restaurant_response = self.client.post(self.management_url, manage_restaurant_form_data_1, HTTP_ACCEPT='application/json')
+        admin_approve_restaurant_response = self.client.post(
+            self.management_url,
+            manage_restaurant_form_data_1,
+            HTTP_ACCEPT="application/json",
+        )
         self.assertEqual(admin_approve_restaurant_response.status_code, 302)
         self.assertEqual(admin_approve_restaurant_response.url, "/manage/")
-        restaurant_owner = Restaurant.objects.get(business_id=self.Restaurant1.business_id).user
+        restaurant_owner = Restaurant.objects.get(
+            business_id=self.Restaurant1.business_id
+        ).user
         self.assertEqual(self.restaurant_user, restaurant_owner)
-
 
         # Admin disapprove the user certificate
         manage_user_form_data_2 = {
-            'submit-user': True,
-            'user_id': self.normal_user_2.id,
-            'auth_status': 'disapprove',
+            "submit-user": True,
+            "user_id": self.normal_user_2.id,
+            "auth_status": "disapprove",
         }
-        admin_disapprove_user_response = self.client.post(self.management_url, manage_user_form_data_2, HTTP_ACCEPT='application/json')
+        admin_disapprove_user_response = self.client.post(
+            self.management_url, manage_user_form_data_2, HTTP_ACCEPT="application/json"
+        )
         self.assertEqual(admin_disapprove_user_response.status_code, 302)
         self.assertEqual(admin_disapprove_user_response.url, "/manage/")
-        normal_user_2_auth_status = User_Profile.objects.get(user=self.normal_user_2).auth_status
+        normal_user_2_auth_status = User_Profile.objects.get(
+            user=self.normal_user_2
+        ).auth_status
         self.assertEqual(normal_user_2_auth_status, "uncertified")
 
         # Admin disapprove the restaurant business license
         manage_restaurant_form_data_2 = {
-            'submit-restaurant': True,
-            'owner_id': self.restaurant_user.id,
-            'restaurant_id': self.Restaurant2.business_id,
-            'auth_status': 'disapprove',
+            "submit-restaurant": True,
+            "owner_id": self.restaurant_user.id,
+            "restaurant_id": self.Restaurant2.business_id,
+            "auth_status": "disapprove",
         }
-        admin_disapprove_restaurant_response = self.client.post(self.management_url, manage_restaurant_form_data_2, HTTP_ACCEPT='application/json')
+        admin_disapprove_restaurant_response = self.client.post(
+            self.management_url,
+            manage_restaurant_form_data_2,
+            HTTP_ACCEPT="application/json",
+        )
         self.assertEqual(admin_disapprove_restaurant_response.status_code, 302)
         self.assertEqual(admin_disapprove_restaurant_response.url, "/manage/")
-        restaurant_owner = Restaurant.objects.get(business_id=self.Restaurant2.business_id).user
+        restaurant_owner = Restaurant.objects.get(
+            business_id=self.Restaurant2.business_id
+        ).user
         self.assertNotEquals(self.restaurant_user, restaurant_owner)
         self.client.logout()
 
