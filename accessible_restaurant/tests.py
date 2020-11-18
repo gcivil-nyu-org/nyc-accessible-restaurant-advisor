@@ -1230,3 +1230,181 @@ class TestPublicFacing(TestCase):
         self.assertEqual(isres_response.status_code, 200)
         self.assertEqual(isuser_response.status_code, 200)
         self.assertTemplateUsed(isuser_response, "publicface/public_user_detail.html")
+
+
+class TestComment(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        # three user accounts for testing
+        self.user1 = User.objects.create_user(
+            username="user1",
+            email="xc.test1@gmail.com",
+            password="xc1379test",
+            is_user=True,
+        )
+        self.user2 = User.objects.create_user(
+            username="user2",
+            email="xc.test2@gmail.com",
+            password="xc1379test",
+            is_user=True,
+        )
+        self.rest_user1 = User.objects.create_user(
+            username="rest_user1",
+            email="xc.rest1@gmail.com",
+            password="xc1379test",
+            is_restaurant=True,
+        )
+        self.rest_user2 = User.objects.create_user(
+            username="rest_user2",
+            email="xc.rest2@gmail.com",
+            password="xc1379test",
+            is_restaurant=True,
+        )
+
+        # three restaurant for testing
+        self.restaurant1 = Restaurant.objects.create(
+            business_id="jkl1ukPtVM2UZqMLSJdWFw",
+            name="Greenwich Steakhouse",
+            img_url="https://s3-media2.fl.yelpcdn.com/bphoto/uN7IpkwZrL7f2jYXbHPDIA/o.jpg",
+            rating="4.5",
+            latitude="40.73608",
+            longitude="-74.00058",
+            address="62 Greenwich Ave",
+            city="New York",
+            zip_code="10011",
+            compliant=False,
+            price="$$$$",
+            category1="Steakhouses",
+            category2="Seafood",
+            category3="Cocktail Bars",
+        )
+
+        self.restaurant2 = Restaurant.objects.create(
+            user=self.rest_user2,
+            business_id="zuD-iB7hV_dnf_JzBk_DCQ",
+            name="Juku",
+            img_url="https://s3-media3.fl.yelpcdn.com/bphoto/y1sYBIZzPgPFot9OZeKV8Q/o.jpg",
+            rating="4",
+            latitude="40.71461",
+            longitude="-73.999528",
+            address="32 Mulberry St",
+            city="New York",
+            zip_code="10013",
+            phone="16465902111",
+            compliant=True,
+            price="$$$",
+            category1="Sushi Bars",
+            category2="Izakaya",
+            category3="Cocktail Bars",
+        )
+
+        self.restaurant3 = Restaurant.objects.create(
+            business_id="4h4Tuuc56YPO6lWfZ1bdSQ",
+            name="Joe's Pizza",
+            img_url="https://s3-media3.fl.yelpcdn.com/bphoto/iiFPnKfxI2_UjJHbCd2iCQ/o.jpg",
+            rating="4",
+            latitude="40.71012977",
+            longitude="-74.00772069",
+            address="124 Fulton St",
+            city="New York",
+            zip_code="10038",
+            phone="12122670860",
+            compliant=True,
+            price="$",
+            category1="Pizza",
+        )
+
+        self.restaurant1_url = reverse(
+            "accessible_restaurant:detail", args=["jkl1ukPtVM2UZqMLSJdWFw"]
+        )
+        self.restaurant2_url = reverse(
+            "accessible_restaurant:detail", args=["iB7hV_dnf_JzBk_DCQ"]
+        )
+        self.restaurant3_url = reverse(
+            "accessible_restaurant:detail", args=["4h4Tuuc56YPO6lWfZ1bdSQ"]
+        )
+
+    def test_review_and_comments(self):
+        self.client.login(username="user1", password="xc1379test")
+
+        # user can view the review adding page correctly
+        self.review_add_url = reverse(
+            "accessible_restaurant:write_review", args=["jkl1ukPtVM2UZqMLSJdWFw"]
+        )
+        response_view_add_review = self.client.get(self.review_add_url)
+        self.assertEqual(response_view_add_review.status_code, 200)
+        self.assertTemplateUsed(response_view_add_review, "review/write_review.html")
+
+        # create a test review form
+        form_review_data = {
+            "rating": 5,
+            "level_entry_rating": 5,
+            "wide_door_rating": 5,
+            "accessible_table_rating": 5,
+            "accessible_restroom_rating": 5,
+            "accessible_path_rating": 5,
+            "review_context": "test adding review",
+        }
+        response_add_review = self.client.get(
+            self.review_add_url,
+            form_review_data,
+            # HTTP_ACCEPT='application/json',
+        )
+        self.assertEqual(response_add_review.status_code, 302)
+        self.assertEqual(
+            response_add_review.url, "/restaurants/detail/jkl1ukPtVM2UZqMLSJdWFw"
+        )
+        self.assertEqual(
+            Review.objects.get(user=self.user1, restaurant=self.restaurant1).rating, 5
+        )
+        self.client.logout()
+
+        # create new test review for testing comment
+        review1 = Review.objects.create(
+            user=self.user2,
+            restaurant=self.restaurant2,
+            review_context="review for testing comment",
+            rating="5",
+            level_entry_rating="5",
+            wide_door_rating="5",
+            accessible_table_rating="5",
+            accessible_restroom_rating="5",
+            accessible_path_rating="5",
+        )
+
+        # test adding comments
+        self.assertEqual(len(review1.comments.all()), 0)
+        self.comment_add_url = reverse(
+            "accessible_restaurant:add_comment",
+            args=["zuD-iB7hV_dnf_JzBk_DCQ", review1.id],
+        )
+        form_add_comment = {"text": "test adding comment"}
+
+        # test adding comment as restaurant user that
+        # does not own this restaurant
+        self.client.login(username="rest_user1", password="xc1379test")
+        response_add_comment_1 = self.client.post(
+            self.comment_add_url,
+            form_add_comment,
+            HTTP_ACCEPT="application/json",
+        )
+        self.assertEqual(len(review1.comments.all()), 0)
+        self.assertEqual(response_add_comment_1.status_code, 302)
+        self.assertEqual(
+            response_add_comment_1.url, "/restaurants/detail/zuD-iB7hV_dnf_JzBk_DCQ"
+        )
+        self.client.logout()
+
+        self.client.login(username="user1", password="xc1379test")
+        response_add_comment_2 = self.client.post(
+            self.comment_add_url,
+            form_add_comment,
+            HTTP_ACCEPT="application/json",
+        )
+        self.assertEqual(len(review1.comments.all()), 1)
+        self.assertEqual(response_add_comment_2.status_code, 302)
+        self.assertEqual(
+            response_add_comment_2.url, "/restaurants/detail/zuD-iB7hV_dnf_JzBk_DCQ"
+        )
+        self.client.logout()
