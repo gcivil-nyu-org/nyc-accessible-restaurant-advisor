@@ -528,16 +528,19 @@ def restaurant_detail_view(request, business_id):
         hours = []
         is_open_now = False
         weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-        if restaurant_data["hours"]:
-            is_open_now = restaurant_data["hours"][0]["is_open_now"]
-            for day in restaurant_data["hours"][0]["open"]:
-                index = int(day["day"])
-                day["weekday"] = weekdays[index]
-                start = day["start"]
-                end = day["end"]
-                day["start"] = start[:2] + ":" + start[2:]
-                day["end"] = end[:2] + ":" + end[2:]
-                hours.append(day)
+        if "hours" in restaurant_data:
+            if restaurant_data["hours"]:
+                is_open_now = restaurant_data["hours"][0]["is_open_now"]
+                for day in restaurant_data["hours"][0]["open"]:
+                    index = int(day["day"])
+                    day["weekday"] = weekdays[index]
+                    start = day["start"]
+                    end = day["end"]
+                    day["start"] = start[:2] + ":" + start[2:]
+                    day["end"] = end[:2] + ":" + end[2:]
+                    hours.append(day)
+        else:
+            hours = None
 
         comment_form = CommentForm()
 

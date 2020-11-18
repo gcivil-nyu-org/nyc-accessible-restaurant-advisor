@@ -122,9 +122,9 @@ def get_restaurant(business_id):
 
 def get_restaurant_list(page, size, sort_property, client_ip, restaurants):
     if sort_property == "lowestPrice":
-        restaurants = restaurants.order_by("price")
+        restaurants = restaurants.order_by("price", "business_id")
     elif sort_property == "highestPrice":
-        restaurants = restaurants.order_by("-price")
+        restaurants = restaurants.order_by("-price", "business_id")
     elif sort_property == "nearest":
         g = GeoIP2()
         try:

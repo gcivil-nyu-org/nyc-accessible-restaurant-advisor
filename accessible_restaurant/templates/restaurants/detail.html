@@ -324,9 +324,13 @@
                         {% else %}
                             <li class="no-bullets"><i class="icon fas fa-times-circle"></i>Closed</li>
                         {% endif %}
-                        {% for hour_data in hours %}
-                            <li>{{ hour_data.weekday }} &emsp; {{ hour_data.start }}-{{ hour_data.end }}</li>
-                        {% endfor %}
+                        {% if hours %}
+                            {% for hour_data in hours %}
+                                <li>{{ hour_data.weekday }} &emsp; {{ hour_data.start }}-{{ hour_data.end }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>Open hours data not available</li>
+                        {% endif %}
                     </ul>
                     <h2>Contact Info</h2>
                     <ul class="alt">
