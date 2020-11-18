@@ -124,6 +124,36 @@
                                     Pizza
                                     </label>
                                 </div>
+                                <div class="form-check">
+                                    {% if Sandwiches %}
+                                        <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Sandwiches" id="Sandwiches" name="Sandwiches">
+                                    {% else %}
+                                        <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Sandwiches" id="Sandwiches" name="Sandwiches">
+                                    {% endif %}
+                                    <label class="form-check-label" for="Sandwiches">
+                                    Sandwiches
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    {% if Brunch %}
+                                        <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Brunch" id="Brunch" name="Brunch">
+                                    {% else %}
+                                        <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Brunch" id="Brunch" name="Brunch">
+                                    {% endif %}
+                                    <label class="form-check-label" for="Brunch">
+                                    Breakfast & Brunch
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    {% if Coffee %}
+                                        <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Coffee" id="Coffee" name="Coffee">
+                                    {% else %}
+                                        <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Coffee" id="Coffee" name="Coffee">
+                                    {% endif %}
+                                    <label class="form-check-label" for="Coffee">
+                                    Coffee & Tea
+                                    </label>
+                                </div>
                      </div>
                     </form>
                     <hr />

@@ -62,4 +62,6 @@ urlpatterns = [
     path("user_detail/<user>", views.user_detail_view, name="public_facing"),
     # admin manage the certificate
     path("manage/", views.authentication_view, name="authenticate"),
+    # Frequently Asked Questions
+    path("faq/", views.faq_view, name="faq"),
 ]

@@ -36,16 +36,16 @@ class User_Profile(models.Model):
     def __str__(self):
         return f"{self.user.username} User Profile"
 
-    def save(self, *args, **kwargs):
-        super(User_Profile, self).save(*args, **kwargs)
-
-        img = Image.open(self.photo.path)
-        img = img.convert("RGB")
-
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.photo.path)
+    # def save(self, *args, **kwargs):
+    #     super(User_Profile, self).save(*args, **kwargs)
+    #
+    #     img = Image.open(self.photo.path)
+    #     img = img.convert("RGB")
+    #
+    #     if img.height > 300 or img.width > 300:
+    #         output_size = (300, 300)
+    #         img.thumbnail(output_size)
+    #         img.save(self.photo.path)
 
 
 class ApprovalPendingUsers(models.Model):
@@ -82,16 +82,16 @@ class Restaurant_Profile(models.Model):
     def __str__(self):
         return f"{self.user.username} Restaurant Profile"
 
-    def save(self, *args, **kwargs):
-        super(Restaurant_Profile, self).save(*args, **kwargs)
-
-        img = Image.open(self.photo.path)
-        img = img.convert("RGB")
-
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.photo.path)
+    # def save(self, *args, **kwargs):
+    #     super(Restaurant_Profile, self).save(*args, **kwargs)
+    #
+    #     img = Image.open(self.photo.path)
+    #     img = img.convert("RGB")
+    #
+    #     if img.height > 300 or img.width > 300:
+    #         output_size = (300, 300)
+    #         img.thumbnail(output_size)
+    #         img.save(self.photo.path)
 
 
 class Restaurant(models.Model):
@@ -125,6 +125,25 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+
+class ApprovalPendingRestaurants(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, related_name="auth_user"
+    )
+    restaurant = models.ForeignKey(
+        Restaurant, on_delete=models.CASCADE, null=True, related_name="auth_rest"
+    )
+    auth_documents = models.FileField(blank=False, upload_to="documents/pdfs/")
+    AUTH_STATUS_CHOICES = [
+        ("approve", "Approve"),
+        ("pending", "Pending"),
+        ("disapprove", "Disapprove"),
+    ]
+    auth_status = models.CharField(
+        max_length=16, choices=AUTH_STATUS_CHOICES, default="N/A"
+    )
+    time_created = models.DateTimeField(auto_now_add=True)
 
 
 class Review(models.Model):

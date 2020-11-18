@@ -84,7 +84,8 @@
 /*}*/
 
 body{
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+    /*background: -webkit-linear-gradient(left, #3931af, #00c6ff);*/
+        background: -webkit-linear-gradient(left, #d2f2d2, #d2f2d2);
 }
 .emp-profile{
     padding: 3%;
@@ -92,6 +93,7 @@ body{
     margin-bottom: 3%;
     border-radius: 0.5rem;
     background: #fff;
+    /*background: #d2f2d2;*/
 }
 .profile-img{
     text-align: center;
