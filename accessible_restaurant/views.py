@@ -400,7 +400,19 @@ def restaurant_list_view(request, page):
     coffee = request.GET.get("Coffee", "")
 
     filters_applied = False
-    if price1 or price2 or price3 or price4 or chinese or korean or salad or pizza or sandwiches or brunch or coffee:
+    if (
+        price1
+        or price2
+        or price3
+        or price4
+        or chinese
+        or korean
+        or salad
+        or pizza
+        or sandwiches
+        or brunch
+        or coffee
+    ):
         filters_applied = True
 
     filters = {
