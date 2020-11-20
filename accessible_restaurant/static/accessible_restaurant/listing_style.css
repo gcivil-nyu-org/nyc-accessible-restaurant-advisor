@@ -1,0 +1,83 @@
+.jumbotron {
+    background-image: url(images/coffeebar.jpg);
+    background-size: cover;
+}
+.display-4 {
+    color: #fff;
+}
+.card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+.h-fixed {
+    width: 100%;
+    height: 93vh;
+}
+#map {
+    width: 100%;
+    height: 100%;
+}
+.map-overflow {
+    /* Make map not scrollable */
+    overflow: hidden;
+}
+.lists-overflow {
+    /* Make lists scrollable */
+    overflow-x: hidden;
+    overflow-y: scroll;
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+.lists-overflow::-webkit-scrollbar {
+    display: none;
+}
+
+#searchInput {
+    width: 50%;
+}
+
+.phone-icon {
+    color: green;
+}
+.address-icon {
+    color: dodgerblue;
+}
+
+.icon-star-full {
+    color: #dd4b39;
+}
+.icon-star-half {
+    color: #dd4b39;
+}
+.icon-star-null {
+    color: #757575;
+}
+
+/* reduce space between each star */
+.list-inline>li {
+    margin: -10px;
+}
+    .list-inline>li:first-child {
+
+    }
+.list-inline {
+    margin: 10px;
+}
+
+#sortPropertySelect {
+    width:auto;
+}
+/*.icon-facebook {*/
+/*   color:#3b5998;*/
+/*}*/
+
+/*.icon-twitter {*/
+/*    color:#00aced;*/
+/*}*/
+
+/*.icon-gplus{*/
+/*    color:#dd4b39;*/
+/*}*/

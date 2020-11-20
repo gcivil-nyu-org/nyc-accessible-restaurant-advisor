@@ -372,9 +372,9 @@ def restaurant_profile_view(request):
     return render(request, "profile/restaurant_profile.html", context)
 
 
-def restaurant_list_view(request, page, sort_property):
+def restaurant_list_view(request, page):
+    sort_property = request.GET.get("sort_property", "default")
     if sort_property == "nearest":
-        # print("Hello")
         messages.warning(
             request,
             f'{"Your current IP address will be used for this feature. "}',
@@ -395,6 +395,10 @@ def restaurant_list_view(request, page, sort_property):
     sandwiches = request.GET.get("Sandwiches", "")
     brunch = request.GET.get("Brunch", "")
     coffee = request.GET.get("Coffee", "")
+
+    filters_applied = False
+    if price1 or price2 or price3 or price4 or chinese or korean or salad or pizza or sandwiches or brunch or coffee:
+        filters_applied = True
 
     filters = {
         "prices": [price1, price2, price3, price4],
@@ -450,8 +454,9 @@ def restaurant_list_view(request, page, sort_property):
         "Sandwiches": sandwiches,
         "Brunch": brunch,
         "Coffee": coffee,
+        "filter_applied": filters_applied,
     }
-    return render(request, "restaurants/browse.html", context)
+    return render(request, "restaurants/listing.html", context)
 
 
 def restaurant_detail_view(request, business_id):

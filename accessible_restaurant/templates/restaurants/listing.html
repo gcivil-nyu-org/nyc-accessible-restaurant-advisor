@@ -1,0 +1,427 @@
+{% extends "base.html" %}
+
+{% block staticlink %}
+    {% load static %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/listing_style.css' %}">
+	<script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
+
+    <!--Scripts for Restaurant List Google Map-->
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyDldJIuqREsdZZqcb3ZY8S5kuFWS0DUjc4&callback=initMap" async defer></script>
+    <script type = "text/javascript">
+        var u_latitude;
+        var u_longitude;
+        function initMap(map) {
+            var lat1;
+            var long1;
+            {% for restaurant in restaurants %}
+                var lat1 = {{ restaurant.latitude }};
+                var long1 = {{ restaurant.longitude }};
+            {% endfor %}
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: lat1, lng: long1},
+            zoom: 14
+            });
+            var input = document.getElementById('searchInput');
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+            var autocomplete = new google.maps.places.Autocomplete(input);
+            autocomplete.bindTo('bounds', map);
+
+            var infowindow = new google.maps.InfoWindow();
+            var marker = new google.maps.Marker({
+                map: map,
+                anchorPoint: new google.maps.Point(0, -29)
+            });
+            // if ({{user.uprofile.latitude}})
+            // const myLatLng = { lat: {{user.uprofile.latitude}},  lng: {{user.uprofile.longitude}} };
+            // new google.maps.Marker({
+            //     position: myLatLng,
+            //     map,
+            //     title: "Your location",
+            // });
+            const image = "https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/32x32/plain/disability.png";
+            {% for restaurant in restaurants %}
+                var lat_restaurant = {{ restaurant.latitude }};
+                var long_restaurant = {{ restaurant.longitude }};
+                var restaurant_name = "{{ restaurant.name }}";
+                console.log(restaurant_name);
+                // console.log(typeof(lat_restaurant))
+                // lat_restaurant = int(lat_restaurant)
+                // var myLatLng1 = { lat: {{ restaurant.latitude }},  lng: {{ restaurant.longitude }} };
+                // long_restaurant = int(long_restaurant)
+                // console.log({{ restaurant.latitude }},{{ restaurant.longitude }})
+                addMarker({lat:lat_restaurant, lng:long_restaurant}, restaurant_name)
+                // addMarker({lat:40.709569, lng:-74.006834})
+
+            {% endfor %}
+
+
+            function addMarker(coords, restaurant_name){
+                var marker = new google.maps.Marker({
+                    position:coords,
+                    map,
+                    title: restaurant_name,
+                    icon: image
+                })
+            }
+
+            autocomplete.addListener('place_changed', function() {
+                infowindow.close();
+                marker.setVisible(false);
+                var place = autocomplete.getPlace();
+                if (!place.geometry) {
+                    window.alert("Autocomplete's returned place contains no geometry");
+                    return;
+                }
+
+                // If the place has a geometry, then present it on a map.
+                if (place.geometry.viewport) {
+                    map.fitBounds(place.geometry.viewport);
+                } else {
+                    map.setCenter(place.geometry.location);
+                    map.setZoom(17);
+                }
+                marker.setIcon(({
+                    url: place.icon,
+                    size: new google.maps.Size(71, 71),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(17, 34),
+                    scaledSize: new google.maps.Size(35, 35)
+                }));
+                marker.setPosition(place.geometry.location);
+                marker.setPosition([43.64701, -79.39425]);
+                marker.setVisible(true);
+
+                var address = '';
+                if (place.address_components) {
+                    address = [
+                    (place.address_components[0] && place.address_components[0].short_name || ''),
+                    (place.address_components[1] && place.address_components[1].short_name || ''),
+                    (place.address_components[2] && place.address_components[2].short_name || '')
+                    ].join(' ');
+                }
+
+                infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+                infowindow.open(map, marker);
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block title %} Restaurant List Page {% endblock %}
+
+{% block body %}<body class="subpage">{% endblock %}
+
+{% block content %}
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">Restaurant Listings</h1>
+<!--        <p class="lead">Restaurant</p>-->
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row h-100 mx-2 mt-2">
+        <div class="col-5 h-fixed map-overflow">
+            <!-- Search input -->
+            <input class="form-control mx-4" id="searchInput" class="controls" type="text" placeholder="Enter your current location">
+            <!-- Google map -->
+            <div class="mx-4 mt-4" id="map"></div>
+        </div>
+        <div class="col-7 h-fixed lists-overflow">
+            <form id="filterForm" method="get" action="{% url 'accessible_restaurant:browse' 0 %}?{{ request.GET.urlencode }}">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="input-group my-4">
+                        <input class="form-control ml-4 mr-0" type="text" name="query" id="query" value="{{ request.GET.query }}" placeholder="Restaurant name, category, zip code, etc (use ',' between different types of keywords)" aria-label="Search">
+                        <div class="input-group-append mr-4 ml-0">
+                            <button class="input-group-text btn btn-outline-success" type="submit"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        {% if price1 or price2 or price3 or price4 or chinese or korean or salad or pizza or sandwiches or brunch or coffee %}
+                            <button class="btn btn-block m-2" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false" aria-controls="filters">
+                                More Filters
+                            </button>
+                        {% else %}
+                            <button class="btn btn-block m-2" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false" aria-controls="filters">
+                                More Filters
+                            </button>
+                        {% endif %}
+                        {% if filter_applied %}
+                            <div class="collapse m-2 show" id="filters">
+                        {% else %}
+                            <div class="collapse m-2" id="filters">
+                        {% endif %}
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="m-2">
+                                        <h6> Filter by price </h6>
+                                        <div class="form-check">
+                                            {% if price1 %}
+                                                <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="$" id="price1" name="price1">
+                                            {% else %}
+                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="$" id="price1" name="price1">
+                                            {% endif %}
+                                            <label class="form-check-label" for="price1">
+                                            $
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            {% if price2 %}
+                                                <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="$$" id="price2" name="price2">
+                                            {% else %}
+                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="$$" id="price2" name="price2">
+                                            {% endif %}
+                                            <label class="form-check-label" for="price2">
+                                            $$
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            {% if price3 %}
+                                                <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="$$$" id="price3" name="price3">
+                                            {% else %}
+                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="$$$" id="price3" name="price3">
+                                            {% endif %}
+                                            <label class="form-check-label" for="price3">
+                                            $$$
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            {% if price4 %}
+                                                <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="$$$$" id="price4" name="price4">
+                                            {% else %}
+                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="$$$$" id="price4" name="price4">
+                                            {% endif %}
+                                            <label class="form-check-label" for="price4">
+                                            $$$$
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="m-2">
+                                        <h6> Filter by Categories </h6>
+                                        <div class="form-check">
+                                            {% if Chinese %}
+                                                <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit(); $('#priceForm').submit();" type="checkbox" value="Chinese" id="Chinese" name="Chinese">
+                                            {% else %}
+                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Chinese" id="Chinese" name="Chinese">
+                                            {% endif %}
+                                            <label class="form-check-label" for="Chinese">
+                                            Chinese
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            {% if Korean %}
+                                                <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Korean" id="Korean" name="Korean">
+                                            {% else %}
+                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Korean" id="Korean" name="Korean">
+                                            {% endif %}
+                                            <label class="form-check-label" for="Korean">
+                                            Korean
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            {% if Salad %}
+                                                <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Salad" id="Salad" name="Salad">
+                                            {% else %}
+                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Salad" id="Salad" name="Salad">
+                                            {% endif %}
+                                            <label class="form-check-label" for="Salad">
+                                            Salad
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            {% if Pizza %}
+                                                <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Pizza" id="Pizza" name="Pizza">
+                                            {% else %}
+                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Pizza" id="Pizza" name="Pizza">
+                                            {% endif %}
+                                            <label class="form-check-label" for="Pizza">
+                                            Pizza
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            {% if Sandwiches %}
+                                                <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Sandwiches" id="Sandwiches" name="Sandwiches">
+                                            {% else %}
+                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Sandwiches" id="Sandwiches" name="Sandwiches">
+                                            {% endif %}
+                                            <label class="form-check-label" for="Sandwiches">
+                                            Sandwiches
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            {% if Brunch %}
+                                                <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Brunch" id="Brunch" name="Brunch">
+                                            {% else %}
+                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Brunch" id="Brunch" name="Brunch">
+                                            {% endif %}
+                                            <label class="form-check-label" for="Brunch">
+                                            Breakfast & Brunch
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            {% if Coffee %}
+                                                <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="Coffee" id="Coffee" name="Coffee">
+                                            {% else %}
+                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="Coffee" id="Coffee" name="Coffee">
+                                            {% endif %}
+                                            <label class="form-check-label" for="Coffee">
+                                            Coffee & Tea
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+<!--                        <div class="dropdown show text-right m-2">-->
+<!--                            Sort by: <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--                                {{ sort_property }}</a>-->
+<!--                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">-->
+<!--                                <a class="dropdown-item" onchange="$('#filterForm').submit();" >default</a>-->
+<!--                                <a class="dropdown-item" onchange="$('#filterForm').submit();" >lowest price</a>-->
+<!--                                <a class="dropdown-item" onchange="$('#filterForm').submit();" >highest price</a>-->
+<!--                                <a class="dropdown-item" onchange="$('#filterForm').submit();" >nearest</a>-->
+<!--                        </div>-->
+<!--                        </div>-->
+<!--                        <div class="col-auto my-1">-->
+                        <div class="m-2">
+                            <label class="mr-sm-2" for="sortPropertySelect">Sort by: </label>
+                            <select class="custom-select mr-sm-2" id="sortPropertySelect" name="sort_property">
+                                {% if sort_property == 'default' %}
+                                    <option value="default" selected>Default</option>
+                                {% else %}
+                                    <option value="default">Default</option>
+                                {% endif %}
+                                {% if sort_property == 'lowestPrice' %}
+                                    <option value="lowestPrice" selected>Lowest Price</option>
+                                {% else %}
+                                    <option value="lowestPrice">Lowest Price</option>
+                                {% endif %}
+                                {% if sort_property == 'highestPrice' %}
+                                    <option value="highestPrice" selected>Highest Price</option>
+                                {% else %}
+                                    <option value="highestPrice">Highest Price</option>
+                                {% endif %}
+                                {% if sort_property == 'nearest' %}
+                                    <option value="nearest" selected>Nearest</option>
+                                {% else %}
+                                    <option value="nearest">Nearest</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-outline-success m-2" type="submit"><i class="fas fa-search"></i> Apply</button>
+                    </div>
+                </div>
+            </form>
+            <div class="row">
+                {% for restaurant in restaurants %}
+                    <div class="col-12 d-flex justify-content-center">
+                        <div class="m-2 mt-4">
+                            <div class="card mb-2">
+                                <div class="row no-gutters">
+                                    <div class="col-4 align-self-center">
+                                        <img src="{{ restaurant.img_url }}" class="card-img m-4" alt="...">
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="card-body mx-4">
+                                            {% if restaurant.compliant %}
+                                                <h5 class="card-title">{{ restaurant.name }}&emsp;<span class="badge badge-pill badge-success">Compliant <i class="fas fa-wheelchair" aria-hidden="true"></i></span></h5>
+                                            {% else %}
+                                                <h5 class="card-title">{{ restaurant.name }}&emsp;<span class="badge badge-pill badge-secondary">Not Compliant <i class="fas fa-wheelchair" aria-hidden="true"></i></span></h5>
+                                            {% endif %}
+                                            <p class="card-text">
+                                                <ul class="list-inline">
+                                                    {% for _ in restaurant.full %}
+                                                        <li class="list-inline-item">
+                                                            <i class="icon-star-full fas fa-star"></i>
+                                                        </li>
+                                                    {% endfor %}
+                                                    {% for _ in restaurant.half %}
+                                                        <li class="list-inline-item">
+                                                            <i class="icon-star-half fas fa-star-half-alt"></i>
+                                                        </li>
+                                                    {% endfor %}
+                                                    {% for _ in restaurant.null %}
+                                                        <li class="list-inline-item">
+                                                            <i class="icon-star-null far fa-star"></i>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                                <large class="text-muted">{{ restaurant.price }} {{ restaurant.category1 }} {{ restaurant.category2 }} {{ restaurant.category3 }}</large>
+                                            </p>
+                                            <p class="card-text">
+                                                <ul>
+<!--                                                    <li>Price: {{ restaurant.price }}</li>-->
+<!--                                                    <li>Category: {{ restaurant.category1 }} {{ restaurant.category2 }} {{ restaurant.category3 }}</li>-->
+                                                    <li><i class="phone-icon fas fa-phone-square-alt"></i>&emsp;{{ restaurant.phone }}</li>
+                                                    <li><i class="address-icon fas fa-map-marker-alt"></i>&emsp;{{ restaurant.address }}, {{ restaurant.city }}, {{ restaurant.zip_code }}</li>
+                                                </ul>
+                                            </p>
+                                            <a href="{% url 'accessible_restaurant:detail' restaurant.business_id %}" class="btn btn-light">Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="row">
+                <div class="col-12 d-flex justify-content-center">
+                    <nav class="m-4" aria-label="Page navigation example">
+                        <ul class="pagination pg-blue">
+                            {% if restaurants %}
+                                {% if page_num == 0 %}
+                                    <li class="page-item disabled">
+                                        <a class="page-link">First</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{% url 'accessible_restaurant:browse' 0 %}?{{ request.GET.urlencode }}">First</a>
+                                    </li>
+                                {% endif %}
+                                {% for pnum in page_range %}
+                                    {% if pnum == page_num %}
+                                        <li class="page-item disabled"><a class="page-link">{{ pnum|add:"1" }}</a></li>
+                                    {% else %}
+                                        <li class="page-item"><a class="page-link" href="{% url 'accessible_restaurant:browse' pnum %}?{{ request.GET.urlencode }}">{{ pnum|add:"1" }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if total_page == page_num %}
+                                    <li class="page-item disabled">
+                                        <a class="page-link">Last</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{% url 'accessible_restaurant:browse' total_page %}?{{ request.GET.urlencode }}">Last</a>
+                                    </li>
+                                {% endif %}
+                            {% else %}
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                No results based on the current search and filters! Try to search other restaurants...
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
