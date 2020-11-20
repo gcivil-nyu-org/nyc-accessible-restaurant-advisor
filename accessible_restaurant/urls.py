@@ -44,8 +44,9 @@ urlpatterns = [
         name="restaurant_profile",
     ),
     # Browse restaurant
+    # <sort_property>/
     path(
-        "restaurants/browse/<page>/<sort_property>/",
+        "restaurants/browse/<page>/",
         views.restaurant_list_view,
         name="browse",
     ),
