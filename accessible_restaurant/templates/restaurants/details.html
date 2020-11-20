@@ -1,0 +1,410 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load leaflet_tags %}
+{% block staticlink %}
+    {% load static %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/details_style.css' %}">
+    <script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block title %} Restaurant Detail Page {% endblock %}
+
+{% block body %}<body class="subpage">{% endblock %}
+
+{% block content %}
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">{{ restaurant.name }}</h1>
+            <h5>
+                <ul>
+                    <li><i class="address-icon fas fa-map-marker-alt"></i>&emsp;{{ restaurant.address }}, {{ restaurant.city }}, {{ restaurant.zip_code }}</li>
+                </ul>
+                <ul class="list-inline">
+                    &emsp;
+                    &emsp;
+                    {% for _ in full %}
+                        <li class="list-inline-item">
+                            <i class="icon-star-full fas fa-star"></i>
+                        </li>
+                    {% endfor %}
+                    {% for _ in half %}
+                        <li class="list-inline-item">
+                            <i class="icon-star-half fas fa-star-half-alt"></i>
+                        </li>
+                    {% endfor %}
+                    {% for _ in null %}
+                        <li class="list-inline-item">
+                            <i class="icon-star-null far fa-star"></i>
+                        </li>
+                    {% endfor %}
+                    &emsp;
+                    <li class="list-inline-item"><p>({{ restaurant_data.review_count }} reviews)</p></li>
+                    &emsp;
+                    {% if restaurant.compliant %}
+                        <span class="badge badge-pill badge-success">Compliant <i class="fas fa-wheelchair" aria-hidden="true"></i></span>
+                    {% else %}
+                        <span class="badge badge-pill badge-secondary">Not Compliant <i class="fas fa-wheelchair" aria-hidden="true"></i></span>
+                    {% endif %}
+                </ul>
+            </h5>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+                <div class="m-2">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                      <li class="nav-item">
+                        <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" id="gallery-tab" data-toggle="tab" href="#gallery" role="tab" aria-controls="gallery" aria-selected="false">Gallery</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Reviews</a>
+                      </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+                            <div class="m-4">
+                                <h2>About the restaurant</h2>
+                                <ul class="overview-list">
+                                    <li><strong>Price:</strong> {{ restaurant_data.price }}</li>
+                                    <li>
+                                        <strong>Categories:</strong>
+                                        {% for category in restaurant_data.categories %}
+                                            {% if forloop.counter == restaurant_data.categories|length %}
+                                                {{ category.title }}
+                                            {% else %}
+                                                {{ category.title }},
+                                            {% endif %}
+                                        {% endfor %}
+                                    </li>
+                                </ul>
+                                <h2>Accessible Service</h2>
+                                <div class="col-12">
+                                    <ul class="list-inline">
+                                        Level entry or ramp
+                                        &emsp;
+                                        &emsp;
+                                        {% for _ in level_entry_rating_full %}
+                                            <li class="list-inline-item">
+                                                <i class="icon-star-full fas fa-star"></i>
+                                            </li>
+                                        {% endfor %}
+                                        {% for _ in level_entry_rating_half %}
+                                            <li class="list-inline-item">
+                                                <i class="icon-star-half fas fa-star-half-alt"></i>
+                                            </li>
+                                        {% endfor %}
+                                        {% for _ in level_entry_rating_null %}
+                                            <li class="list-inline-item">
+                                                <i class="icon-star-null far fa-star"></i>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                    <ul class="list-inline">
+                                        32-inch wide door
+                                        &emsp;
+                                        &emsp;
+                                        {% for _ in wide_door_rating_full %}
+                                            <li class="list-inline-item">
+                                                <i class="icon-star-full fas fa-star"></i>
+                                            </li>
+                                        {% endfor %}
+                                        {% for _ in wide_door_rating_half %}
+                                            <li class="list-inline-item">
+                                                <i class="icon-star-half fas fa-star-half-alt"></i>
+                                            </li>
+                                        {% endfor %}
+                                        {% for _ in wide_door_rating_null %}
+                                            <li class="list-inline-item">
+                                                <i class="icon-star-null far fa-star"></i>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                    <ul class="list-inline">
+                                        Accessible tables
+                                        &emsp;
+                                        &emsp;
+                                        {% for _ in accessible_table_rating_full %}
+                                            <li class="list-inline-item">
+                                                <i class="icon-star-full fas fa-star"></i>
+                                            </li>
+                                        {% endfor %}
+                                        {% for _ in accessible_table_rating_half %}
+                                            <li class="list-inline-item">
+                                                <i class="icon-star-half fas fa-star-half-alt"></i>
+                                            </li>
+                                        {% endfor %}
+                                        {% for _ in accessible_table_rating_null %}
+                                            <li class="list-inline-item">
+                                                <i class="icon-star-null far fa-star"></i>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                    <ul class="list-inline">
+                                        Accessible restroom
+                                        &emsp;
+                                        &emsp;
+                                        {% for _ in accessible_restroom_rating_full %}
+                                            <li class="list-inline-item">
+                                                <i class="icon-star-full fas fa-star"></i>
+                                            </li>
+                                        {% endfor %}
+                                        {% for _ in accessible_restroom_rating_half %}
+                                            <li class="list-inline-item">
+                                                <i class="icon-star-half fas fa-star-half-alt"></i>
+                                            </li>
+                                        {% endfor %}
+                                        {% for _ in accessible_restroom_rating_null %}
+                                            <li class="list-inline-item">
+                                                <i class="icon-star-null far fa-star"></i>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                    <ul class="list-inline">
+                                        Accessible 36-inch wide path
+                                        &emsp;
+                                        &emsp;
+                                        {% for _ in accessible_path_rating_full %}
+                                            <li class="list-inline-item">
+                                                <i class="icon-star-full fas fa-star"></i>
+                                            </li>
+                                        {% endfor %}
+                                        {% for _ in accessible_path_rating_half %}
+                                            <li class="list-inline-item">
+                                                <i class="icon-star-half fas fa-star-half-alt"></i>
+                                            </li>
+                                        {% endfor %}
+                                        {% for _ in accessible_path_rating_null %}
+                                            <li class="list-inline-item">
+                                                <i class="icon-star-null far fa-star"></i>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="gallery" role="tabpanel" aria-labelledby="gallery-tab">
+                            <div class="m-4">
+                                <!--Carousel Wrapper-->
+                                <div id="carousel-restaurant-image" class="carousel slide carousel-fade z-depth-1-half" data-ride="carousel">
+                                    <!--Indicators-->
+                                    <ol class="carousel-indicators">
+                                        {% for image in restaurant_data.photos %}
+                                            {% if forloop.counter0 == 0 %}
+                                                <li data-target="#carousel-example-2" data-slide-to="{{ forloop.counter0 }}" class="active"></li>
+                                            {% else %}
+                                                <li data-target="#carousel-example-2" data-slide-to="{{ forloop.counter0 }}"></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ol>
+                                    <!--/.Indicators-->
+                                    <!--Slides-->
+                                    <div class="carousel-inner" role="listbox">
+                                        {% for image in restaurant_data.photos %}
+                                            {% if forloop.counter0 == 0 %}
+                                                <div class="carousel-item active">
+                                                    <div class="view">
+                                                        <img class="d-block w-100" src="{{ image }}" alt="First slide" style="width:100%;height:500px;object-fit:cover;">
+                                                        <div class="mask rgba-black-light"></div>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                <div class="carousel-item">
+                                                    <div class="view">
+                                                        <img class="d-block w-100" src="{{ image }}" alt="First slide" style="width:100%;height:500px;object-fit:cover;">
+                                                        <div class="mask rgba-black-light"></div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <!--/.Slides-->
+                                    <!--Controls-->
+                                    <a class="carousel-control-prev" href="#carousel-restaurant-image" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a class="carousel-control-next" href="#carousel-restaurant-image" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                    <!--/.Controls-->
+                                </div>
+                                <!--/.Carousel Wrapper-->
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                            <div class="m-4">
+                                <h2>Reviews</h2>
+                                <div class="bg-light rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
+<!--                                    <a href="#" class="btn btn-outline-primary btn-sm float-right">Top Rated</a>-->
+                                    <h5 class="mb-1">Recommended Reviews</h5>
+                                    {% for review in local_restaurant_review %}
+                                        <div class="reviews-members pt-4 pb-4">
+                                            <div class="media">
+                                                <a href="#"><img alt="Generic placeholder image" src="{{ review.photo.url }}" class="mr-3 rounded-pill"></a>
+                                                <div class="media-body">
+                                                    <div class="reviews-members-header">
+                                                        <span class="star-rating float-right">
+                                                              <a href="#"><i class="icofont-ui-rating active"></i></a>
+                                                              <a href="#"><i class="icofont-ui-rating active"></i></a>
+                                                              <a href="#"><i class="icofont-ui-rating active"></i></a>
+                                                              <a href="#"><i class="icofont-ui-rating active"></i></a>
+                                                              <a href="#"><i class="icofont-ui-rating"></i></a>
+                                                              </span>
+                                                        <h6 class="mb-1"><a class="text-black" href="{% url 'accessible_restaurant:public_facing' review.user_id %}">{{ review.username }}</a></h6>
+                                                        <p class="text-gray">{{ review.review_date | date:"Y-m-d H:m:s" }}</p>
+                                                    </div>
+                                                    <div class="reviews-members-body">
+                                                        <p> {{ review.review_context }} </p>
+                                                    </div>
+<!--                                                    <div class="reviews-members-footer">-->
+<!--                                                        <a class="total-like" href="#"><i class="icofont-thumbs-up"></i> 856M</a> <a class="total-like" href="#"><i class="icofont-thumbs-down"></i> 158K</a>-->
+<!--                                                        <span class="total-like-user-main ml-2" dir="rtl">-->
+<!--                                                            <a data-toggle="tooltip" data-placement="top" title="" href="#" data-original-title="Gurdeep Osahan"><img alt="Generic placeholder image" src="http://bootdey.com/img/Content/avatar/avatar5.png" class="total-like-user rounded-pill"></a>-->
+<!--                                                        </span>-->
+<!--                                                    </div>-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    <hr>
+                                    <h5 class="mt-4 mb-1">Yelp Reviews</h5>
+                                    {% for review in restaurant_review.reviews %}
+                                        <div class="reviews-members pt-4 pb-4">
+                                            <div class="media">
+                                                <a href="#"><img alt="Generic placeholder image" src="{{ review.user.image_url }}" class="mr-3 rounded-pill"></a>
+                                                <div class="media-body">
+                                                    <div class="reviews-members-header">
+                                                        <span class="star-rating float-right">
+                                                              <a href="#"><i class="icofont-ui-rating active"></i></a>
+                                                              <a href="#"><i class="icofont-ui-rating active"></i></a>
+                                                              <a href="#"><i class="icofont-ui-rating active"></i></a>
+                                                              <a href="#"><i class="icofont-ui-rating active"></i></a>
+                                                              <a href="#"><i class="icofont-ui-rating"></i></a>
+                                                              </span>
+                                                        <h6 class="mb-1"><a class="text-black" href="{{ review.user.profile_url }}">{{ review.user.name }}</a></h6>
+                                                        <p class="text-gray">{{ review.review_date | date:"Y-m-d H:m:s" }}</p>
+                                                    </div>
+                                                    <div class="reviews-members-body">
+                                                        <p> {{ review.text }} </p>
+                                                    </div>
+<!--                                                    <div class="reviews-members-footer">-->
+<!--                                                        <a class="total-like" href="#"><i class="icofont-thumbs-up"></i> 856M</a> <a class="total-like" href="#"><i class="icofont-thumbs-down"></i> 158K</a>-->
+<!--                                                        <span class="total-like-user-main ml-2" dir="rtl">-->
+<!--                                                            <a data-toggle="tooltip" data-placement="top" title="" href="#" data-original-title="Gurdeep Osahan"><img alt="Generic placeholder image" src="http://bootdey.com/img/Content/avatar/avatar5.png" class="total-like-user rounded-pill"></a>-->
+<!--                                                        </span>-->
+<!--                                                    </div>-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+<!--                                    <a class="text-center w-100 d-block mt-4 font-weight-bold" href="#">See All Reviews</a>-->
+                                </div>
+                                <div class="bg-light rounded shadow-sm p-4 mb-5 rating-review-select-page">
+                                    <h5 class="mb-4">Leave Comment</h5>
+                                    <p class="mb-2">Rate the Place</p>
+                                    <div class="mb-4">
+                                        <span class="star-rating">
+                                            <a href="#"><i class="icofont-ui-rating icofont-2x"></i></a>
+                                            <a href="#"><i class="icofont-ui-rating icofont-2x"></i></a>
+                                            <a href="#"><i class="icofont-ui-rating icofont-2x"></i></a>
+                                            <a href="#"><i class="icofont-ui-rating icofont-2x"></i></a>
+                                            <a href="#"><i class="icofont-ui-rating icofont-2x"></i></a>
+                                        </span>
+                                    </div>
+                                    <form>
+                                        <div class="form-group">
+                                            <label>Your Comment</label>
+                                            <textarea class="form-control"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-primary btn-sm" type="button"> Submit Comment </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="m-2">
+                    <div class="card my-5">
+                        <div class="card-body">
+                            <h5 class="card-header text-center" style="background-color: transparent;">Contact Info</h5>
+                            <p class="card-text">
+                                <ul>
+                                    <li class="m-2">
+                                        <div class="row">
+                                            <div class="col-2">
+                                                <i class="address-icon fas fa-map-marker-alt"></i>
+                                            </div>
+                                            <div class="col-10">
+                                                {{ restaurant_data.location.address1 }}, {{ restaurant_data.location.city }}, {{ restaurant_data.location.state }} {{ restaurant_data.location.zip_code }}
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="m-2">
+                                        <div class="row">
+                                            <div class="col-2">
+                                                <i class="phone-icon fas fa-phone-alt"></i>
+                                            </div>
+                                            <div class="col-10">
+                                                {{ restaurant_data.display_phone }}
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card my-5">
+                        <div class="card-body text-center">
+                            <h5 class="card-header" style="background-color: transparent; padding-left: 0; padding-right: 0;">
+                                <div class="row justify-content-center">
+                                    <i class="far fa-clock mx-2"></i>
+                                    Business Hours
+                                </div>
+                                <div class="row justify-content-center">
+                                    {% if is_open_now %}
+                                        <span class="badge badge-pill badge-success">Open Now</span>
+                                    {% else %}
+                                        <span class="badge badge-pill badge-secondary">Closed</span>
+                                    {% endif %}
+                                </div>
+                            </h5>
+                            <p class="card-text">
+                                <ul>
+                                    {% if hours %}
+                                        {% for hour_data in hours %}
+                                            <li class="m-2">
+                                                <div class="row">
+                                                    <div class="col-4">
+                                                        {{ hour_data.weekday }}
+                                                    </div>
+                                                    <div class="col-8">
+                                                        {{ hour_data.start }}-{{ hour_data.end }}
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    {% else %}
+                                        <li class="m-2">Open hours data not available</li>
+                                    {% endif %}
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

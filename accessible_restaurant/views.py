@@ -597,7 +597,7 @@ def restaurant_detail_view(request, business_id):
             "accessible_path_rating_null": accessible_path_rating_null,
             "comment_form": comment_form,
         }
-        return render(request, "restaurants/detail.html", context)
+        return render(request, "restaurants/details.html", context)
 
 
 @login_required
