@@ -111,6 +111,11 @@
             });
         }
     </script>
+
+    <!-- helper text tooltip -->
+    <script>$(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })</script>
 {% endblock %}
 
 {% block title %} Restaurant List Page {% endblock %}
@@ -126,13 +131,36 @@
 </div>
 <div class="container-fluid">
     <div class="row h-100 mx-2 mt-2">
-        <div class="col-5 h-fixed map-overflow">
-            <!-- Search input -->
-            <input class="form-control mx-4" id="searchInput" class="controls" type="text" placeholder="Enter your current location">
-            <!-- Google map -->
-            <div class="mx-4 mt-4" id="map"></div>
-        </div>
-        <div class="col-7 h-fixed lists-overflow">
+        {% if restaurants %}
+            <div class="col-5 h-fixed map-overflow">
+                <!-- Search input -->
+                <input class="form-control mx-4" id="searchInput" class="controls" type="text" placeholder="Enter your current location">
+                <!-- Google map -->
+                <div class="mx-4 mt-4" id="map"></div>
+            </div>
+            <div class="col-7 h-fixed lists-overflow">
+        {% else %}
+            <div class="col-2"></div>
+            <div class="col-8 h-fixed lists-overflow">
+        {% endif %}
+<!--            {% if messages %}-->
+<!--                <div class="row">-->
+<!--                    <div class="col-12">-->
+<!--                        <div class="mx-2">-->
+<!--                            <ul class="messages">-->
+<!--                                {% for message in messages %}-->
+<!--                                    <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">-->
+<!--                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">-->
+<!--                                            <span aria-hidden="true">&times;</span>-->
+<!--                                        </button>-->
+<!--                                        <strong>{{ message.tags }}: </strong>{{ message }}-->
+<!--                                    </div>-->
+<!--                                {% endfor %}-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            {% endif %}-->
             <form id="filterForm" method="get" action="{% url 'accessible_restaurant:browse' 0 %}?{{ request.GET.urlencode }}">
                 {% csrf_token %}
                 <div class="row">
@@ -284,17 +312,6 @@
                         </div>
                     </div>
                     <div class="col-4">
-<!--                        <div class="dropdown show text-right m-2">-->
-<!--                            Sort by: <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--                                {{ sort_property }}</a>-->
-<!--                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">-->
-<!--                                <a class="dropdown-item" onchange="$('#filterForm').submit();" >default</a>-->
-<!--                                <a class="dropdown-item" onchange="$('#filterForm').submit();" >lowest price</a>-->
-<!--                                <a class="dropdown-item" onchange="$('#filterForm').submit();" >highest price</a>-->
-<!--                                <a class="dropdown-item" onchange="$('#filterForm').submit();" >nearest</a>-->
-<!--                        </div>-->
-<!--                        </div>-->
-<!--                        <div class="col-auto my-1">-->
                         <div class="m-2">
                             <label class="mr-sm-2" for="sortPropertySelect">Sort by: </label>
                             <select class="custom-select mr-sm-2" id="sortPropertySelect" name="sort_property">
@@ -319,16 +336,17 @@
                                     <option value="nearest">Nearest</option>
                                 {% endif %}
                             </select>
+                            <a href="#" data-toggle="tooltip" title="Your current IP address will be used for sort by nearest." data-placement="bottom"><i class="fas fa-question-circle"></i></a>
                         </div>
                     </div>
-                    <div class="col-2">
-                        <button class="btn btn-outline-success m-2" type="submit"><i class="fas fa-search"></i> Apply</button>
+                    <div class="col-2 d-flex justify-content-end align-items-start">
+                        <a class="btn btn-outline-success m-2" href="{% url 'accessible_restaurant:browse' 0 %}">Clear All</a>
                     </div>
                 </div>
             </form>
             <div class="row">
                 {% for restaurant in restaurants %}
-                    <div class="col-12 d-flex justify-content-center">
+                    <div class="col-12">
                         <div class="m-2 mt-4">
                             <div class="card mb-2">
                                 <div class="row no-gutters">
@@ -380,46 +398,50 @@
                 {% endfor %}
             </div>
             <div class="row">
+                {% if restaurants %}
                 <div class="col-12 d-flex justify-content-center">
                     <nav class="m-4" aria-label="Page navigation example">
                         <ul class="pagination pg-blue">
-                            {% if restaurants %}
-                                {% if page_num == 0 %}
-                                    <li class="page-item disabled">
-                                        <a class="page-link">First</a>
-                                    </li>
-                                {% else %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="{% url 'accessible_restaurant:browse' 0 %}?{{ request.GET.urlencode }}">First</a>
-                                    </li>
-                                {% endif %}
-                                {% for pnum in page_range %}
-                                    {% if pnum == page_num %}
-                                        <li class="page-item disabled"><a class="page-link">{{ pnum|add:"1" }}</a></li>
-                                    {% else %}
-                                        <li class="page-item"><a class="page-link" href="{% url 'accessible_restaurant:browse' pnum %}?{{ request.GET.urlencode }}">{{ pnum|add:"1" }}</a></li>
-                                    {% endif %}
-                                {% endfor %}
-                                {% if total_page == page_num %}
-                                    <li class="page-item disabled">
-                                        <a class="page-link">Last</a>
-                                    </li>
-                                {% else %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="{% url 'accessible_restaurant:browse' total_page %}?{{ request.GET.urlencode }}">Last</a>
-                                    </li>
-                                {% endif %}
+                            {% if page_num == 0 %}
+                                <li class="page-item disabled">
+                                    <a class="page-link">First</a>
+                                </li>
                             {% else %}
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                No results based on the current search and filters! Try to search other restaurants...
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
+                                <li class="page-item">
+                                    <a class="page-link" href="{% url 'accessible_restaurant:browse' 0 %}?{{ request.GET.urlencode }}">First</a>
+                                </li>
+                            {% endif %}
+                            {% for pnum in page_range %}
+                                {% if pnum == page_num %}
+                                    <li class="page-item disabled"><a class="page-link">{{ pnum|add:"1" }}</a></li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="{% url 'accessible_restaurant:browse' pnum %}?{{ request.GET.urlencode }}">{{ pnum|add:"1" }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if total_page == page_num %}
+                                <li class="page-item disabled">
+                                    <a class="page-link">Last</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{% url 'accessible_restaurant:browse' total_page %}?{{ request.GET.urlencode }}">Last</a>
+                                </li>
                             {% endif %}
                         </ul>
                     </nav>
                 </div>
+                {% else %}
+                    <div class="col-12">
+                        <div class="mx-2 my-4">
+                            <div class="alert alert-warning alert-dismissible fade show d-flex justify-content-center" role="alert">
+                                No results based on the current search, filters, and page number!
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

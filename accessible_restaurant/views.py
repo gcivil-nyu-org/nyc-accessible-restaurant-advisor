@@ -374,13 +374,16 @@ def restaurant_profile_view(request):
 
 def restaurant_list_view(request, page):
     sort_property = request.GET.get("sort_property", "default")
-    if sort_property == "nearest":
-        messages.warning(
-            request,
-            f'{"Your current IP address will be used for this feature. "}',
-        )
+    # if sort_property == "nearest":
+    #     messages.warning(
+    #         request,
+    #         f'{"Your current IP address will be used for this feature. "}',
+    #     )
     page = int(page)
-    client_ip = get_client_ip(request)
+    if sort_property == "nearest":
+        client_ip = get_client_ip(request)
+    else:
+        client_ip = ""
     restaurants = Restaurant.objects.all()
 
     keyword = request.GET.get("query", "")
