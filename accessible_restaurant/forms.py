@@ -215,7 +215,13 @@ class CommentForm(forms.ModelForm):
             "text": "New Comments",
         }
         widgets = {
-            "text": forms.Textarea(attrs={'placeholder': 'Write your comment here!', 'class': 'form-control', 'rows': '5'}),
+            "text": forms.Textarea(
+                attrs={
+                    "placeholder": "Write your comment here!",
+                    "class": "form-control",
+                    "rows": "5",
+                }
+            ),
         }
 
 
