@@ -64,6 +64,20 @@
     </div>
     <div class="container">
         <div class="row">
+            {% if messages %}
+                <div class="col-12">
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>{{ message.tags }}: </strong>{{ message }}
+                            </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
             <div class="col-8 mb-5">
                 <h2>About the Restaurant</h2>
                 <hr>
@@ -321,7 +335,7 @@
                                                     <div class="row justify-content-center">
                                                         <div class="col-12 m-4">
                                                             <div class="p-3 bg-white rounded">
-                                                                <h6>Comments[{{ review.comments_set|length }}]</h6>
+                                                                <h6>Comments</h6>
                                                                 {% for comment in review.comments_set %}
                                                                     <div class="review mt-4">
                                                                         <div class="d-flex flex-row comment-user">
@@ -334,7 +348,7 @@
                                                                                 <div class="d-flex flex-row align-items-center">
                                                                                     <span class="name font-weight-bold">
                                                                                         {% if comment.user.is_user %}
-                                                                                            <a href = "{% url 'accessible_restaurant:public_facing' comment.user.id %}">
+                                                                                            <a href="{% url 'accessible_restaurant:public_facing' comment.user.id %}">
                                                                                                 {{ comment.user.username }}
                                                                                             </a>
                                                                                         {% elif restaurant.user and restaurant.user.id == comment.user.id %}
@@ -382,23 +396,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <span class="total-like-user-main ml-2" dir="rtl">
-                                                    {% for comment in review.comments_set %}
-                                                    {{ comment.text }}
-                                                    <a data-toggle="tooltip" data-placement="top" title="" href="#" data-original-title="Gurdeep Osahan">
-                                                                <img alt="Generic placeholder image" src="http://bootdey.com/img/Content/avatar/avatar5.png" class="total-like-user rounded-pill">
-                                                            </a>
-                                                        {% if comment.user.is_user %}
-                                                            <a data-toggle="tooltip" data-placement="top" title="" href="#" data-original-title="Gurdeep Osahan">
-                                                                <img alt="Generic placeholder image" src="{{ comment.user.uprofile.photo.url }}" class="total-like-user rounded-pill">
-                                                            </a>
-                                                        {% else %}
-                                                            <a data-toggle="tooltip" data-placement="top" title="" href="#" data-original-title="Gurdeep Osahan">
-                                                                <img alt="Generic placeholder image" src="http://bootdey.com/img/Content/avatar/avatar5.png" class="total-like-user rounded-pill">
-                                                            </a>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -456,6 +453,23 @@
                 <div class="card my-5">
                     <a class="btn btn-success btn-green btn-md" href="{% url 'accessible_restaurant:write_review' restaurant.business_id %}"><i class="fas fa-pen"></i> Write a review</a>
                 </div>
+                <ul class="alt">
+                    <script type="text/javascript">
+                    function map_init(map, options) {
+                        // get point lat and lon
+                        var lat = "{{ restaurant_data.coordinates.latitude }}";
+                        var lon = "{{ restaurant_data.coordinates.longitude }}";
+                        var mapboxUrl = 'https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
+                        var accessToken = 'pk.eyJ1IjoicnJyb3NzeTMxMiIsImEiOiJja2gwMjkxZ2swNjh2MnltaGN3eW54Zm9mIn0.75YK7P3nQxVJhbYwX8cwNw';
+                        // zoom to point & add it to map
+                        map.setView([lat, lon], 13);
+                        L.marker([lat, lon]).addTo(map);
+                        L.tileLayer(mapboxUrl, {id: 'outdoors-v11',
+                            attribution: '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>', maxZoom: 20, accessToken: accessToken}).addTo(map);
+
+                    }</script>
+                    {% leaflet_map "mymap" callback="map_init" %}
+                </ul>
                 <div class="card my-5">
                     <div class="card-body">
                         <h5 class="card-header text-center" style="background-color: transparent;">Contact Info</h5>
@@ -522,24 +536,6 @@
                         </p>
                     </div>
                 </div>
-
-                <ul class="alt">
-                <script type="text/javascript">
-                function map_init(map, options) {
-                    // get point lat and lon
-                    var lat = "{{ restaurant_data.coordinates.latitude }}";
-                    var lon = "{{ restaurant_data.coordinates.longitude }}";
-                    var mapboxUrl = 'https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
-                    var accessToken = 'pk.eyJ1IjoicnJyb3NzeTMxMiIsImEiOiJja2gwMjkxZ2swNjh2MnltaGN3eW54Zm9mIn0.75YK7P3nQxVJhbYwX8cwNw';
-                    // zoom to point & add it to map
-                    map.setView([lat, lon], 13);
-                    L.marker([lat, lon]).addTo(map);
-                    L.tileLayer(mapboxUrl, {id: 'outdoors-v11',
-                        attribution: '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>', maxZoom: 20, accessToken: accessToken}).addTo(map);
-
-                }</script>
-                {% leaflet_map "mymap" callback="map_init" %}
-                </ul>
             </div>
         </div>
     </div>
