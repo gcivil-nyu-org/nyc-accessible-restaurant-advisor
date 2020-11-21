@@ -9,6 +9,11 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/details_style.css' %}">
     <script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
+
+    <!-- helper text tooltip -->
+    <script>$(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })</script>
 {% endblock %}
 
 {% block title %} Restaurant Detail Page {% endblock %}
@@ -300,7 +305,7 @@
                             {% for review in local_restaurant_review %}
                                 <div class="reviews-members pt-4 pb-4">
                                     <div class="media">
-                                        <a href="{% url 'accessible_restaurant:public_facing' review.user_id %}"><img alt="Generic placeholder image" src="{{ review.photo.url }}" class="mr-3 rounded-pill"></a>
+                                        <a href="{% url 'accessible_restaurant:public_facing' review.user_id %}"><img alt="..." src="{{ review.photo.url }}" class="mr-3 rounded-pill"></a>
                                         <div class="media-body">
                                             <div class="reviews-members-header">
                                                 <span class="star-rating float-right">
@@ -322,7 +327,13 @@
                                                         {% endfor %}
                                                     </ul>
                                                 </span>
-                                                <h6 class="mb-1"><a class="text-black" href="{% url 'accessible_restaurant:public_facing' review.user_id %}">{{ review.username }}</a></h6>
+                                                <h6 class="mb-1">
+                                                    <a class="text-black" href="{% url 'accessible_restaurant:public_facing' review.user_id %}">{{ review.username }}</a>
+                                                    {% if review.auth_status and review.auth_status == 'certified' %}
+                                                        <span class="badge badge-info"><i class="fas fa-wheelchair"></i>Certified User</span>
+                                                        <a href="#" data-toggle="tooltip" title="Users who are certified to have disability by system." data-placement="bottom"><i class="fas fa-question-circle"></i></a>
+                                                    {% endif %}
+                                                </h6>
                                                 <p class="text-gray">{{ review.review_date | date:"Y-m-d H:m:s" }}</p>
                                             </div>
                                             <div class="reviews-members-body">
@@ -331,6 +342,22 @@
                                             <div class="reviews-members-footer">
                                                 <a class="total-like" href="#collapseViewComment-{{ forloop.counter0 }}" data-toggle="collapse" aria-expanded="false" aria-controls="collapseViewComment-{{ forloop.counter0 }}"><i class="far fa-eye"></i> View Comments</a>
                                                 <a class="total-like" href="#collapseAddComment-{{ forloop.counter0 }}" data-toggle="collapse" aria-expanded="false" aria-controls="collapseAddComment-{{ forloop.counter0 }}"><i class="fas fa-pen"></i> Add Comment</a>
+                                                <span class="total-like-user-main ml-2" dir="rtl">
+                                                    {% for comment in review.comments_set2 %}
+                                                        {% if forloop.counter0 < 8 %}
+                                                            {% if comment.user.is_user %}
+                                                                <a data-toggle="tooltip" data-placement="top" title="{{ comment.user.username }}" href="{% url 'accessible_restaurant:public_facing' comment.user.id %}" data-original-title="{{ comment.user.username }}">
+                                                                    <img alt="..." src="{{ comment.user.uprofile.photo.url }}" class="total-like-user rounded-pill">
+                                                                </a>
+                                                            {% else %}
+                                                                <a data-toggle="tooltip" data-placement="top" title="{{ comment.user.username }}" data-original-title="{{ comment.user.username }}">
+                                                                    <img alt="..." src="{{ comment.user.rprofile.photo.url }}" class="total-like-user rounded-pill">
+                                                                </a>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    ...
+                                                </span>
                                                 <div class="collapse" id="collapseViewComment-{{ forloop.counter0 }}">
                                                     <div class="row justify-content-center">
                                                         <div class="col-12 m-4">
@@ -346,18 +373,24 @@
                                                                             {% endif %}
                                                                             <div class="ml-2">
                                                                                 <div class="d-flex flex-row align-items-center">
-                                                                                    <span class="name font-weight-bold">
+<!--                                                                                    <span class="name font-weight-bold">-->
+                                                                                    <h6>
                                                                                         {% if comment.user.is_user %}
                                                                                             <a href="{% url 'accessible_restaurant:public_facing' comment.user.id %}">
                                                                                                 {{ comment.user.username }}
                                                                                             </a>
+                                                                                            {% if comment.user.uprofile.auth_status and comment.user.uprofile.auth_status == 'certified' %}
+                                                                                                <span class="badge badge-info"><i class="fas fa-wheelchair"></i>Certified User</span>
+                                                                                                <a href="#" data-toggle="tooltip" title="Users who are certified to have disability by system." data-placement="bottom"><i class="fas fa-question-circle"></i></a>
+                                                                                            {% endif %}
                                                                                         {% elif restaurant.user and restaurant.user.id == comment.user.id %}
                                                                                             {{ comment.user.username }}
                                                                                             <span class="badge badge-pill badge-info"><i class="icon fas fa-utensils"></i> Restaurant</span>
                                                                                         {% else %}
                                                                                             {{ comment.user.username }}
                                                                                         {% endif %}
-                                                                                    </span>
+                                                                                    </h6>
+<!--                                                                                    </span>-->
                                                                                 </div>
                                                                                 <div class="d-flex flex-row align-items-center">
                                                                                     <span class="date">{{ comment.time | date:"Y-m-d H:m:s" }}</span>
@@ -407,7 +440,7 @@
                         {% for review in restaurant_review.reviews %}
                             <div class="reviews-members pt-4 pb-4">
                                 <div class="media">
-                                    <a href="{{ review.user.profile_url }}"><img alt="Generic placeholder image" src="{{ review.user.image_url }}" class="mr-3 rounded-pill"></a>
+                                    <a href="{{ review.user.profile_url }}"><img alt="..." src="{{ review.user.image_url }}" class="mr-3 rounded-pill"></a>
                                     <div class="media-body">
                                         <div class="reviews-members-header">
                                             <span class="star-rating float-right">
@@ -435,12 +468,6 @@
                                         <div class="reviews-members-body">
                                             <a href="{{ review.url }}" class="text-dark"> {{ review.text }} </a>
                                         </div>
-<!--                                                        <div class="reviews-members-footer">-->
-<!--                                                            <a class="total-like" href="#"><i class="icofont-thumbs-up"></i> 856M</a> <a class="total-like" href="#"><i class="icofont-thumbs-down"></i> 158K</a>-->
-<!--                                                            <span class="total-like-user-main ml-2" dir="rtl">-->
-<!--                                                                <a data-toggle="tooltip" data-placement="top" title="" href="#" data-original-title="Gurdeep Osahan"><img alt="Generic placeholder image" src="http://bootdey.com/img/Content/avatar/avatar5.png" class="total-like-user rounded-pill"></a>-->
-<!--                                                            </span>-->
-<!--                                                        </div>-->
                                     </div>
                                 </div>
                             </div>
@@ -451,7 +478,7 @@
             </div>
             <div class="col-4 mb-5">
                 <div class="card my-5">
-                    <a class="btn btn-success btn-green btn-md" href="{% url 'accessible_restaurant:write_review' restaurant.business_id %}"><i class="fas fa-pen"></i> Write a review</a>
+                    <a class="btn btn-success btn-green btn-md" href="{% url 'accessible_restaurant:write_review' restaurant.business_id %}"><i class="far fa-edit"></i> Write a review</a>
                 </div>
                 <ul class="alt">
                     <script type="text/javascript">
