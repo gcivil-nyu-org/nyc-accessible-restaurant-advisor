@@ -214,6 +214,9 @@ class CommentForm(forms.ModelForm):
         labels = {
             "text": "New Comments",
         }
+        widgets = {
+            "text": forms.Textarea(attrs={'placeholder': 'Write your comment here!', 'class': 'form-control', 'rows': '5'}),
+        }
 
 
 class ContactForm(forms.Form):

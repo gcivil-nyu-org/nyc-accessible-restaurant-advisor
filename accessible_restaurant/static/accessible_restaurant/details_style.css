@@ -208,3 +208,34 @@
     border-radius: 0;
     height: 30px;
 }
+
+.comment-textarea {
+    resize: none;
+    padding: 20px;
+    height: 130px;
+    width: 100%;
+    border: 1px solid #F2F2F2;
+}
+
+.dot {
+    height: 6px;
+    width: 6px;
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-top: 2px;
+    background-color: rgb(91, 92, 91);
+    border-radius: 50%;
+    display: inline-block
+}
+
+.name {
+    font-size: 18px
+}
+
+.date {
+    font-size: 16px
+}
+
+.comment-text {
+    font-size: 16px
+}
