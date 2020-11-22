@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "baseheader.html" %}
 {% load crispy_forms_tags %}
 {% load leaflet_tags %}
 {% block staticlink %}
@@ -480,7 +480,7 @@
                 <div class="card my-5">
                     <a class="btn btn-success btn-green btn-md" href="{% url 'accessible_restaurant:write_review' restaurant.business_id %}"><i class="far fa-edit"></i> Write a review</a>
                 </div>
-                <ul class="alt">
+                <div class="text-center">
                     <script type="text/javascript">
                     function map_init(map, options) {
                         // get point lat and lon
@@ -496,7 +496,7 @@
 
                     }</script>
                     {% leaflet_map "mymap" callback="map_init" %}
-                </ul>
+                </div>
                 <div class="card my-5">
                     <div class="card-body">
                         <h5 class="card-header text-center" style="background-color: transparent;">Contact Info</h5>

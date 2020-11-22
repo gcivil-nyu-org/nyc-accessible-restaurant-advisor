@@ -18,9 +18,9 @@
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light fixed-top bg-light" id="mainNav">
             <div class="container">
-                <a class="navbar-brand js-scroll-trigger" href="#page-top">
-                    <img src="{% static 'accessible_restaurant/images/logo.png' %}" alt="" style="width:10%;height:5%;"/>
-                    <img src="{% static 'accessible_restaurant/images/logo.svg' %}" alt="" style="width:70%;height:5%;"/>
+                <a class="navbar-brand" href="{% url 'accessible_restaurant:index'%}">
+                    <img src="{% static 'accessible_restaurant/images/logo.png' %}" alt="" style="width:7%;height:5%;"/>
+                    <img src="{% static 'accessible_restaurant/images/logo.svg' %}" alt="" style="width:50%;height:5%;"/>
                 </a>
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                     Menu
@@ -28,7 +28,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav text-uppercase ml-auto">
-                        <li class="nav-item"><a class="nav-link" href="#recommendation">Recommendation</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accessible_restaurant:index'%}">Home</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'accessible_restaurant:browse' 0 %}">Restaurants</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'accessible_restaurant:faq' %}">FAQs&Contact</a></li>
                         {% if user.is_authenticated %}
@@ -42,7 +42,7 @@
                             <li class="nav-item"><a class="nav-link" href="{% url 'accessible_restaurant:logout' %}">Logout</a></li>
                         {% else %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'accessible_restaurant:login' %}">Login</a></li>
-                            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="{% url 'accessible_restaurant:signup' %}">Register</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'accessible_restaurant:signup' %}">Register</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -54,7 +54,7 @@
             <div class="container">
                 <div class="masthead-subheading">Find Accessible Place to Eat and Drink</div>
                 <div class="masthead-heading text-uppercase">Welcome To Accessible Restaurant Advisor!</div>
-                <a class="btn btn-yellow btn-lg text-uppercase js-scroll-trigger" href="{% url 'accessible_restaurant:browse' 0 %}">Explore Restaurants</a>
+                <a class="btn btn-yellow btn-lg text-uppercase" href="{% url 'accessible_restaurant:browse' 0 %}">Explore Restaurants</a>
             </div>
         </header>
 
@@ -256,8 +256,7 @@
                         404 Request Timeout Team
                     </div>
                     <div class="col-lg-4 text-lg-right">
-                        <a class="mr-3" href="#!">Privacy Policy</a>
-                        <a href="#!">Terms of Use</a>
+                        <a class="mr-3" href="{% url 'accessible_restaurant:faq' %}">Contact US</a>
                     </div>
                 </div>
             </div>
