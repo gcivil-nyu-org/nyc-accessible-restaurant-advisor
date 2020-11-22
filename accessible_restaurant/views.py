@@ -58,7 +58,11 @@ from .utils import (
 
 # Create your views here.
 def index_view(request):
-    return render(request, "home.html")
+    recommended_restaurants = Restaurant.objects.all()[:3]
+    context = {
+        "recommended_restaurants": recommended_restaurants
+    }
+    return render(request, "home.html", context)
 
 
 def about_view(request):
