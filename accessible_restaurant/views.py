@@ -58,7 +58,7 @@ from .utils import (
 
 # Create your views here.
 def index_view(request):
-    return render(request, "index.html")
+    return render(request, "home.html")
 
 
 def about_view(request):
