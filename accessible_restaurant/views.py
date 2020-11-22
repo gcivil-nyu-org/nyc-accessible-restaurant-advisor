@@ -59,9 +59,7 @@ from .utils import (
 # Create your views here.
 def index_view(request):
     recommended_restaurants = Restaurant.objects.all()[:3]
-    context = {
-        "recommended_restaurants": recommended_restaurants
-    }
+    context = {"recommended_restaurants": recommended_restaurants}
     return render(request, "home.html", context)
 
 
