@@ -87,7 +87,7 @@ def activate_account(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
-        print(user.username)
+        # print(user.username)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and PasswordResetTokenGenerator().check_token(user, token):
@@ -663,7 +663,7 @@ def add_comment_view(request, business_id, review_id):
         review = Review.objects.get(id=review_id)
         user = request.user
 
-        print(review.restaurant.user)
+        # print(review.restaurant.user)
         if user.is_restaurant:
             if (
                 review.restaurant.user is None
