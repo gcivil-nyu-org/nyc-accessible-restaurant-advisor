@@ -1289,7 +1289,7 @@ class TestPublicFacing(TestCase):
         isres_response = self.client.get(self.publicface_isres_url)
         self.assertEqual(isres_response.status_code, 200)
         self.assertEqual(isuser_response.status_code, 200)
-        self.assertTemplateUsed(isuser_response, "publicface/public_user_detail.html")
+        self.assertTemplateUsed(isuser_response, "publicface/public_profile.html")
 
 
 class TestFaqContact(TestCase):
