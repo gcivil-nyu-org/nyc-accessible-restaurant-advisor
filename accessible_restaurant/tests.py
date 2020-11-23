@@ -326,9 +326,7 @@ class TestViews(TestCase):
 
         self.userprofile_url = reverse("accessible_restaurant:user_profile")
         self.resprofile_url = reverse("accessible_restaurant:restaurant_profile")
-        self.browse_url = reverse(
-            "accessible_restaurant:browse", args=[10]
-        )
+        self.browse_url = reverse("accessible_restaurant:browse", args=[10])
         self.detail_url = reverse(
             "accessible_restaurant:detail", args=["FaPtColHYcTnZAxtoM33cA"]
         )
