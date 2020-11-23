@@ -1,8 +1,12 @@
 .jumbotron {
     background-image: url(images/coffeebar.jpg);
     background-size: cover;
+    padding-top: 12%;
 }
-.display-4 {
+.jumbotron .container h1 {
+    color: #fff;
+}
+.jumbotron .container p {
     color: #fff;
 }
 .card-img {
