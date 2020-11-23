@@ -701,7 +701,7 @@ def user_detail_view(request, user):
         "photo": response_info.get("photo"),
         "user_review": response_review,
     }
-    return render(request, "publicface/public_user_detail.html", context)
+    return render(request, "publicface/public_profile.html", context)
 
 
 def faq_view(request):

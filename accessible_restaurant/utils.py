@@ -307,5 +307,6 @@ def get_user_reviews(user):
         review.business_id = restaurant.business_id
         review.res_name = restaurant.name
         review.res_url = restaurant.img_url
+        review.comments_count = len(Comment.objects.filter(review=review.id))
         response.append(review.__dict__)
     return response
