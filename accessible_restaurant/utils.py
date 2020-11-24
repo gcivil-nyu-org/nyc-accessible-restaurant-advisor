@@ -322,3 +322,14 @@ def get_user_favorite(user):
         restaurant = Restaurant.objects.get(pk=favorite.restaurant_id)
         response.append(restaurant.__dict__)
     return response
+
+
+def get_user_profile_favorite(user):
+    if not user:
+        return None
+    all_favorite = Favorites.objects.filter(user=user)
+    response = []
+    for favorite in all_favorite:
+        restaurant = Restaurant.objects.get(pk=favorite.restaurant_id)
+        response.append(restaurant.__dict__)
+    return response

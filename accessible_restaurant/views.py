@@ -55,6 +55,7 @@ from .utils import (
     get_public_user_detail,
     get_user_reviews,
     get_user_favorite,
+    get_user_profile_favorite,
 )
 
 
@@ -238,6 +239,15 @@ def user_profile_view(request):
         else:
             auth_form = UserCertUpdateForm()
 
+    response_favorite = get_user_profile_favorite(request.user)
+    star_list = get_star_list()
+
+    for restaurant in response_favorite:
+        full, half, null = star_list[float(restaurant["rating"])]
+        restaurant["full"] = full
+        restaurant["half"] = half
+        restaurant["null"] = null
+
     action = request.GET.get("action")
     if action == "Edit Profile":
         profile_action = "edit"
@@ -249,6 +259,7 @@ def user_profile_view(request):
         "profile_form": p_form,
         "auth_form": auth_form,
         "profile_action": profile_action,
+        "user_favorite": response_favorite,
     }
     return render(request, "profile/user_profile.html", context)
 
