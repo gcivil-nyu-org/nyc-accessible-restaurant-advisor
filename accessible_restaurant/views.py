@@ -628,6 +628,10 @@ def write_review_view(request, business_id):
         }
         return render(request, "review/write_review.html", context)
     else:
+        messages.warning(
+            request,
+            f'{"Sorry, as a restaurant user, you can not write reviews. "}',
+        )
         return redirect("accessible_restaurant:detail", business_id)
 
 
