@@ -58,7 +58,9 @@ from .utils import (
 
 # Create your views here.
 def index_view(request):
-    return render(request, "index.html")
+    recommended_restaurants = Restaurant.objects.all()[:3]
+    context = {"recommended_restaurants": recommended_restaurants}
+    return render(request, "home.html", context)
 
 
 def about_view(request):
@@ -83,7 +85,7 @@ def activate_account(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
-        print(user.username)
+        # print(user.username)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and PasswordResetTokenGenerator().check_token(user, token):
@@ -372,15 +374,18 @@ def restaurant_profile_view(request):
     return render(request, "profile/restaurant_profile.html", context)
 
 
-def restaurant_list_view(request, page, sort_property):
-    if sort_property == "nearest":
-        # print("Hello")
-        messages.warning(
-            request,
-            f'{"Your current IP address will be used for this feature. "}',
-        )
+def restaurant_list_view(request, page):
+    sort_property = request.GET.get("sort_property", "default")
+    # if sort_property == "nearest":
+    #     messages.warning(
+    #         request,
+    #         f'{"Your current IP address will be used for this feature. "}',
+    #     )
     page = int(page)
-    client_ip = get_client_ip(request)
+    if sort_property == "nearest":
+        client_ip = get_client_ip(request)
+    else:
+        client_ip = ""
     restaurants = Restaurant.objects.all()
 
     keyword = request.GET.get("query", "")
@@ -395,6 +400,22 @@ def restaurant_list_view(request, page, sort_property):
     sandwiches = request.GET.get("Sandwiches", "")
     brunch = request.GET.get("Brunch", "")
     coffee = request.GET.get("Coffee", "")
+
+    filters_applied = False
+    if (
+        price1
+        or price2
+        or price3
+        or price4
+        or chinese
+        or korean
+        or salad
+        or pizza
+        or sandwiches
+        or brunch
+        or coffee
+    ):
+        filters_applied = True
 
     filters = {
         "prices": [price1, price2, price3, price4],
@@ -450,8 +471,9 @@ def restaurant_list_view(request, page, sort_property):
         "Sandwiches": sandwiches,
         "Brunch": brunch,
         "Coffee": coffee,
+        "filter_applied": filters_applied,
     }
-    return render(request, "restaurants/browse.html", context)
+    return render(request, "restaurants/listing.html", context)
 
 
 def restaurant_detail_view(request, business_id):
@@ -577,7 +599,7 @@ def restaurant_detail_view(request, business_id):
             "accessible_path_rating_null": accessible_path_rating_null,
             "comment_form": comment_form,
         }
-        return render(request, "restaurants/detail.html", context)
+        return render(request, "restaurants/details.html", context)
 
 
 @login_required
@@ -606,6 +628,10 @@ def write_review_view(request, business_id):
         }
         return render(request, "review/write_review.html", context)
     else:
+        messages.warning(
+            request,
+            f'{"Sorry, as a restaurant user, you can not write reviews. "}',
+        )
         return redirect("accessible_restaurant:detail", business_id)
 
 
@@ -617,7 +643,7 @@ def add_comment_view(request, business_id, review_id):
         review = Review.objects.get(id=review_id)
         user = request.user
 
-        print(review.restaurant.user)
+        # print(review.restaurant.user)
         if user.is_restaurant:
             if (
                 review.restaurant.user is None
@@ -679,7 +705,7 @@ def user_detail_view(request, user):
         "photo": response_info.get("photo"),
         "user_review": response_review,
     }
-    return render(request, "publicface/public_user_detail.html", context)
+    return render(request, "publicface/public_profile.html", context)
 
 
 def faq_view(request):

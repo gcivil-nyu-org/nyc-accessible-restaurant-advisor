@@ -233,7 +233,7 @@ class TestUrls(SimpleTestCase):
         )
 
     def test_browse_url_is_resolved(self):
-        url = reverse("accessible_restaurant:browse", args=["page", "sort-property"])
+        url = reverse("accessible_restaurant:browse", args=["page"])
         # print(resolve(url))
         self.assertEquals(
             resolve(url).func, accessible_restaurant.views.restaurant_list_view
@@ -326,9 +326,7 @@ class TestViews(TestCase):
 
         self.userprofile_url = reverse("accessible_restaurant:user_profile")
         self.resprofile_url = reverse("accessible_restaurant:restaurant_profile")
-        self.browse_url = reverse(
-            "accessible_restaurant:browse", args=[10, "lowestPrice"]
-        )
+        self.browse_url = reverse("accessible_restaurant:browse", args=[10])
         self.detail_url = reverse(
             "accessible_restaurant:detail", args=["FaPtColHYcTnZAxtoM33cA"]
         )
@@ -349,7 +347,7 @@ class TestViews(TestCase):
     def test_index_view_GET(self):
         response = self.client.get(self.index_url)
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, "index.html")
+        self.assertTemplateUsed(response, "home.html")
 
     def test_logout_view_GET(self):
         response = self.client.get(self.logout_url)
@@ -383,7 +381,7 @@ class TestViews(TestCase):
     def test_browse_view_GET(self):
         response = self.client.get(self.browse_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "restaurants/browse.html")
+        self.assertTemplateUsed(response, "restaurants/listing.html")
 
     def test_detail_view_GET(self):
         Restaurant.objects.create(
@@ -399,7 +397,7 @@ class TestViews(TestCase):
         )
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "restaurants/detail.html")
+        self.assertTemplateUsed(response, "restaurants/details.html")
 
     def test_user_profile_view_POST(self):
         self.user = User.objects.create_user(
@@ -512,7 +510,7 @@ class TestViews(TestCase):
     #     )
     #     response = self.client.post(self.detail_url, form_data)
     #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "restaurants/detail.html")
+    #     self.assertTemplateUsed(response, "restaurants/details.html")
 
 
 class TestRestaurantDetail(TestCase):
@@ -566,38 +564,38 @@ class TestRestaurantDetail(TestCase):
         # self.client.login(username="huanjin", password="test123456")
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "restaurants/detail.html")
+        self.assertTemplateUsed(response, "restaurants/details.html")
 
 
-class SortTest(TestCase):
-    def setUp(self):
-        self.sortbydefault_url = reverse(
-            "accessible_restaurant:browse", args=["0", "default"]
-        )
-        self.sortbylowestprice_url = reverse(
-            "accessible_restaurant:browse", args=["0", "lowestprice"]
-        )
-        self.sortbyhighestprice_url = reverse(
-            "accessible_restaurant:browse", args=["0", "highestprice"]
-        )
-        self.sortbynearest_url = reverse(
-            "accessible_restaurant:browse", args=["0", "nearest"]
-        )
-        return super().setUp()
-
-    def test_can_view_page_correctly(self):
-        sortbydefault_response = self.client.get(self.sortbydefault_url)
-        sortbylowestprice_response = self.client.get(self.sortbylowestprice_url)
-        sortbyhighestprice_response = self.client.get(self.sortbyhighestprice_url)
-        sortbynearest_response = self.client.get(self.sortbynearest_url)
-        self.assertEqual(sortbydefault_response.status_code, 200)
-        self.assertEqual(sortbylowestprice_response.status_code, 200)
-        self.assertEqual(sortbyhighestprice_response.status_code, 200)
-        self.assertEqual(sortbynearest_response.status_code, 200)
-        self.assertTemplateUsed(sortbydefault_response, "restaurants/browse.html")
-        self.assertTemplateUsed(sortbylowestprice_response, "restaurants/browse.html")
-        self.assertTemplateUsed(sortbyhighestprice_response, "restaurants/browse.html")
-        self.assertTemplateUsed(sortbynearest_response, "restaurants/browse.html")
+# class SortTest(TestCase):
+#     def setUp(self):
+#         self.sortbydefault_url = reverse(
+#             "accessible_restaurant:browse", args=["0", "default"]
+#         )
+#         self.sortbylowestprice_url = reverse(
+#             "accessible_restaurant:browse", args=["0", "lowestprice"]
+#         )
+#         self.sortbyhighestprice_url = reverse(
+#             "accessible_restaurant:browse", args=["0", "highestprice"]
+#         )
+#         self.sortbynearest_url = reverse(
+#             "accessible_restaurant:browse", args=["0", "nearest"]
+#         )
+#         return super().setUp()
+#
+#     def test_can_view_page_correctly(self):
+#         sortbydefault_response = self.client.get(self.sortbydefault_url)
+#         sortbylowestprice_response = self.client.get(self.sortbylowestprice_url)
+#         sortbyhighestprice_response = self.client.get(self.sortbyhighestprice_url)
+#         sortbynearest_response = self.client.get(self.sortbynearest_url)
+#         self.assertEqual(sortbydefault_response.status_code, 200)
+#         self.assertEqual(sortbylowestprice_response.status_code, 200)
+#         self.assertEqual(sortbyhighestprice_response.status_code, 200)
+#         self.assertEqual(sortbynearest_response.status_code, 200)
+#         self.assertTemplateUsed(sortbydefault_response, "restaurants/listing.html")
+#         self.assertTemplateUsed(sortbylowestprice_response, "restaurants/listing.html")
+#         self.assertTemplateUsed(sortbyhighestprice_response, "restaurants/listing.html")
+#         self.assertTemplateUsed(sortbynearest_response, "restaurants/listing.html")
 
 
 class SearchTest(TestCase):
@@ -638,8 +636,8 @@ class SearchTest(TestCase):
             category3="Vegetarian",
         )
 
-        self.search_url = reverse("accessible_restaurant:browse", args=["0", "default"])
-        self.filter_url = reverse("accessible_restaurant:browse", args=["0", "default"])
+        self.search_url = reverse("accessible_restaurant:browse", args=["0"])
+        self.filter_url = reverse("accessible_restaurant:browse", args=["0"])
 
     def test_can_view_page_correctly(self):
         response_search_zipcode = self.client.get(self.search_url, {"query": "11215"})
@@ -666,18 +664,18 @@ class SearchTest(TestCase):
         self.assertEqual(response_filter_price.status_code, 200)
         self.assertEqual(response_filter_category.status_code, 200)
 
-        self.assertTemplateUsed(response_search_zipcode, "restaurants/browse.html")
+        self.assertTemplateUsed(response_search_zipcode, "restaurants/listing.html")
         self.assertTemplateUsed(
-            response_search_restaurant_name, "restaurants/browse.html"
+            response_search_restaurant_name, "restaurants/listing.html"
         )
-        self.assertTemplateUsed(response_search_category, "restaurants/browse.html")
-        self.assertTemplateUsed(response_search_address, "restaurants/browse.html")
+        self.assertTemplateUsed(response_search_category, "restaurants/listing.html")
+        self.assertTemplateUsed(response_search_address, "restaurants/listing.html")
         self.assertTemplateUsed(
-            response_search_multicondition, "restaurants/browse.html"
+            response_search_multicondition, "restaurants/listing.html"
         )
 
-        self.assertTemplateUsed(response_filter_price, "restaurants/browse.html")
-        self.assertTemplateUsed(response_filter_category, "restaurants/browse.html")
+        self.assertTemplateUsed(response_filter_price, "restaurants/listing.html")
+        self.assertTemplateUsed(response_filter_category, "restaurants/listing.html")
 
 
 class FilterTest(TestCase):
@@ -733,7 +731,7 @@ class FilterTest(TestCase):
             category1="Pizza",
         )
 
-        self.filter_url = reverse("accessible_restaurant:browse", args=["0", "default"])
+        self.filter_url = reverse("accessible_restaurant:browse", args=["0"])
 
     def test_individual_filter_price(self):
 
@@ -1291,7 +1289,7 @@ class TestPublicFacing(TestCase):
         isres_response = self.client.get(self.publicface_isres_url)
         self.assertEqual(isres_response.status_code, 200)
         self.assertEqual(isuser_response.status_code, 200)
-        self.assertTemplateUsed(isuser_response, "publicface/public_user_detail.html")
+        self.assertTemplateUsed(isuser_response, "publicface/public_profile.html")
 
 
 class TestFaqContact(TestCase):

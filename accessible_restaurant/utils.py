@@ -102,6 +102,8 @@ def get_local_restaurant_reviews(business_id):
             review.username = user.username
             review.photo = photo
             review.comments_set = reversed(list(comments))
+            # additional set for comments, one set can only use once.
+            review.comments_set2 = reversed(list(comments))
             response.append(review.__dict__)
         elif user.is_restaurant:
             response.append(review.__dict__)
@@ -305,5 +307,6 @@ def get_user_reviews(user):
         review.business_id = restaurant.business_id
         review.res_name = restaurant.name
         review.res_url = restaurant.img_url
+        review.comments_count = len(Comment.objects.filter(review=review.id))
         response.append(review.__dict__)
     return response

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <title>Accessible Restaurant Advisor, NYC</title>
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v5.15.1/js/all.js" crossorigin="anonymous"></script>
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        {% load static %}
+        <link href="{% static 'accessible_restaurant/home_style.css' %}" rel="stylesheet" />
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top bg-light" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'accessible_restaurant:index'%}">
+                    <img src="{% static 'accessible_restaurant/images/logo.png' %}" alt="" style="width:7%;height:5%;"/>
+                    <img src="{% static 'accessible_restaurant/images/logo.svg' %}" alt="" style="width:50%;height:5%;"/>
+                </a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars ml-1"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav text-uppercase ml-auto">
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accessible_restaurant:index'%}">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accessible_restaurant:browse' 0 %}">Restaurants</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accessible_restaurant:faq' %}">FAQs&Contact</a></li>
+                        {% if user.is_authenticated %}
+                            {% if user.is_user %}
+                                <li class="nav-item"><a class="nav-link" href="{% url 'accessible_restaurant:user_profile' %}?action=View+Profile">Profile</a></li>
+                            {% elif user.is_restaurant %}
+                                <li class="nav-item"><a class="nav-link" href="{% url 'accessible_restaurant:restaurant_profile' %}?action=View+Profile">Profile</a></li>
+                            {% elif user.is_staff %}
+                                <li class="nav-item"><a class="nav-link" href="{% url 'accessible_restaurant:authenticate' %}">Manage</a></li>
+                            {% endif %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'accessible_restaurant:logout' %}">Logout</a></li>
+                        {% else %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'accessible_restaurant:login' %}">Login</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'accessible_restaurant:signup' %}">Register</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Masthead-->
+        <header class="masthead">
+            <div class="container">
+                <div class="masthead-subheading">Find Accessible Place to Eat and Drink</div>
+                <div class="masthead-heading text-uppercase">Welcome To Accessible Restaurant Advisor!</div>
+                <a class="btn btn-yellow btn-lg text-uppercase" href="{% url 'accessible_restaurant:browse' 0 %}">Explore Restaurants</a>
+            </div>
+        </header>
+
+        <!-- Services-->
+        <section class="page-section" id="services">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Services</h2>
+                    <h3 class="section-subheading text-muted">
+                        Provides reviews and ratings of NYC restaurants with a specific focus on wheelchair
+                        accessibility and quality of experience for disabled patrons.
+                    </h3>
+                </div>
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <span class="fa-stack fa-4x">
+                            <i class="fas fa-circle fa-stack-2x text-yellow"></i>
+                            <i class="fas fa-wheelchair fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <h4 class="my-3">People in WheelChair</h4>
+                        <p class="text-muted">
+                            Our website mainly focus on people with disability, especially people in wheelchair.
+                        </p>
+                        <p class="text-muted">
+                            They can check whether a restaurant is compliant or not, get accessibility accommodation information
+                            about the restaurants.
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="fa-stack fa-4x">
+                            <i class="fas fa-circle fa-stack-2x text-yellow"></i>
+                            <i class="fas fa-utensils fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <h4 class="my-3">Find Restaurants</h4>
+                        <p class="text-muted">People can read and write their experience and reviews about restaurants,
+                            choose the most suitable places.
+                        </p>
+                        <p class="text-muted">
+                            Explore our major features when browsing:
+                        </p>
+                        <ul class="text-muted">
+                            <li>Review and Rating System</li>
+                            <li>Map Locator</li>
+                            <li>Multi-condition Search</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="fa-stack fa-4x">
+                            <i class="fas fa-circle fa-stack-2x text-yellow"></i>
+                            <i class="far fa-check-square fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <h4 class="my-3">Accessible Checklists</h4>
+                        <p class="text-muted">
+                            Five checklists for more standardized evaluation.
+                        </p>
+                        <ul class="text-muted">
+                            <li>Level entry or ramp</li>
+                            <li>Accessible 32-inch wide door</li>
+                            <li>Accessible 36-inch wide path</li>
+                            <li>Accessible tables</li>
+                            <li>Accessible restroom</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Recommended Restaurants -->
+        <section class="page-section bg-light" id="recommendation">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Recommended Restaurants</h2>
+                    <h3 class="section-subheading text-muted">restaurants based on your preference.</h3>
+                </div>
+                <div class="row">
+                    {% for restaurant in recommended_restaurants %}
+                        <div class="col-lg-4 col-sm-6 mb-4">
+                            <div class="recommendation-item">
+                                <a class="recommendation-link" href="{% url 'accessible_restaurant:detail' restaurant.business_id %}">
+                                    <img class="img-fluid" src="{{ restaurant.img_url }}" alt="" style="width:100%;height:250px;object-fit:cover;"/>
+                                </a>
+                                <div class="recommendation-caption">
+                                    <div class="recommendation-caption-heading">{{ restaurant.name }}</div>
+                                    <div class="recommendation-caption-subheading text-muted">{{ restaurant.category1 }}</div>
+                                    <div class="recommendation-caption-subheading text-muted">{{ restaurant.category2 }}</div>
+                                    <div class="recommendation-caption-subheading text-muted">{{ restaurant.category3 }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Team-->
+        <section class="page-section bg-light" id="team">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Our Amazing Team</h2>
+                    <h3 class="section-subheading text-muted"></h3>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="team-member">
+                            <img class="mx-auto rounded-circle" src="{% static 'accessible_restaurant/images/RituEdited.jpg' %}" alt="" />
+                            <h4>RITU KUKLANI</h4>
+                            <p class="text-muted">Developer</p>
+                            <div class="row">
+                                <div class="col-lg-8 mx-auto text-center">
+                                    <p class="text-muted">Ritu Kuklani is a second-year student studying CSE at NYU. Her favourite place to dine in NYC is Chote Nawab (you should definitely try out the dum biryani there!)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="team-member">
+                            <img class="mx-auto rounded-circle" src="{% static 'accessible_restaurant/images/KatieEdited.png' %}" alt="" />
+                            <h4>KATIE ROSMAN</h4>
+                            <p class="text-muted">Product Owner</p>
+                            <div class="row">
+                                <div class="col-lg-8 mx-auto text-center">
+                                    <p class="large text-muted">Katie Rosman is a second-year Tandon student studying CSE. Her favorite places to eat in NYC include Westville (for dinner) and Magnolia Bakery (for dessert).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="team-member">
+                            <img class="mx-auto rounded-circle" src="{% static 'accessible_restaurant/images/BruceEdited.jpeg' %}" alt="" />
+                            <h4>XUANYU CHEN</h4>
+                            <p class="text-muted">Developer</p>
+                            <div class="row">
+                                <div class="col-lg-8 mx-auto text-center">
+                                    <p class="large text-muted">Xuanyu Chen is a second-year student studying CSE in Tandon. His favorite places to dine in NYC include Shanghai21 and Macao Trading (also a huge fan of hot pot).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-4">
+                        <div class="team-member">
+                            <img class="mx-auto rounded-circle" src="{% static 'accessible_restaurant/images/XiaodanEdited.png' %}" alt="" />
+                            <h4>XIAODAN TANG</h4>
+                            <p class="text-muted">Developer</p>
+                            <div class="row">
+                                <div class="col-lg-8 mx-auto text-center">
+                                    <p class="large text-muted">Xiaodan Tang is a second-year Tandon student studying CSE. Her favorite place to eat in NYC is Mala Project and Han Dynasty.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="team-member">
+                            <img class="mx-auto rounded-circle" src="{% static 'accessible_restaurant/images/JasonEdited.jpg' %}" alt="" />
+                            <h4>HUANJIN ZHANG</h4>
+                            <p class="text-muted">Developer</p>
+                            <div class="row">
+                                <div class="col-lg-8 mx-auto text-center">
+                                    <p class="large text-muted">Huanjin Zhang is a second-year Tandon student studying CSE. His favorite places to eat in NYC include Yaso Tangbao and LongHorn.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Clients -->
+        <div class="py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-2 col-sm-6 my-3">
+                        <a href="#!"><img class="img-fluid d-block mx-auto" src="{% static 'accessible_restaurant/images/google-maps-logo.png' %}" alt="" width="130" height="130" /></a>
+                    </div>
+                    <div class="col-md-3 col-sm-6 my-3">
+                        <a href="#!"><img class="img-fluid d-block mx-auto" src="{% static 'accessible_restaurant/images/yelp-logo.png' %}" alt="" width="130" height="130" /></a>
+                    </div>
+                    <div class="col-md-2 col-sm-6 my-3">
+                        <a href="#!"><img class="img-fluid d-block mx-auto" src="{% static 'accessible_restaurant/images/NYU-logo.png' %}" alt="" width="160" height="160" /></a>
+                    </div>
+                    <div class="col-md-3 col-sm-6 my-3">
+                        <a href="#!"><img class="img-fluid d-block mx-auto" src="{% static 'accessible_restaurant/images/MOPD-logo.png' %}" alt="" width="220" height="220" /></a>
+                    </div>
+                    <div class="col-md-2 col-sm-6 my-3">
+                        <a href="#!"><img class="img-fluid d-block mx-auto" src="{% static 'accessible_restaurant/images/heroku-logo.png' %}" alt="" width="120" height="120"/></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer-->
+        <footer class="footer py-4 bg-light">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-5 text-lg-left">Copyright © Accessible Restaurant Advisor, NYC 2020.</div>
+                    <div class="col-lg-3 my-3 my-lg-0">
+                        408 Request Timeout Team
+                    </div>
+                    <div class="col-lg-4 text-lg-right">
+                        <a class="mr-3" href="{% url 'accessible_restaurant:faq' %}">Contact US</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>

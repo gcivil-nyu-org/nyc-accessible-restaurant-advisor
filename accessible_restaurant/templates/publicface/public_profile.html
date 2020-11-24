@@ -1,0 +1,105 @@
+{% extends "baseheader.html" %}
+{% load crispy_forms_tags %}
+
+{% block staticlink %}
+    {% load static %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/public_profile_style.css' %}">
+    <script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block title %} Public User Profile {% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="content" id="content">
+                    <div class="profile">
+                        <div class="profile-header">
+                            <div class="profile-header-cover"></div>
+                            <div class="profile-header-content">
+                                <div class="col-md-2 profile-header-img">
+                                    <img src="{{ photo.url }}" alt="">
+                                </div>
+                                <div class="col-md-8 profile-header-info">
+                                    <h4 class="m-2">{{ username }}</h4>
+                                    {% if city or state %}
+                                        <p class="m-2">{{ city }} {{ state }}</p>
+                                    {% else %}
+                                        <p class="m-2">No address info</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <ul class="profile-header-tab nav nav-tabs">
+                                <li class="nav-item"><a href="#profile-review" class="nav-link active show" data-toggle="tab">RELATED REVIEWS</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="profile-content">
+                        <div class="tab-content p-0">
+                            <div class="tab-pane fade active show" id="profile-review">
+                                <ul class="timeline">
+                                    {% for review in user_review %}
+                                        <li>
+                                            <div class="timeline-time">
+                                                <span class="date">{{ review.review_date | date:"Y-m-d" }}</span>
+                                                <span class="time">{{ review.review_date | date:"H:m" }}</span>
+                                            </div>
+                                            <div class="timeline-icon">
+                                                <a>&nbsp;</a>
+                                            </div>
+                                            <div class="timeline-body">
+                                                <div class="timeline-header">
+                                                    <span class="restimage"><img src="{{ review.res_url }}" alt=""></span>
+                                                    <span class="username"><a href="{% url 'accessible_restaurant:detail' review.business_id %}">{{ review.res_name }}</a> <small></small></span>
+                                                </div>
+                                                <div class="timeline-content">
+                                                    <p>{{ review.review_context }}</p>
+                                                </div>
+                                                <div class="timeline-likes">
+                                                    <div class="stats-right">
+                                                        <span class="stats-text">{{ review.comments_count }} Comments</span>
+                                                    </div>
+                                                    <ul class="list-inline">
+                                                        {% for _ in review.full %}
+                                                            <li class="list-inline-item">
+                                                                <i class="icon-star-full fas fa-star"></i>
+                                                            </li>
+                                                        {% endfor %}
+                                                        {% for _ in review.half %}
+                                                            <li class="list-inline-item">
+                                                                <i class="icon-star-half fas fa-star-half-alt"></i>
+                                                            </li>
+                                                        {% endfor %}
+                                                        {% for _ in review.null %}
+                                                            <li class="list-inline-item">
+                                                                <i class="icon-star-null far fa-star"></i>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+
+                                    <li>
+                                        <div class="timeline-icon">
+                                            <a>&nbsp;</a>
+                                        </div>
+                                        <div class="timeline-body">
+                                            No more reviews...
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
