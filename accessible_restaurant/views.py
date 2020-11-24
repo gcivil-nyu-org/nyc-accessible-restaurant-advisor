@@ -734,7 +734,7 @@ def user_detail_view(request, user):
         "user_review": response_review,
         "user_favorite": response_favorite,
     }
-    return render(request, "publicface/public_user_detail.html", context)
+    return render(request, "publicface/public_profile.html", context)
 
 
 def faq_view(request):

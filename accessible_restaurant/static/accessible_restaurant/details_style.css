@@ -9,6 +9,12 @@
     color: dodgerblue;
 }
 
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
 /* reduce space between each star */
 .list-inline>li {
     margin: -10px;
