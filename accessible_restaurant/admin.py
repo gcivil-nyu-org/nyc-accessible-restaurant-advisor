@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import (
     User,
     User_Profile,
+    User_Preferences,
     Restaurant_Profile,
     Restaurant,
     Review,
@@ -12,10 +13,9 @@ from .models import (
 from import_export.admin import ImportExportModelAdmin
 
 # Register your models here.
-
-
 admin.site.register(User)
 admin.site.register(User_Profile)
+admin.site.register(User_Preferences)
 admin.site.register(Restaurant_Profile)
 admin.site.register(Review)
 # admin.site.register(Restaurant)

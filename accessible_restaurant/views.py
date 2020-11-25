@@ -23,6 +23,7 @@ from .forms import (
     RestaurantSignUpForm,
     UserUpdateForm,
     UserProfileUpdateForm,
+    UserPreferencesForm,
     RestaurantProfileUpdateForm,
     ReviewPostForm,
     UserCertUpdateForm,
@@ -42,6 +43,7 @@ from .models import (
     ApprovalPendingUsers,
     ApprovalPendingRestaurants,
     User_Profile,
+    User_Preferences,
     Restaurant_Profile,
 )
 from .utils import (
@@ -206,16 +208,21 @@ def user_profile_view(request):
             else:
                 u_form = UserUpdateForm(instance=request.user)
                 p_form = UserProfileUpdateForm(instance=request.user.uprofile)
+                preferences_form = UserPreferencesForm(instance=request.user.upreferences)
 
         elif "submit-info" in request.POST:
             u_form = UserUpdateForm(request.POST, instance=request.user)
             p_form = UserProfileUpdateForm(
                 request.POST, request.FILES, instance=request.user.uprofile
             )
+            preferences_form = UserPreferencesForm(
+                request.POST, request.FILES, instance=request.user.upreferences
+            )
 
-            if u_form.is_valid() and p_form.is_valid():
+            if u_form.is_valid() and p_form.is_valid() and preferences_form.is_valid():
                 u_form.save()
                 p_form.save()
+                preferences_form.save()
                 messages.success(request, f'{"Your profile has been updated!"}')
                 return redirect("accessible_restaurant:user_profile")
             else:
@@ -229,6 +236,7 @@ def user_profile_view(request):
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = UserProfileUpdateForm(instance=request.user.uprofile)
+        preferences_form = UserPreferencesForm(instance=request.user.upreferences)
         queue = ApprovalPendingUsers.objects.filter(user=request.user).count()
         if queue > 0:
             q = ApprovalPendingUsers.objects.get(user=request.user)
@@ -246,6 +254,7 @@ def user_profile_view(request):
         "user_form": u_form,
         "profile_form": p_form,
         "auth_form": auth_form,
+        "preferences_form": preferences_form,
         "profile_action": profile_action,
     }
     return render(request, "profile/user_profile.html", context)

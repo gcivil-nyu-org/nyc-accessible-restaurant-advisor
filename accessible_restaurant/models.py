@@ -36,6 +36,41 @@ class User_Profile(models.Model):
     def __str__(self):
         return f"{self.user.username} User Profile"
 
+
+class User_Preferences(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, null=True, related_name="upreferences"
+    )
+    CUISINE = [
+        ("chinese", "Chinese"),
+        ("mexican", "Mexican"),
+        ("italian", "Italian"),
+    ]
+    cuisine_choice = models.CharField(max_length=16, choices=CUISINE, default="chinese")
+
+    TIME = [
+        ("breakfast", "Breakfast"),
+        ("lunch", "Lunch"),
+        ("dinner", "Dinner"),
+        ("coffee", "Coffee & Tea"),
+        ("drinks", "Drinks"),
+    ]
+
+    time_choice = models.CharField(max_length=16, choices=TIME, default="breakfast")
+
+    BUDGET = [
+        ("1", "$"),
+        ("2", "$$"),
+        ("3", "$$$"),
+        ("4", "$$$$"),
+    ]
+
+    budget_choice = models.CharField(max_length=4, choices=BUDGET, default="1")
+
+    # for later: add restaurants from User's favorite list
+    def __str__(self):
+        return f"{self.name}"
+
     # def save(self, *args, **kwargs):
     #     super(User_Profile, self).save(*args, **kwargs)
     #

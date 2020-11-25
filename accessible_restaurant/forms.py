@@ -5,6 +5,7 @@ from django.db import transaction
 from accessible_restaurant.models import (
     User,
     User_Profile,
+    User_Preferences,
     Restaurant_Profile,
     Review,
     ApprovalPendingUsers,
@@ -73,6 +74,17 @@ class UserProfileUpdateForm(forms.ModelForm):
             "auth_status",
         ]
         labels = {"zip_code": "Zip Code", "auth_status": "Authentication Status"}
+
+
+class UserPreferencesForm(forms.ModelForm):
+    class Meta:
+        model = User_Preferences
+        fields = [
+            "cuisine_choice",
+            "time_choice",
+            "budget_choice",
+        ]
+        labels = {"cuisine_choice": "Favorite Cuisine", "time_choice": "Preferred Meal", "budget_choice": "Budget", }
 
 
 class UserCertUpdateForm(forms.ModelForm):
