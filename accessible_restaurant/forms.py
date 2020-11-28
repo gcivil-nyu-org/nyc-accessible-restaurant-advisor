@@ -162,28 +162,72 @@ class HorizontalRadioSelect(forms.RadioSelect):
 
 
 class ReviewPostForm(forms.ModelForm):
+    # SCORE_CHOICES = (
+    #     (1, '☆'),
+    #     (2, '☆'),
+    #     (3, '☆'),
+    #     (4, '☆'),
+    #     (5, '☆'),
+    # )
+    # rating = forms.ChoiceField(label="General Rating", choices=SCORE_CHOICES)
+    # level_entry_rating = forms.ChoiceField(
+    #     label="Level Entry Rating", choices=SCORE_CHOICES
+    # )
+    # wide_door_rating = forms.ChoiceField(
+    #     label="Wide Door Rating", choices=SCORE_CHOICES
+    # )
+    # accessible_table_rating = forms.ChoiceField(
+    #     label="Accessible Table Rating", choices=SCORE_CHOICES
+    # )
+    # accessible_restroom_rating = forms.ChoiceField(
+    #     label="Accessible Restroom Rating", choices=SCORE_CHOICES
+    # )
+    # accessible_path_rating = forms.ChoiceField(
+    #     label="Accessible Path Rating", choices=SCORE_CHOICES
+    # )
+    #
+    # class Meta:
+    #     model = Review
+    #     fields = [
+    #         "rating",
+    #         "level_entry_rating",
+    #         "wide_door_rating",
+    #         "accessible_table_rating",
+    #         "accessible_restroom_rating",
+    #         "accessible_path_rating",
+    #         "review_context",
+    #     ]
+    #     widgets = {
+    #         "rating": HorizontalRadioSelect(),
+    #         "level_entry_rating": forms.RadioSelect,
+    #         "wide_door_rating": forms.RadioSelect,
+    #         "accessible_table_rating": forms.RadioSelect,
+    #         "accessible_restroom_rating": forms.RadioSelect,
+    #         "accessible_path_rating": forms.RadioSelect,
+    #     }
+
     SCORE_CHOICES = (
-        (1, 1),
-        (2, 2),
-        (3, 3),
-        (4, 4),
-        (5, 5),
+        (5, '☆'),
+        (4, '☆'),
+        (3, '☆'),
+        (2, '☆'),
+        (1, '☆'),
     )
-    rating = forms.ChoiceField(label=("General Rating"), choices=SCORE_CHOICES)
+    rating = forms.ChoiceField(label="General Rating", widget=forms.RadioSelect, choices=SCORE_CHOICES)
     level_entry_rating = forms.ChoiceField(
-        label=("Level Entry Rating"), choices=SCORE_CHOICES
+        label="Level Entry Rating", widget=forms.RadioSelect, choices=SCORE_CHOICES
     )
     wide_door_rating = forms.ChoiceField(
-        label=("Wide Door Rating"), choices=SCORE_CHOICES
+        label="Wide Door Rating", widget=forms.RadioSelect, choices=SCORE_CHOICES
     )
     accessible_table_rating = forms.ChoiceField(
-        label=("Accessible Table Rating"), choices=SCORE_CHOICES
+        label="Accessible Table Rating", widget=forms.RadioSelect, choices=SCORE_CHOICES
     )
     accessible_restroom_rating = forms.ChoiceField(
-        label=("Accessible Restroom Rating"), choices=SCORE_CHOICES
+        label="Accessible Restroom Rating", widget=forms.RadioSelect, choices=SCORE_CHOICES
     )
     accessible_path_rating = forms.ChoiceField(
-        label=("Accessible Path Rating"), choices=SCORE_CHOICES
+        label="Accessible Path Rating", widget=forms.RadioSelect, choices=SCORE_CHOICES
     )
 
     class Meta:
@@ -197,13 +241,17 @@ class ReviewPostForm(forms.ModelForm):
             "accessible_path_rating",
             "review_context",
         ]
+        labels = {
+            "review_context": "Review",
+        }
         widgets = {
-            "rating": HorizontalRadioSelect(),
-            "level_entry_rating": forms.RadioSelect,
-            "wide_door_rating": forms.RadioSelect,
-            "accessible_table_rating": forms.RadioSelect,
-            "accessible_restroom_rating": forms.RadioSelect,
-            "accessible_path_rating": forms.RadioSelect,
+            "review_context": forms.Textarea(
+                attrs={
+                    "placeholder": "Write your review here!",
+                    "rows": "17",
+                    'style': 'resize:none;',
+                }
+            )
         }
 
 
@@ -220,6 +268,7 @@ class CommentForm(forms.ModelForm):
                     "placeholder": "Write your comment here!",
                     "class": "form-control",
                     "rows": "5",
+                    'style': 'resize:none;',
                 }
             ),
         }
