@@ -40,12 +40,12 @@
     opacity: 0.4;
 }
 
-h1, h3, p {
+h3, p {
     text-align: center;
 }
 
 @media only screen and (max-width: 600px) {
-    h1 {
+    h3 {
         font-size: 14px;
     }
 

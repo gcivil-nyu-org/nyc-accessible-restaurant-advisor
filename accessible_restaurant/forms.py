@@ -207,13 +207,15 @@ class ReviewPostForm(forms.ModelForm):
     #     }
 
     SCORE_CHOICES = (
-        (5, '☆'),
-        (4, '☆'),
-        (3, '☆'),
-        (2, '☆'),
-        (1, '☆'),
+        (5, "☆"),
+        (4, "☆"),
+        (3, "☆"),
+        (2, "☆"),
+        (1, "☆"),
     )
-    rating = forms.ChoiceField(label="General Rating", widget=forms.RadioSelect, choices=SCORE_CHOICES)
+    rating = forms.ChoiceField(
+        label="General Rating", widget=forms.RadioSelect, choices=SCORE_CHOICES
+    )
     level_entry_rating = forms.ChoiceField(
         label="Level Entry Rating", widget=forms.RadioSelect, choices=SCORE_CHOICES
     )
@@ -224,7 +226,9 @@ class ReviewPostForm(forms.ModelForm):
         label="Accessible Table Rating", widget=forms.RadioSelect, choices=SCORE_CHOICES
     )
     accessible_restroom_rating = forms.ChoiceField(
-        label="Accessible Restroom Rating", widget=forms.RadioSelect, choices=SCORE_CHOICES
+        label="Accessible Restroom Rating",
+        widget=forms.RadioSelect,
+        choices=SCORE_CHOICES,
     )
     accessible_path_rating = forms.ChoiceField(
         label="Accessible Path Rating", widget=forms.RadioSelect, choices=SCORE_CHOICES
@@ -249,7 +253,7 @@ class ReviewPostForm(forms.ModelForm):
                 attrs={
                     "placeholder": "Write your review here!",
                     "rows": "17",
-                    'style': 'resize:none;',
+                    "style": "resize:none;",
                 }
             )
         }
@@ -268,7 +272,7 @@ class CommentForm(forms.ModelForm):
                     "placeholder": "Write your comment here!",
                     "class": "form-control",
                     "rows": "5",
-                    'style': 'resize:none;',
+                    "style": "resize:none;",
                 }
             ),
         }
