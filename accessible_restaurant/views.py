@@ -661,7 +661,7 @@ def write_review_view(request, business_id):
             "restaurant": restaurant_instance,
             "review_form": review_form,
         }
-        return render(request, "review/write_review.html", context)
+        return render(request, "review/writeReview.html", context)
     else:
         messages.warning(
             request,
