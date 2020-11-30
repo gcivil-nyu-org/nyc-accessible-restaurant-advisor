@@ -45,6 +45,7 @@ from .models import (
     User_Profile,
     User_Preferences,
     Restaurant_Profile,
+    Favorites,
 )
 from .utils import (
     get_restaurant_list,
@@ -56,6 +57,8 @@ from .utils import (
     get_public_user_detail,
     get_user_reviews,
     get_user_preferences,
+    get_user_favorite,
+    get_user_profile_favorite,
 )
 
 # Create your views here.
@@ -283,6 +286,15 @@ def user_profile_view(request):
         else:
             auth_form = UserCertUpdateForm()
 
+    response_favorite = get_user_profile_favorite(request.user)
+    star_list = get_star_list()
+
+    for restaurant in response_favorite:
+        full, half, null = star_list[float(restaurant["rating"])]
+        restaurant["full"] = full
+        restaurant["half"] = half
+        restaurant["null"] = null
+
     action = request.GET.get("action")
     if action == "Edit Profile":
         profile_action = "edit"
@@ -295,6 +307,7 @@ def user_profile_view(request):
         "auth_form": auth_form,
         "preferences_form": preferences_form,
         "profile_action": profile_action,
+        "user_favorite": response_favorite,
     }
     return render(request, "profile/user_profile.html", context)
 
@@ -537,6 +550,18 @@ def restaurant_detail_view(request, business_id):
             },
         )
     else:
+        if request.method == "POST" and "save_favorite_form" in request.POST:
+            user = request.user
+            restaurant = Restaurant.objects.get(business_id=business_id)
+            Favorites.objects.create(
+                user=user,
+                restaurant=restaurant,
+            )
+
+        if request.method == "POST" and "delete_favorite_form" in request.POST:
+            # restaurant = Restaurant.objects.get(business_id=business_id)
+            Favorites.objects.filter(user=request.user, restaurant=restaurant).delete()
+
         response = get_restaurant(restaurant.business_id)
         star_list = get_star_list()
         full, half, null = star_list[restaurant.rating]
@@ -614,6 +639,15 @@ def restaurant_detail_view(request, business_id):
 
         comment_form = CommentForm()
 
+        # if user likes the favorite
+        if request.user.is_authenticated:
+            isFavorite = (
+                len(Favorites.objects.filter(user=request.user, restaurant=restaurant))
+                > 0
+            )
+        else:
+            isFavorite = False
+
         context = {
             "restaurant": restaurant,
             "restaurant_data": restaurant_data,
@@ -646,6 +680,7 @@ def restaurant_detail_view(request, business_id):
             "accessible_path_rating_half": accessible_path_rating_half,
             "accessible_path_rating_null": accessible_path_rating_null,
             "comment_form": comment_form,
+            "is_favorite": isFavorite,
         }
         return render(request, "restaurants/details.html", context)
 
@@ -674,7 +709,7 @@ def write_review_view(request, business_id):
             "restaurant": restaurant_instance,
             "review_form": review_form,
         }
-        return render(request, "review/write_review.html", context)
+        return render(request, "review/writeReview.html", context)
     else:
         messages.warning(
             request,
@@ -734,12 +769,20 @@ def get_client_ip(request):
 def user_detail_view(request, user):
     response_info = get_public_user_detail(user)
     response_review = get_user_reviews(user)
+    response_favorite = get_user_favorite(user)
     star_list = get_star_list()
     for review in response_review:
         r_full, r_half, r_null = star_list[float(review["rating"])]
         review["full"] = r_full
         review["half"] = r_half
         review["null"] = r_null
+
+    for restaurant in response_favorite:
+        full, half, null = star_list[float(restaurant["rating"])]
+        restaurant["full"] = full
+        restaurant["half"] = half
+        restaurant["null"] = null
+
     context = {
         "username": response_info.get("username"),
         "email": response_info.get("email"),
@@ -752,6 +795,7 @@ def user_detail_view(request, user):
         "city": response_info.get("city"),
         "photo": response_info.get("photo"),
         "user_review": response_review,
+        "user_favorite": response_favorite,
     }
     return render(request, "publicface/public_profile.html", context)
 

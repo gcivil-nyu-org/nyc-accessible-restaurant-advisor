@@ -4,6 +4,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractUser  # User
+
 from PIL import Image
 
 
@@ -330,3 +331,13 @@ class Comment(models.Model):
         return "Comment {} by {} ".format(
             self.review.review_context, self.user.username
         )
+
+
+class Favorites(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favorite")
+    restaurant = models.ForeignKey(
+        Restaurant, on_delete=models.CASCADE, related_name="favorite"
+    )
+
+    def __str__(self):
+        return f"{self.user} likes {self.restaurant}"

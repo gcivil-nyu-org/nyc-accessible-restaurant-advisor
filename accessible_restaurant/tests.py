@@ -474,7 +474,7 @@ class TestViews(TestCase):
         )
         response = self.client.get(self.review_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "review/write_review.html")
+        self.assertTemplateUsed(response, "review/writeReview.html")
 
     # def test_review_form_valid_view_GET(self):
     #     self.user = User.objects.create_user(
@@ -1415,7 +1415,7 @@ class TestComment(TestCase):
         )
         response_view_add_review = self.client.get(self.review_add_url)
         self.assertEqual(response_view_add_review.status_code, 200)
-        self.assertTemplateUsed(response_view_add_review, "review/write_review.html")
+        self.assertTemplateUsed(response_view_add_review, "review/writeReview.html")
 
         # create a test review form
         form_review_data = {
