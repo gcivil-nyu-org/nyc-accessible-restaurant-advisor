@@ -1,7 +1,7 @@
 from django.conf import settings
 
 
-from .models import Restaurant, Review, User_Profile, User
+from .models import Restaurant, Review, User_Profile, User, Favorites
 
 from .models import Restaurant, Review, User_Profile, Comment
 
@@ -309,4 +309,27 @@ def get_user_reviews(user):
         review.res_url = restaurant.img_url
         review.comments_count = len(Comment.objects.filter(review=review.id))
         response.append(review.__dict__)
+    return response
+
+
+def get_user_favorite(user):
+    if not user:
+        return None
+    user_instance = User.objects.get(pk=user)
+    all_favorite = Favorites.objects.filter(user=user_instance)
+    response = []
+    for favorite in all_favorite:
+        restaurant = Restaurant.objects.get(pk=favorite.restaurant_id)
+        response.append(restaurant.__dict__)
+    return response
+
+
+def get_user_profile_favorite(user):
+    if not user:
+        return None
+    all_favorite = Favorites.objects.filter(user=user)
+    response = []
+    for favorite in all_favorite:
+        restaurant = Restaurant.objects.get(pk=favorite.restaurant_id)
+        response.append(restaurant.__dict__)
     return response
