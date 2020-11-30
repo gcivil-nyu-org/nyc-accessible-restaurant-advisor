@@ -55,14 +55,39 @@ from .utils import (
     get_search_restaurant,
     get_public_user_detail,
     get_user_reviews,
+    get_user_preferences,
 )
-
 
 # Create your views here.
 def index_view(request):
     recommended_restaurants = Restaurant.objects.all()[:3]
     context = {"recommended_restaurants": recommended_restaurants}
     return render(request, "home.html", context)
+
+
+def index_view_personalized(request):
+    if request.user.is_user:
+        user = request.user
+        recommended_restaurants = get_user_preferences(user)[:3]
+    elif request.user.is_restaurant:
+        recommended_restaurants = Restaurant.objects.all()[:3]
+    context = {"recommended_restaurants": recommended_restaurants}
+    return render(request, "home.html", context)
+    # except:
+    #     recommended_restaurants = Restaurant.objects.all()[:3]
+    #     context = {"recommended_restaurants": recommended_restaurants}
+    # return render(request, "home.html", context)
+    # try:
+    #     user1 = request.user
+    #     if user1.is_user():
+    #         recommended_restaurants = get_user_preferences(user1)[:3]
+    #         context = {"recommended_restaurants": recommended_restaurants}
+    #         return render(request, "home.html", context)
+    # except:
+    #     recommended_restaurants = Restaurant.objects.all()[:3]
+    #     # recommended_restaurants = get_user_preferences(user)[:3]
+    #     context = {"recommended_restaurants": recommended_restaurants}
+    #     return render(request, "home.html", context)
 
 
 def about_view(request):
@@ -210,18 +235,32 @@ def user_profile_view(request):
                 p_form = UserProfileUpdateForm(instance=request.user.uprofile)
                 preferences_form = UserPreferencesForm(instance=request.user.upreferences)
 
-        elif "submit-info" in request.POST:
+        elif ("submit-info" in request.POST):
             u_form = UserUpdateForm(request.POST, instance=request.user)
             p_form = UserProfileUpdateForm(
                 request.POST, request.FILES, instance=request.user.uprofile
             )
+            preferences_form = UserPreferencesForm(instance=request.user.upreferences)
+            if u_form.is_valid() and p_form.is_valid():
+                u_form.save()
+                p_form.save()
+                messages.success(request, f'{"Your profile has been updated!"}')
+                return redirect("accessible_restaurant:user_profile")
+            else:
+                queue = ApprovalPendingUsers.objects.filter(user=request.user).count()
+                if queue > 0:
+                    q = ApprovalPendingUsers.objects.get(user=request.user)
+                    auth_form = UserCertUpdateForm(instance=q.user.auth)
+                else:
+                    auth_form = UserCertUpdateForm()
+
+        elif ("submit-preferences" in request.POST):
             preferences_form = UserPreferencesForm(
                 request.POST, request.FILES, instance=request.user.upreferences
             )
-
-            if u_form.is_valid() and p_form.is_valid() and preferences_form.is_valid():
-                u_form.save()
-                p_form.save()
+            u_form = UserUpdateForm(instance=request.user)
+            p_form = UserProfileUpdateForm(instance=request.user.uprofile)
+            if preferences_form.is_valid():
                 preferences_form.save()
                 messages.success(request, f'{"Your profile has been updated!"}')
                 return redirect("accessible_restaurant:user_profile")

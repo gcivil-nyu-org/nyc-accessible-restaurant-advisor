@@ -1,9 +1,8 @@
 from django.conf import settings
 
-
 from .models import Restaurant, Review, User_Profile, User
 
-from .models import Restaurant, Review, User_Profile, Comment
+from .models import Restaurant, Review, User_Profile, User_Preferences, Comment
 
 from django.db.models import Q
 from .models import Restaurant
@@ -65,17 +64,17 @@ def get_local_restaurant_data(business_id):
         response["accessible_path_rating"] = 0.0
     else:
         response["level_entry_rating"] = (
-            int(float(level_entry_rating / count) / 0.5) * 0.5
+                int(float(level_entry_rating / count) / 0.5) * 0.5
         )
         response["wide_door_rating"] = int(float(wide_door_rating / count) / 0.5) * 0.5
         response["accessible_table_rating"] = (
-            int(float(accessible_table_rating / count) / 0.5) * 0.5
+                int(float(accessible_table_rating / count) / 0.5) * 0.5
         )
         response["accessible_restroom_rating"] = (
-            int(float(accessible_restroom_rating / count) / 0.5) * 0.5
+                int(float(accessible_restroom_rating / count) / 0.5) * 0.5
         )
         response["accessible_path_rating"] = (
-            int(float(accessible_path_rating / count) / 0.5) * 0.5
+                int(float(accessible_path_rating / count) / 0.5) * 0.5
         )
 
     return response
@@ -137,12 +136,12 @@ def get_restaurant_list(page, size, sort_property, client_ip, restaurants):
         restaurants = sorted(
             restaurants,
             key=lambda x: (client_position[0] - float(x.latitude)) ** 2
-            + (client_position[1] - float(x.longitude)) ** 2,
+                          + (client_position[1] - float(x.longitude)) ** 2,
             reverse=False,
         )
 
     offset = page * int(size)
-    restaurant_list = restaurants[offset : offset + size]
+    restaurant_list = restaurants[offset: offset + size]
 
     total_restaurant = len(restaurants)
     restaurants_sublist = []
@@ -208,18 +207,24 @@ def get_search_restaurant(keyword):
     words_list = context["words_list"]
 
     restaurants = Restaurant.objects.all()
-    for word in words_list:
-        restaurants = restaurants.filter(
-            Q(name__icontains=word)
-            | Q(category1__icontains=word)
-            | Q(category2__icontains=word)
-            | Q(category3__icontains=word)
-            | Q(address__icontains=word)
-        )
+    results = Restaurant.objects.none()
 
-    for zip_code in codes_list:
-        restaurants = restaurants.filter(zip_code__contains=zip_code)
-    return restaurants
+    if len(words_list) > 0:
+        for word in words_list:
+            restaurants_word_filter = restaurants.filter(
+                Q(name__icontains=word)
+                | Q(category1__icontains=word)
+                | Q(category2__icontains=word)
+                | Q(category3__icontains=word)
+            )
+            results |= restaurants_word_filter
+
+    if len(codes_list) > 0:
+        for zip_code in codes_list:
+            restaurants_zip_filter = restaurants.filter(zip_code__contains=zip_code)
+    results != restaurants_zip_filter
+
+    return results
 
 
 def get_filter_restaurant(filters, restaurants):
@@ -242,12 +247,10 @@ def get_filter_restaurant(filters, restaurants):
     chinese, korean, salad, pizza, sandwiches, brunch, coffee = categories
 
     if price_flag:
-
         restaurants = restaurants.filter(
             Q(price=price1) | Q(price=price2) | Q(price=price3) | Q(price=price4)
         )
     if categories_flag:
-
         restaurants = restaurants.filter(
             Q(category1__icontains=chinese)
             | Q(category2__icontains=chinese)
@@ -310,3 +313,89 @@ def get_user_reviews(user):
         review.comments_count = len(Comment.objects.filter(review=review.id))
         response.append(review.__dict__)
     return response
+
+def get_user_preferences(user):
+    if not user:
+        return None
+    # Get user info and preferences
+    user_instance = User.objects.get(pk=user.id)
+    if user_instance.is_user:
+        user_zip_code = user_instance.uprofile.zip_code
+        user_borough = user_instance.uprofile.borough
+    all_preferences = User_Preferences.objects.filter(user=user)
+    for preference in all_preferences:
+        user_dining1 = preference.dining_pref1
+        user_dining2 = preference.dining_pref2
+        user_dining3 = preference.dining_pref3
+        user_budget = preference.budget_pref
+        user_location = preference.location_pref
+        user_dietary = preference.dietary_pref
+        user_cuisine1 = preference.cuisine_pref1
+        user_cuisine2 = preference.cuisine_pref2
+
+    # Recommendation Process
+
+    # 1. Limit possibilities to those with reviews above 20
+    restaurants = Restaurant.objects.all().filter(review_count__gt=20)
+
+    # 2. Limit possibilities to those with ratings at or above 4
+    restaurants = restaurants.filter(rating__gte=4)
+
+    # 3. Rank each restaurant according to user preferences
+    ranked_restaurants = {}
+    for r in restaurants:
+        id = r.business_id
+        score = 0
+        main_category1 = r.main_category1
+        main_category2 = r.main_category2
+        main_category3 = r.main_category3
+        category1 = r.category1
+        category2 = r.category2
+        category3 = r.category3
+        price = r.price
+        borough = r.city
+        zip_code = r.zip_code
+        rating = r.rating
+
+        dining_prefs = list(set([user_dining1,user_dining2,user_dining3]))
+        if main_category1 in dining_prefs:
+            score = score+1
+        if main_category2 in dining_prefs:
+            score = score+1
+        if main_category3 in dining_prefs:
+            score = score+1
+
+        if user_budget == price:
+            score = score+1
+
+        if (user_location == "Near Home") and (user_zip_code == zip_code):
+            score = score+1
+        elif (user_location == "Within My Borough") and (user_borough == borough):
+            score = score+1
+        elif (user_location == "Outside My Borough") and (user_borough != borough):
+            score = score+1
+
+        if (user_dietary in category1) or (user_dietary in category2) or (user_dietary in category3):
+            score = score+1
+
+        if (user_cuisine1 in category1) or (user_cuisine1 in category2) or (user_cuisine1 in category3):
+            score = score+1
+
+        if (user_cuisine2 in category1) or (user_cuisine2 in category2) or (user_cuisine2 in category3):
+            score = score+1
+
+        ranked_restaurants[id] = score
+        ranked_restaurants[id] = rating
+
+    # Sort restaurants by highest score
+    ranked_restaurants_sorted = sorted(ranked_restaurants.items(), key=lambda x: x[1], reverse=True)
+
+    # Get top three restaurants by id
+    id1 = ranked_restaurants_sorted[0][0]
+    id2 = ranked_restaurants_sorted[1][0]
+    id3 = ranked_restaurants_sorted[2][0]
+
+    recommended_restaurants = Restaurant.objects.all().filter(Q(business_id__contains=id1) |
+                                                              Q(business_id__contains=id2) |
+                                                              Q(business_id__contains=id3))
+    return recommended_restaurants

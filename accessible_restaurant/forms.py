@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import CheckboxSelectMultiple, SelectMultiple, RadioSelect, ModelChoiceField
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 
@@ -68,6 +69,7 @@ class UserProfileUpdateForm(forms.ModelForm):
             "photo",
             "phone",
             "address",
+            "borough",
             "city",
             "zip_code",
             "state",
@@ -79,13 +81,30 @@ class UserProfileUpdateForm(forms.ModelForm):
 class UserPreferencesForm(forms.ModelForm):
     class Meta:
         model = User_Preferences
-        fields = [
-            "cuisine_choice",
-            "time_choice",
-            "budget_choice",
-        ]
-        labels = {"cuisine_choice": "Favorite Cuisine", "time_choice": "Preferred Meal", "budget_choice": "Budget", }
 
+        fields = [
+            "dining_pref1",
+            "dining_pref2",
+            "dining_pref3",
+            "budget_pref",
+            "location_pref",
+            "dietary_pref",
+            "cuisine_pref1",
+            "cuisine_pref2",
+        ]
+        # widgets = {
+        #     "dining_pref1": CheckboxSelectMultiple,
+        #     "cuisine_pref1": CheckboxSelectMultiple,
+        # }
+        labels = {"dining_pref1":"When do you enjoy dining out? Select up to three options.",
+                  "dining_pref2":"",
+                  "dining_pref3":"",
+                  "budget_pref":"What is your preferred budget for dining out?",
+                  "location_pref":"Where do you prefer to dine out?",
+                  "dietary_pref":"Do you have any dietary preferences or restrictions?",
+                  "cuisine_pref1":"What cuisines do you enjoy? Select up to two options.",
+                  "cuisine_pref2": ""
+                  }
 
 class UserCertUpdateForm(forms.ModelForm):
     class Meta:

@@ -1,6 +1,8 @@
 from datetime import datetime
 
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractUser  # User
 from PIL import Image
 
@@ -19,11 +21,90 @@ class User_Profile(models.Model):
         User, on_delete=models.CASCADE, null=True, related_name="uprofile"
     )
     photo = models.ImageField(default="default.jpg", upload_to="user_profile_pics")
-    phone = models.CharField(max_length=32, blank=True)
+
+    def validate_phone(value):
+        if len(str(value)) != 10:
+            raise ValidationError(
+                _('%(value)s must be 10 digits.'),
+                params={'value': value},
+            )
+    phone = models.PositiveSmallIntegerField(blank=True, validators=[validate_phone])  # Updated
+
     address = models.CharField(max_length=128, blank=True)
-    city = models.CharField(max_length=64, blank=True)
-    zip_code = models.CharField(max_length=16, blank=True)
-    state = models.CharField(max_length=32, blank=True)
+
+    BOROUGH_CHOICES = [
+        ("Manhattan","Manhattan"),
+        ("Brooklyn","Brooklyn"),
+        ("Queens","Queens"),
+        ("The Bronx","The Bronx"),
+        ("Staten Island", "Staten Island"),
+        ("Not Applicable", "Not Applicable")
+    ]
+    borough = models.CharField(max_length=128, choices=BOROUGH_CHOICES, default="None Selected")
+    city = models.CharField(max_length=64, blank=True)  # choices
+
+    def validate_zip(value):
+        if len(str(value)) != 5:
+            raise ValidationError(
+                _('%(value)s must be 5 digits.'),
+                params={'value': value},
+            )
+    zip_code = models.PositiveSmallIntegerField(blank=True, validators=[validate_zip]) # Updated
+
+    STATE_CHOICES = [
+        ("Alabama","Alabama"),
+        ("Alaska","Alaska"),
+        ("Arizona","Arizona"),
+        ("Arkansas","Arkansas"),
+        ("California","California"),
+        ("Colorado","Colorado"),
+        ("Connecticut","Connecticut"),
+        ("Delaware","Delaware"),
+        ("District of Columbia","District of Columbia"),
+        ("Florida","Florida"),
+        ("Georgia","Georgia"),
+        ("Hawaii","Hawaii"),
+        ("Idaho","Idaho"),
+        ("Illinois","Illinois"),
+        ("Indiana","Indiana"),
+        ("Iowa","Iowa"),
+        ("Kansas","Kansas"),
+        ("Kentucky","Kentucky"),
+        ("Louisiana","Louisiana"),
+        ("Maine","Maine"),
+        ("Montana","Montana"),
+        ("Nebraska","Nebraska"),
+        ("Nevada","Nevada"),
+        ("New Hampshire","New Hampshire"),
+        ("New Jersey","New Jersey"),
+        ("New Mexico","New Mexico"),
+        ("New York","New York"),
+        ("North Carolina","North Carolina"),
+        ("North Dakota","North Dakota"),
+        ("Ohio","Ohio"),
+        ("Oklahoma","Oklahoma"),
+        ("Oregon","Oregon"),
+        ("Maryland","Maryland"),
+        ("Massachusetts","Massachusetts"),
+        ("Michigan","Michigan"),
+        ("Minnesota","Minnesota"),
+        ("Mississippi","Mississippi"),
+        ("Missouri","Missouri"),
+        ("Pennsylvania","Pennsylvania"),
+        ("Rhode Island","Rhode Island"),
+        ("South Carolina","South Carolina"),
+        ("South Dakota","South Dakota"),
+        ("Tennessee","Tennessee"),
+        ("Texas","Texas"),
+        ("Utah","Utah"),
+        ("Vermont","Vermont"),
+        ("Virginia","Virginia"),
+        ("Washington","Washington"),
+        ("West Virginia","West Virginia"),
+        ("Wisconsin","Wisconsin"),
+        ("Wyoming","Wyoming"),
+    ]
+    state = models.CharField(max_length=128, choices=STATE_CHOICES, default="None Selected")  # choices
     AUTH_STATUS_CHOICES = [
         ("certified", "Certified"),
         ("pending", "Pending"),
@@ -41,35 +122,63 @@ class User_Preferences(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, null=True, related_name="upreferences"
     )
-    CUISINE = [
-        ("chinese", "Chinese"),
-        ("mexican", "Mexican"),
-        ("italian", "Italian"),
+    DINING = [
+        ("Breakfast", "Breakfast"),
+        ("Lunch", "Lunch"),
+        ("Dinner", "Dinner"),
+        ("Non-Alcoholic Drinks", "Non-Alcoholic Drinks"),
+        ("Alcoholic Drinks", "Alcoholic Drinks"),
+        ("Dessert", "Dessert"),
+        ("No Preference", "No Preference")
     ]
-    cuisine_choice = models.CharField(max_length=16, choices=CUISINE, default="chinese")
-
-    TIME = [
-        ("breakfast", "Breakfast"),
-        ("lunch", "Lunch"),
-        ("dinner", "Dinner"),
-        ("coffee", "Coffee & Tea"),
-        ("drinks", "Drinks"),
-    ]
-
-    time_choice = models.CharField(max_length=16, choices=TIME, default="breakfast")
+    dining_pref1 = models.CharField(max_length=20, choices=DINING, default="No Preference")
+    dining_pref2 = models.CharField(max_length=20, choices=DINING, default="No Preference")
+    dining_pref3 = models.CharField(max_length=20, choices=DINING, default="No Preference")
 
     BUDGET = [
-        ("1", "$"),
-        ("2", "$$"),
-        ("3", "$$$"),
-        ("4", "$$$$"),
+        ("$", "$"),
+        ("$$", "$$"),
+        ("$$$", "$$$"),
+        ("$$$$", "$$$$"),
+        ("No Preference","No Preference")
     ]
+    budget_pref = models.CharField(max_length=15, choices=BUDGET, default="No Preference")
 
-    budget_choice = models.CharField(max_length=4, choices=BUDGET, default="1")
+    LOCATION = [
+        ("Near Home", "Near Home"),
+        ("Within My Borough", "Within My Borough"),
+        ("Outside My Borough", "Outside My Borough"),
+        ("No Preference", "No Preference")
+    ]
+    location_pref = models.CharField(max_length=20, choices=LOCATION, default="No Preference")
+
+    DIETARY = [
+        ("Vegetarian", "Vegetarian"),
+        ("Gluten-Free", "Gluten-Free"),
+        ("Salads Available", "Salads Available"),
+        ("None", "None")
+    ]
+    dietary_pref = models.CharField(max_length=20, choices=DIETARY, default="None")
+
+    CUISINE = [
+        ("Asian", "Asian"),
+        ("American", "American"),
+        ("Caribbean", "Caribbean"),
+        ("European", "European"),
+        ("Indian", "Indian"),
+        ("Latin American", "Latin American"),
+        ("Mediterranean", "Mediterranean"),
+        ("Middle Eastern", "Middle Eastern"),
+        ("Southern", "Southern"),
+        ("No Preference","No Preference")
+    ]
+    cuisine_pref1 = models.CharField(max_length=16, choices=CUISINE, default="No Preference")
+    cuisine_pref2 = models.CharField(max_length=16, choices=CUISINE, default="No Preference")
+
+    def __str__(self):
+        return f"{self.user.username} User Preferences"
 
     # for later: add restaurants from User's favorite list
-    def __str__(self):
-        return f"{self.name}"
 
     # def save(self, *args, **kwargs):
     #     super(User_Profile, self).save(*args, **kwargs)
@@ -141,6 +250,7 @@ class Restaurant(models.Model):
         default="https://i.pinimg.com/originals/4e/24/f5/4e24f523182e09376bfe8424d556610a.png",
     )
     rating = models.FloatField(blank=True, default=0)
+    review_count = models.FloatField(blank=True, default=0)
     latitude = models.DecimalField(
         max_digits=9, decimal_places=6, blank=True, default=0
     )
@@ -157,6 +267,10 @@ class Restaurant(models.Model):
     category1 = models.CharField(max_length=128, blank=True)
     category2 = models.CharField(max_length=128, blank=True)
     category3 = models.CharField(max_length=128, blank=True)
+    main_category1 = models.CharField(max_length=128, blank=True)
+    main_category2 = models.CharField(max_length=128, blank=True)
+    main_category3 = models.CharField(max_length=128, blank=True)
+    cuisine = models.CharField(max_length=128, blank=True)
 
     def __str__(self):
         return f"{self.name}"

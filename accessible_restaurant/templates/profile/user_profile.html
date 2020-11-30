@@ -89,12 +89,18 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="certificate-tab" data-toggle="tab" href="#certificate" role="tab" aria-controls="certificate" aria-selected="false">Certificate</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="preferences-tab" data-toggle="tab" href="#preferences" role="tab" aria-controls="preferences" aria-selected="false">Preferences</a>
+                            </li>
                             {% else %}
                                 <li class="nav-item">
                                     <a class="nav-link active" id="info-tab-edit" data-toggle="tab" href="#info-edit" role="tab" aria-controls="info-edit" aria-selected="true">Profile</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" id="certificate-tab-edit" data-toggle="tab" href="#certificate-edit" role="tab" aria-controls="certificate-edit" aria-selected="false">Certificate</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="preferences-tab-edit" data-toggle="tab" href="#preferences-edit" role="tab" aria-controls="preferences-edit" aria-selected="false">Preferences</a>
                                 </li>
                             {% endif %}
                         </ul>
@@ -158,6 +164,19 @@
                                             color: #080808;">{{ field.help_text }} </p1>
                                         </div>
                                     </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="tab-pane fade" id="preferences" role="tabpanel" aria-labelledby="preferences-tab">
+                                {% for field in preferences_form %}
+                                     <div class="row">
+                                            <div class="col-md-4">
+                                                <label>{{ field.label_tag }}</label>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <p>{{ field.value }}</p>
+                                            </div>
+                                        </div>
                                 {% endfor %}
                             </div>
                         {% else %}
@@ -265,6 +284,49 @@
                                         </div>
                                     {% endfor %}
                                 {% endif %}
+                            </div>
+
+                            <div class="tab-pane fade" id="preferences-edit" role="tabpanel" aria-labelledby="preferences-tab-edit">
+                                <form method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    {% for field in preferences_form %}
+                                        {% if field.label != 'Authentication Status' %}
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label>{{ field.label_tag }}</label>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <p>{{ field }}</p>
+                                                    {% for error in field.errors %}
+                                                        <div class="alert alert-danger">
+                                                            <strong>{{ error|escape }}</strong>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <div class="row" style="display: none">
+                                                <div class="col-md-4">
+                                                    <label>{{ field.label_tag }}</label>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <p>{{ field }}</p>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <div class="submit-wrap">
+                                        <input type="submit" id="submit-preferences" name="submit-preferences" value="SUBMIT">
+                                    </div>
+                                </form>
+                                {% if preferences_form.errors %}
+                                    {% for error in preferences_form.non_field_errors %}
+                                        <div class="alert alert-danger">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                                </div>
                             </div>
                         {% endif %}
                     </div>

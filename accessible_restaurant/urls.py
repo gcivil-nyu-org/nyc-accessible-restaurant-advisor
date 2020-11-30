@@ -4,7 +4,7 @@ from . import views
 
 app_name = "accessible_restaurant"
 urlpatterns = [
-    path("", views.index_view, name="index"),
+    path("", views.index_view_personalized, name="index"),
     path("about/", views.about_view, name="about"),
     path(
         "accounts/login",
