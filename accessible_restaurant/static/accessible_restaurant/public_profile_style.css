@@ -1,6 +1,7 @@
 body {
     background-color: #eee;
 }
+
 .content {
     padding-top: 5%;
     padding-bottom: 5%;
@@ -275,9 +276,48 @@ body {
 .icon-star-full {
     color: #dd4b39;
 }
+
 .icon-star-half {
     color: #dd4b39;
 }
+
 .icon-star-null {
     color: #757575;
+}
+
+/* favorite restaurant list style */
+.card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.h-fixed {
+    width: 100%;
+    height: 93vh;
+}
+
+.phone-icon {
+    color: green;
+}
+
+.address-icon {
+    color: dodgerblue;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list-inline>li {
+    margin: -10px;
+}
+    .list-inline>li:first-child {
+
+    }
+
+.list-inline {
+    margin: 10px;
 }
