@@ -128,22 +128,6 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name="FAQ",
-            fields=[
-                (
-                    "id",
-                    models.AutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
-                ("question", models.CharField(max_length=128)),
-                ("answer", models.TextField()),
-            ],
-        ),
-        migrations.CreateModel(
             name="Restaurant",
             fields=[
                 (
@@ -334,36 +318,6 @@ class Migration(migrations.Migration):
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="rprofile",
-                        to=settings.AUTH_USER_MODEL,
-                    ),
-                ),
-            ],
-        ),
-        migrations.CreateModel(
-            name="Favorites",
-            fields=[
-                (
-                    "id",
-                    models.AutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
-                (
-                    "restaurant",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="favorite",
-                        to="accessible_restaurant.restaurant",
-                    ),
-                ),
-                (
-                    "user",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="favorite",
                         to=settings.AUTH_USER_MODEL,
                     ),
                 ),
