@@ -2,6 +2,16 @@
     padding-top: 8%;
 }
 
+.inlineTitle h1,
+.inlineTitle form {
+    display: inline;
+    vertical-align: middle;
+}
+
+.like-icon {
+    color: #dd4b39;
+}
+
 .phone-icon {
     color: green;
 }
