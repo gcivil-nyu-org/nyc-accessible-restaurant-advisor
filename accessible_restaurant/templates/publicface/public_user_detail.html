@@ -65,6 +65,48 @@
                             </div>
                         </div>
                     {% endfor %}
+
+                    <h3>Favorites</h3>
+                    {% for restaurant in user_favorite %}
+                        <a href = '{% url "accessible_restaurant:detail" restaurant.business_id %}'>
+                            <div class="box">
+                                <div class="row">
+                                    <div class="4u 12u$(medium)">
+                                        <span class="image fit"><img src="{{ restaurant.img_url }}" alt="" /></span>
+                                    </div>
+                                    <div class="8u 12u$(medium)">
+                                        <header>
+                                            <ul class="actions">
+                                                <li><h3><strong>{{ restaurant.name }}</strong></h3></li>
+                                                {% if restaurant.compliant %}
+                                                    <li><h3><i class="icon far fa-check-circle"></i>compliant</h3></li>
+                                                {% else %}
+                                                    <li><h3><i class="icon far fa-times-circle"></i>compliant</h3></li>
+                                                {% endif %}
+                                            </ul>
+                                            <ul class="icons">
+                                                {% for _ in restaurant.full %}
+                                                    <li><i class="icon fas fa-star"></i></li>
+                                                {% endfor %}
+                                                {% for _ in restaurant.half %}
+                                                    <li><i class="icon fas fa-star-half-alt"></i></li>
+                                                {% endfor %}
+                                                {% for _ in restaurant.null %}
+                                                    <li><i class="icon far fa-star"></i></li>
+                                                {% endfor %}
+                                            </ul>
+                                        </header>
+                                        <ul class="alt">
+                                            <li>Price: {{ restaurant.price }}</li>
+                                            <li>Category: {{ restaurant.category1 }} {{ restaurant.category2 }} {{ restaurant.category3 }}</li>
+                                            <li><i class="icon fas fa-phone-square-alt"></i>{{ restaurant.phone }}</li>
+                                            <li><i class="icon fas fa-map-marker-alt"></i>{{ restaurant.address }}, {{ restaurant.city }}, {{ restaurant.zip_code }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
                 </div>
             </div>
         </div>

@@ -9,6 +9,7 @@ from .models import (
     ApprovalPendingUsers,
     ApprovalPendingRestaurants,
     FAQ,
+    Favorites,
 )
 from import_export.admin import ImportExportModelAdmin
 
@@ -22,6 +23,7 @@ admin.site.register(Review)
 # admin.site.register(Restaurant)
 admin.site.register(ApprovalPendingUsers)
 admin.site.register(ApprovalPendingRestaurants)
+admin.site.register(Favorites)
 
 
 @admin.register(Restaurant)

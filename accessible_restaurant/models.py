@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser  # User
+
 from PIL import Image
 
 
@@ -186,3 +187,13 @@ class Comment(models.Model):
 class FAQ(models.Model):
     question = models.CharField(max_length=128)
     answer = models.TextField()
+
+
+class Favorites(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favorite")
+    restaurant = models.ForeignKey(
+        Restaurant, on_delete=models.CASCADE, related_name="favorite"
+    )
+
+    def __str__(self):
+        return f"{self.user} likes {self.restaurant}"
