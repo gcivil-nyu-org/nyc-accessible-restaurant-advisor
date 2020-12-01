@@ -349,11 +349,11 @@ def restaurant_profile_view(request):
                 return redirect("accessible_restaurant:restaurant_profile")
             else:
                 u_form = UserUpdateForm(instance=request.user)
-                p_form = UserProfileUpdateForm(instance=request.user.rprofile)
+                p_form = RestaurantProfileUpdateForm(instance=request.user.rprofile)
 
         elif "submit-info" in request.POST:
             u_form = UserUpdateForm(request.POST, instance=request.user)
-            p_form = UserProfileUpdateForm(
+            p_form = RestaurantProfileUpdateForm(
                 request.POST, request.FILES, instance=request.user.rprofile
             )
 
@@ -367,7 +367,7 @@ def restaurant_profile_view(request):
 
     else:
         u_form = UserUpdateForm(instance=request.user)
-        p_form = UserProfileUpdateForm(instance=request.user.rprofile)
+        p_form = RestaurantProfileUpdateForm(instance=request.user.rprofile)
         auth_form = RestaurantCertUpdateForm()
 
     action = request.GET.get("action")
