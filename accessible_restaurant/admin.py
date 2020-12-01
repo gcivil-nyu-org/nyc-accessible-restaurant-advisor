@@ -8,6 +8,7 @@ from .models import (
     Comment,
     ApprovalPendingUsers,
     ApprovalPendingRestaurants,
+    FAQ,
 )
 from import_export.admin import ImportExportModelAdmin
 
@@ -32,3 +33,8 @@ class ViewAdmin(ImportExportModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display = ("user", "review", "time", "text")
     search_fields = ("user", "review", "text")
+
+
+@admin.register(FAQ)
+class ViewAdmin(ImportExportModelAdmin):
+    pass

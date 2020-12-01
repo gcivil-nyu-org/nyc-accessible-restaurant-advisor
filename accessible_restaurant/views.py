@@ -43,6 +43,7 @@ from .models import (
     ApprovalPendingRestaurants,
     User_Profile,
     Restaurant_Profile,
+    FAQ,
 )
 from .utils import (
     get_restaurant_list,
@@ -724,4 +725,10 @@ def faq_view(request):
             except BadHeaderError:
                 return HttpResponse("Invalid header found.")
             return redirect("accessible_restaurant:faq")
-    return render(request, "faq/faq.html", {"form": form})
+
+    faq_content = FAQ.objects.all()
+    context = {
+        "faq_content": faq_content,
+        "form": form,
+    }
+    return render(request, "faq/faq_contact.html", context)

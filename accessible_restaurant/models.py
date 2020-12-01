@@ -181,3 +181,8 @@ class Comment(models.Model):
         return "Comment {} by {} ".format(
             self.review.review_context, self.user.username
         )
+
+
+class FAQ(models.Model):
+    question = models.CharField(max_length=128)
+    answer = models.TextField()
