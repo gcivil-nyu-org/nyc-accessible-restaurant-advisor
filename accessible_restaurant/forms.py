@@ -27,6 +27,45 @@ class UserSignUpForm(UserCreationForm):
             "password2",
         ]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["username"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Username"
+            }
+        )
+        self.fields["email"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Email Address",
+            }
+        )
+        self.fields["first_name"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "First Name",
+            }
+        )
+        self.fields["last_name"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Last Name",
+            }
+        )
+        self.fields["password1"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Password",
+            }
+        )
+        self.fields["password2"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "PasswordConfirmation",
+            }
+        )
+
     @transaction.atomic
     def save(self):
         user = super().save(commit=False)
@@ -42,6 +81,33 @@ class RestaurantSignUpForm(UserCreationForm):
     class Meta(UserCreationForm):
         model = User
         fields = ["username", "email", "password1", "password2"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["username"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Username"
+            }
+        )
+        self.fields["email"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Email Address",
+            }
+        )
+        self.fields["password1"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Password",
+            }
+        )
+        self.fields["password2"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "PasswordConfirmation",
+            }
+        )
 
     @transaction.atomic
     def save(self):
