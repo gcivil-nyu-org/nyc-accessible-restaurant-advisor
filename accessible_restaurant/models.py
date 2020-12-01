@@ -184,6 +184,11 @@ class Comment(models.Model):
         )
 
 
+class FAQ(models.Model):
+    question = models.CharField(max_length=128)
+    answer = models.TextField()
+
+
 class Favorites(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favorite")
     restaurant = models.ForeignKey(

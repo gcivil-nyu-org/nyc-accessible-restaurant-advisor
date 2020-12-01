@@ -281,4 +281,19 @@ class CommentForm(forms.ModelForm):
 class ContactForm(forms.Form):
     Email = forms.EmailField(required=True)
     Subject = forms.CharField(required=True)
-    Message = forms.CharField(widget=forms.Textarea, required=True)
+    Message = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                "placeholder": "Write your question or suggestions here!",
+                "class": "form-control",
+                "rows": "10",
+                "style": "resize:none;",
+            }
+        ),
+        required=True,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["Email"].widget.attrs.update({"class": "form-control"})
+        self.fields["Subject"].widget.attrs.update({"class": "form-control"})

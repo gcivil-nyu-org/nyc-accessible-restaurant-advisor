@@ -1308,9 +1308,9 @@ class TestFaqContact(TestCase):
         get_response = self.client.get(self.faq_url)
         post_response = self.client.post(self.faq_url)
         self.assertEqual(post_response.status_code, 200)
-        self.assertTemplateUsed(post_response, "faq/faq.html")
+        self.assertTemplateUsed(post_response, "faq/faq_contact.html")
         self.assertEqual(get_response.status_code, 200)
-        self.assertTemplateUsed(get_response, "faq/faq.html")
+        self.assertTemplateUsed(get_response, "faq/faq_contact.html")
 
 
 class TestComment(TestCase):
@@ -1487,5 +1487,143 @@ class TestComment(TestCase):
         self.assertEqual(response_add_comment_2.status_code, 302)
         self.assertEqual(
             response_add_comment_2.url, "/restaurants/detail/zuD-iB7hV_dnf_JzBk_DCQ"
+        )
+        self.client.logout()
+
+
+class TestReview(TestCase):
+    def setUp(self):
+        # set up two urls
+        self.user_profile_url = reverse("accessible_restaurant:user_profile")
+        self.restaurant_profile_url = reverse(
+            "accessible_restaurant:restaurant_profile"
+        )
+
+        self.client = Client()
+
+        # create two types of user accounts
+        self.normal_user = User.objects.create_user(
+            username="normal_user",
+            email="test@test.com",
+            password="123456test",
+            is_user=True,
+        )
+        self.restaurant_user = User.objects.create_user(
+            username="rest_user",
+            email="test@test.com",
+            password="123456test",
+            is_restaurant=True,
+        )
+
+        # create two restaurants
+        self.Restaurant1 = Restaurant.objects.create(
+            business_id="De_10VF2CrC2moWaPA81mg",
+            name="Just Salad",
+            img_url="https://s3-media1.fl.yelpcdn.com/bphoto/xX9UzyMKSao3qfsufH9SnA/o.jpg",
+            rating="3.5",
+            latitude="40.669429",
+            longitude="-73.979494",
+            address="252 7th Ave",
+            city="Brooklyn",
+            zip_code="11215",
+            phone="+18666733757",
+            compliant=True,
+            price="$$",
+            category1="Salad",
+            category2="Wraps",
+            category3="Vegetarian",
+        )
+
+        # set up test file path and form data
+        self.image_file = settings.MEDIA_ROOT + "/default.jpg"
+
+        return super().setUp()
+
+    def test_user_can_view_profile_correctly(self):
+        self.client.login(username="normal_user", password="123456test")
+        user_profile_response = self.client.get(
+            "%s?action=View+Profile" % self.user_profile_url
+        )
+        self.assertEqual(user_profile_response.status_code, 200)
+        self.assertTemplateUsed(user_profile_response, "profile/user_profile.html")
+        self.client.logout()
+
+    def test_user_can_edit_profile_correctly(self):
+        self.client.login(username="normal_user", password="123456test")
+        user_profile_response = self.client.get(
+            "%s?action=Edit+Profile" % self.user_profile_url
+        )
+        self.assertEqual(user_profile_response.status_code, 200)
+        self.assertTemplateUsed(user_profile_response, "profile/user_profile.html")
+
+        # User edit profile content
+        with open(self.image_file, "rb") as fp:
+            upload_user_form_data = {
+                "submit-info": True,
+                "username": "normal_user",
+                "first_name": "Normal",
+                "last_name": "User",
+                "photo": fp,
+                "phone": "1234567890",
+                "address": "6 Metrotech",
+                "city": "Brooklyn",
+                "zip_code": "11201",
+                "state": "NY",
+                "auth_status": "uncertified",
+            }
+            user_update_profile_response = self.client.post(
+                self.user_profile_url,
+                upload_user_form_data,
+                HTTP_ACCEPT="application/json",
+            )
+        self.assertEqual(user_update_profile_response.status_code, 302)
+        self.assertEqual(user_update_profile_response.url, "/accounts/user-profile/")
+        self.client.logout()
+
+    def test_restaurant_can_view_profile_correctly(self):
+        self.client.login(username="rest_user", password="123456test")
+        restaurant_profile_response = self.client.get(
+            "%s?action=View+Profile" % self.restaurant_profile_url
+        )
+        self.assertEqual(restaurant_profile_response.status_code, 200)
+        self.assertTemplateUsed(
+            restaurant_profile_response, "profile/restaurant_profile.html"
+        )
+        self.client.logout()
+
+    def test_restaurant_can_edit_profile_correctly(self):
+        self.client.login(username="rest_user", password="123456test")
+        restaurant_profile_response = self.client.get(
+            "%s?action=Edit+Profile" % self.restaurant_profile_url
+        )
+        self.assertEqual(restaurant_profile_response.status_code, 200)
+        self.assertTemplateUsed(
+            restaurant_profile_response, "profile/restaurant_profile.html"
+        )
+
+        # User edit profile content
+        with open(self.image_file, "rb") as fp:
+            upload_restaurant_form_data = {
+                "submit-info": True,
+                "username": "rest_user",
+                "first_name": "Rest",
+                "last_name": "User",
+                "restaurant_name": "Restaurant Test Name",
+                "photo": fp,
+                "phone": "1234567890",
+                "address": "6 Metrotech",
+                "city": "Brooklyn",
+                "zip_code": "11201",
+                "state": "NY",
+                "is_open": False,
+            }
+            restaurant_update_profile_response = self.client.post(
+                self.restaurant_profile_url,
+                upload_restaurant_form_data,
+                HTTP_ACCEPT="application/json",
+            )
+        self.assertEqual(restaurant_update_profile_response.status_code, 302)
+        self.assertEqual(
+            restaurant_update_profile_response.url, "/accounts/restaurant-profile/"
         )
         self.client.logout()

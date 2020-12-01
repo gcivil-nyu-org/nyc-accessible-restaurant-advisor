@@ -25,7 +25,29 @@
     </header>
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
-            <h1 class="display-4">{{ restaurant.name }}</h1>
+            <div class="inlineTitle">
+                <h1 class="display-4">{{ restaurant.name }}</h1>
+                &emsp;
+                {% if user.is_authenticated %}
+                    {% if user.is_user %}
+                        {% if is_favorite %}
+                            <form class="form-validate" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-light" name="delete_favorite_form">
+                                    <i class="like-icon fas fa-heart"></i> Liked
+                                </button>
+                            </form>
+                        {% else %}
+                            <form class="form-validate" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-light" name="save_favorite_form"><i class="like-icon far fa-heart"></i> Like</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <button type="button" class="btn btn-light"><i class="like-icon far fa-heart"></i> Like</button>
+                {% endif %}
+            </div>
             <h5>
                 <ul>
                     <li><i class="address-icon fas fa-map-marker-alt"></i>&emsp;{{ restaurant.address }}, {{ restaurant.city }}, {{ restaurant.zip_code }}</li>
@@ -56,25 +78,6 @@
                     {% else %}
                         <span class="badge badge-pill badge-secondary">Not Compliant <i class="fas fa-wheelchair" aria-hidden="true"></i></span>
                     {% endif %}
-
-                    {% if user.is_authenticated%}
-                        {% if user.is_user %}
-                            {% if is_favorite %}
-                                <form class="form-validate" method="POST">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-primary bg-green" name="delete_favorite_form">Liked</button>
-                                </form>
-                            {% else %}
-                                <form class="form-validate" method="POST">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-primary bg-red" name="save_favorite_form">+ Like</button>
-                                </form>
-                            {% endif %}
-                        {% endif %}
-                    {% else %}
-                        <button type="button" class="btn btn-primary bg-red">+ Like</button>
-                    {% endif %}
-
                 </ul>
 <!--                <ul>-->
 <!--                    &emsp;-->
