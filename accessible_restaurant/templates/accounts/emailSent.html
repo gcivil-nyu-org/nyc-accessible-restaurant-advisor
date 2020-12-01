@@ -9,25 +9,19 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/signup_style.css' %}">
     <script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
-<style>
-    .content {
-        padding-top: 5%;
-        padding-bottom: 5%;
-    }
-</style>
 {% endblock %}
 
 {% block title %} Email Validation Link Sent {% endblock %}
 
 {% block content %}
-<div class="container content">
-    <!-- Verification Entry Jumbotron -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="jumbotron text-center">
-                <h2>Email Validation Link Sent, Check your mailbox!</h2>
+    <div class="container content">
+        <!-- Verification Email Link Jumbotron -->
+        <div class="row h-100 align-items-center justify-content-center">
+            <div class="col-md-12">
+                <div class="jumbotron text-center">
+                    <h2>Email Validation Link Sent, Check your mailbox!</h2>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

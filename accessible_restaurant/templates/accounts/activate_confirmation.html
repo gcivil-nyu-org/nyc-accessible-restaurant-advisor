@@ -7,39 +7,21 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/signup_style.css' %}">
     <script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
 {% endblock %}
 
 {% block title %} Email Confirmation {% endblock %}
 
 {% block content %}
-<div class="container">
-  <!-- Instructions -->
-  <div class="row">
-    <div class="alert alert-success col-md-12" role="alert" id="notes">
-      <h4>NOTES</h4>
-      <ul>
-        <li>You will recieve a verification code on your mail after you registered. Enter that code below.</li>
-        <li>If somehow, you did not recieve the verification email then <a href="#">resend the verification email</a></li>
-      </ul>
-    </div>
-  </div>
-  <!-- Verification Entry Jumbotron -->
-  <div class="row">
-    <div class="col-md-12">
-      <div class="jumbotron text-center">
-        <h2>Enter the verification code</h2>
-        <form method="post" action="confirm" role="form">
-          <div class="col-md-9 col-sm-12">
-            <div class="form-group form-group-lg">
-              <input type="text" class="form-control col-md-6 col-sm-6 col-sm-offset-2" name="verifyCode" required>
-              <input class="btn btn-primary btn-lg col-md-2 col-sm-2" type="submit" value="Verify">
+    <div class="container content">
+        <!-- Verification Email Link Jumbotron -->
+        <div class="row h-100 align-items-center justify-content-center">
+            <div class="col-md-12">
+                <div class="jumbotron text-center">
+                    <h2>Activation Success! <a href="{% url 'accessible_restaurant:login' %}"> Click here to go to login page</a></h2>
+                </div>
             </div>
-          </div>
-        </form>
-      </div>
+        </div>
     </div>
-  </div>
-</div>
-    <p>Activation Success! <a href="{% url 'accessible_restaurant:login' %}"> Click here to go to login page</a></p>
 {% endblock %}
