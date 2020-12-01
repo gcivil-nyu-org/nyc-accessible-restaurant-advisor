@@ -1308,9 +1308,9 @@ class TestFaqContact(TestCase):
         get_response = self.client.get(self.faq_url)
         post_response = self.client.post(self.faq_url)
         self.assertEqual(post_response.status_code, 200)
-        self.assertTemplateUsed(post_response, "faq/faq.html")
+        self.assertTemplateUsed(post_response, "faq/faq_contact.html")
         self.assertEqual(get_response.status_code, 200)
-        self.assertTemplateUsed(get_response, "faq/faq.html")
+        self.assertTemplateUsed(get_response, "faq/faq_contact.html")
 
 
 class TestComment(TestCase):
