@@ -62,6 +62,7 @@ from .utils import (
     get_user_profile_favorite,
 )
 
+
 # Create your views here.
 def index_view(request):
     recommended_restaurants = Restaurant.objects.all()[:3]
@@ -76,25 +77,10 @@ def index_view_personalized(request):
             recommended_restaurants = get_user_preferences(user)[:3]
         else:
             recommended_restaurants = Restaurant.objects.all()[:3]
-    except:
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         recommended_restaurants = Restaurant.objects.all()[:3]
     context = {"recommended_restaurants": recommended_restaurants}
     return render(request, "home.html", context)
-    # except:
-    #     recommended_restaurants = Restaurant.objects.all()[:3]
-    #     context = {"recommended_restaurants": recommended_restaurants}
-    # return render(request, "home.html", context)
-    # try:
-    #     user1 = request.user
-    #     if user1.is_user():
-    #         recommended_restaurants = get_user_preferences(user1)[:3]
-    #         context = {"recommended_restaurants": recommended_restaurants}
-    #         return render(request, "home.html", context)
-    # except:
-    #     recommended_restaurants = Restaurant.objects.all()[:3]
-    #     # recommended_restaurants = get_user_preferences(user)[:3]
-    #     context = {"recommended_restaurants": recommended_restaurants}
-    #     return render(request, "home.html", context)
 
 
 def about_view(request):
@@ -470,17 +456,17 @@ def restaurant_list_view(request, page):
 
     filters_applied = False
     if (
-        price1
-        or price2
-        or price3
-        or price4
-        or chinese
-        or korean
-        or salad
-        or pizza
-        or sandwiches
-        or brunch
-        or coffee
+            price1
+            or price2
+            or price3
+            or price4
+            or chinese
+            or korean
+            or salad
+            or pizza
+            or sandwiches
+            or brunch
+            or coffee
     ):
         filters_applied = True
 
@@ -648,8 +634,8 @@ def restaurant_detail_view(request, business_id):
         # if user likes the favorite
         if request.user.is_authenticated:
             isFavorite = (
-                len(Favorites.objects.filter(user=request.user, restaurant=restaurant))
-                > 0
+                    len(Favorites.objects.filter(user=request.user, restaurant=restaurant))
+                    > 0
             )
         else:
             isFavorite = False
@@ -735,8 +721,8 @@ def add_comment_view(request, business_id, review_id):
         # print(review.restaurant.user)
         if user.is_restaurant:
             if (
-                review.restaurant.user is None
-                or request.user.id != review.restaurant.user.id
+                    review.restaurant.user is None
+                    or request.user.id != review.restaurant.user.id
             ):
                 messages.warning(
                     request,
