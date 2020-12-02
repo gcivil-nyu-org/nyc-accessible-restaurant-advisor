@@ -21,6 +21,8 @@ from django.utils.safestring import mark_safe
 
 
 class UserSignUpForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
     class Meta(UserCreationForm):
         model = User
         fields = [
@@ -72,10 +74,14 @@ class UserSignUpForm(UserCreationForm):
         )
 
     @transaction.atomic
-    def save(self):
-        user = super().save(commit=False)
+    def save(self, commit=True):
+        user = super(UserSignUpForm, self).save(commit=False)
         user.is_user = True
-        user.save()
+        user.first_name = self.cleaned_data["first_name"]
+        user.last_name = self.cleaned_data["last_name"]
+        user.email = self.cleaned_data["email"]
+        if commit:
+            user.save()
 
         # TODO: create a user_profile for newly registered user
 
@@ -360,6 +366,7 @@ class ReviewPostForm(forms.ModelForm):
             "accessible_restroom_rating",
             "accessible_path_rating",
             "review_context",
+            # "images",
         ]
         labels = {
             "review_context": "Review",
