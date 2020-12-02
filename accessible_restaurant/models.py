@@ -30,7 +30,7 @@ class User_Profile(models.Model):
                 params={"value": value},
             )
 
-    phone = models.PositiveSmallIntegerField(
+    phone = models.BigIntegerField(
         blank=True, validators=[validate_phone], default=1234567889
     )  # Updated
 
