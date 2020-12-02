@@ -26,6 +26,7 @@
         <!-- Registration Form -->
         <div class="col-md-7 col-lg-6 ml-auto">
             <form method="POST">
+                {% csrf_token %}
                 <div class="row">
                     <!-- Username -->
                     <div class="input-group col-lg-12 mb-4">
@@ -37,6 +38,16 @@
 <!--                        <input id="username" type="text" name="username" placeholder="Username" class="form-control bg-white border-left-0 border-md">-->
                         {{ form.username }}
                     </div>
+                    {% for error in form.username.errors %}
+                        <div class="col-lg-12">
+                            <div class="alert alert-danger alert-dismissible fade show">
+                                <strong>{{ error|escape }}</strong>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
 
                     <!-- Email Address -->
                     <div class="input-group col-lg-12 mb-4">
@@ -48,6 +59,26 @@
 <!--                        <input id="email" type="email" name="email" placeholder="Email Address" class="form-control bg-white border-left-0 border-md">-->
                         {{ form.email }}
                     </div>
+                    {% for error in form.email.errors %}
+                        <div class="col-lg-12">
+                            <div class="alert alert-danger alert-dismissible fade show">
+                                <strong>{{ error|escape }}</strong>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% if error_message %}
+                        <div class="col-lg-12">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>{{ error_message }}</strong>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+                    {% endif %}
 
                     <!-- Password -->
                     <div class="input-group col-lg-12 mb-4">
@@ -59,6 +90,16 @@
 <!--                        <input id="password" type="password" name="password" placeholder="Password" class="form-control bg-white border-left-0 border-md">-->
                         {{ form.password1 }}
                     </div>
+                    {% for error in form.password1.errors %}
+                        <div class="col-lg-12">
+                            <div class="alert alert-danger alert-dismissible fade show">
+                                <strong>{{ error|escape }}</strong>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
 
                     <!-- Password Confirmation -->
                     <div class="input-group col-lg-12 mb-4">
@@ -70,6 +111,16 @@
 <!--                        <input id="passwordConfirmation" type="text" name="passwordConfirmation" placeholder="Confirm Password" class="form-control bg-white border-left-0 border-md">-->
                         {{ form.password2 }}
                     </div>
+                    {% for error in form.password2.errors %}
+                        <div class="col-lg-12">
+                            <div class="alert alert-danger alert-dismissible fade show">
+                                <strong>{{ error|escape }}</strong>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
 
                     <!-- Submit Button -->
                     <div class="form-group col-lg-12 mx-auto mb-0">

@@ -278,7 +278,7 @@ class UserSignUpTest(TestCase):
     def test_can_view_page_correctly(self):
         response = self.client.get(self.usersignup_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/userRegister.html")
+        self.assertTemplateUsed(response, "accounts/userSignup.html")
 
     def test_can_register_user(self):
         response = self.client.post(self.usersignup_url, self.user, format="text/html")
@@ -300,7 +300,7 @@ class RestaurantSignUpTest(TestCase):
     def test_can_view_page_correctly(self):
         response = self.client.get(self.restaurantsignup_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/restaurantRegister.html")
+        self.assertTemplateUsed(response, "accounts/restaurantSignup.html")
 
     def test_can_register_user(self):
         response = self.client.post(
@@ -361,7 +361,7 @@ class TestViews(TestCase):
     def test_signup_view_GET(self):
         response = self.client.get(self.signup_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/register.html")
+        self.assertTemplateUsed(response, "accounts/signup.html")
 
     def test_email_sent_view_GET(self):
         response = self.client.get(self.emailsent_url)

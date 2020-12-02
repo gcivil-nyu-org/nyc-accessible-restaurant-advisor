@@ -1,5 +1,10 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
+from django.contrib.auth.forms import (
+    UserCreationForm,
+    AuthenticationForm,
+    PasswordResetForm,
+    SetPasswordForm,
+)
 from django.db import transaction
 
 from accessible_restaurant.models import (
@@ -32,7 +37,7 @@ class UserSignUpForm(UserCreationForm):
         self.fields["username"].widget.attrs.update(
             {
                 "class": "form-control bg-white border-left-0 border-md",
-                "placeholder": "Username"
+                "placeholder": "Username",
             }
         )
         self.fields["email"].widget.attrs.update(
@@ -87,7 +92,7 @@ class RestaurantSignUpForm(UserCreationForm):
         self.fields["username"].widget.attrs.update(
             {
                 "class": "form-control bg-white border-left-0 border-md",
-                "placeholder": "Username"
+                "placeholder": "Username",
             }
         )
         self.fields["email"].widget.attrs.update(
@@ -126,7 +131,7 @@ class UserLoginForm(AuthenticationForm):
         self.fields["username"].widget.attrs.update(
             {
                 "class": "form-control bg-white border-left-0 border-md",
-                "placeholder": "Username"
+                "placeholder": "Username",
             }
         )
         self.fields["password"].widget.attrs.update(
@@ -143,7 +148,7 @@ class MyPasswordResetForm(PasswordResetForm):
         self.fields["email"].widget.attrs.update(
             {
                 "class": "form-control bg-white border-left-0 border-md",
-                "placeholder": "Email Address"
+                "placeholder": "Email Address",
             }
         )
 
@@ -154,13 +159,13 @@ class MySetPasswordForm(SetPasswordForm):
         self.fields["new_password1"].widget.attrs.update(
             {
                 "class": "form-control bg-white border-left-0 border-md",
-                "placeholder": "New Password"
+                "placeholder": "New Password",
             }
         )
         self.fields["new_password2"].widget.attrs.update(
             {
                 "class": "form-control bg-white border-left-0 border-md",
-                "placeholder": "New Password Confirmation"
+                "placeholder": "New Password Confirmation",
             }
         )
 
