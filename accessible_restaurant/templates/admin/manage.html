@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "baseheader.html" %}
 {% load crispy_forms_tags %}
 {% block staticlink %}
     {% load static %}
@@ -15,7 +15,7 @@
 
 {% block content %}
     <section id="tabs" class="project-tab">
-        <div class="container">
+        <div class="container content">
             <div class="row">
                 <div class="col-md-12">
                     {% if messages %}
