@@ -10,6 +10,7 @@ from django.db import transaction
 from accessible_restaurant.models import (
     User,
     User_Profile,
+    User_Preferences,
     Restaurant_Profile,
     Review,
     ApprovalPendingUsers,
@@ -189,12 +190,40 @@ class UserProfileUpdateForm(forms.ModelForm):
             "photo",
             "phone",
             "address",
+            "borough",
             "city",
             "zip_code",
             "state",
             "auth_status",
         ]
         labels = {"zip_code": "Zip Code", "auth_status": "Authentication Status"}
+
+
+class UserPreferencesForm(forms.ModelForm):
+    class Meta:
+        model = User_Preferences
+
+        fields = [
+            "dining_pref1",
+            "dining_pref2",
+            "dining_pref3",
+            "budget_pref",
+            "location_pref",
+            "dietary_pref",
+            "cuisine_pref1",
+            "cuisine_pref2",
+        ]
+
+        labels = {
+            "dining_pref1": "When do you enjoy dining out? Select up to three options.",
+            "dining_pref2": "",
+            "dining_pref3": "",
+            "budget_pref": "What is your preferred budget for dining out?",
+            "location_pref": "Where do you prefer to dine out?",
+            "dietary_pref": "Do you have any dietary preferences or restrictions?",
+            "cuisine_pref1": "What cuisines do you enjoy? Select up to two options.",
+            "cuisine_pref2": "",
+        }
 
 
 class UserCertUpdateForm(forms.ModelForm):
