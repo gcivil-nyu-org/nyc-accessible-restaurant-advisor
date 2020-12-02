@@ -77,7 +77,7 @@ def logout_view(request):
 
 def signup_view(request):
     if request.method == "GET":
-        return render(request, "accounts/register.html")
+        return render(request, "accounts/signup.html")
 
 
 def emailsent_view(request):
@@ -102,7 +102,7 @@ def activate_account(request, uidb64, token):
 class UserSignUpView(CreateView):
     model = User
     form_class = UserSignUpForm
-    template_name = "accounts/userRegister.html"
+    template_name = "accounts/userSignup.html"
 
     def get_context_data(self, **kwargs):
         kwargs["user_type"] = "user"
@@ -144,7 +144,7 @@ class UserSignUpView(CreateView):
 class RestaurantSignUpView(CreateView):
     model = User
     form_class = RestaurantSignUpForm
-    template_name = "accounts/restaurantRegister.html"
+    template_name = "accounts/restaurantSignup.html"
 
     def get_context_data(self, **kwargs):
         kwargs["user_type"] = "restaurant"

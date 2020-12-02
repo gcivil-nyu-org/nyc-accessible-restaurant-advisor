@@ -11,17 +11,24 @@
     <script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
 {% endblock %}
 
-{% block title %} Email Validation Link Sent {% endblock %}
+{% block title %} Registration {% endblock %}
 
 {% block content %}
-    <div class="container content">
-        <!-- Verification Email Link Jumbotron -->
-        <div class="row h-100 align-items-center justify-content-center">
-            <div class="col-md-12">
-                <div class="jumbotron text-center">
-                    <h2>Email Validation Link Sent, Check your mailbox!</h2>
-                </div>
-            </div>
+<div class="container content">
+    <div class="row h-100 align-items-center justify-content-center">
+        <!-- Logo and Title -->
+        <div class="col-md-5 pr-lg-5 mb-5 mb-md-0">
+            <img src="{% static 'accessible_restaurant/images/logo.png' %}" alt="" class="img-fluid mb-3 d-none d-md-block">
+            <h1>Create an Account</h1>
+            <p class="font-italic text-muted mb-0">As a user, Write Review/Leave Feedback</p>
+            <p class="font-italic text-muted mb-0">As a restaurant owner, Post info/Connect with customer</p>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="col-md-7 col-lg-6 ml-auto">
+            <a class="btn btn-yellow btn-lg text-uppercase" href="{% url 'accessible_restaurant:user_signup' %}">Register as a User</a>
+            <a class="btn btn-yellow btn-lg text-uppercase" href="{% url 'accessible_restaurant:restaurant_signup' %}">Register as a Restaurant</a>
         </div>
     </div>
+</div>
 {% endblock %}

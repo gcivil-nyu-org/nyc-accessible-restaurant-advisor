@@ -1,0 +1,72 @@
+html,
+body {
+  height: 100%
+}
+
+.container {
+    height: 100%;
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+}
+
+.content {
+    padding-top: 5%;
+    padding-bottom: 5%;
+}
+
+.border-md {
+    border-width: 2px;
+}
+
+.btn-facebook {
+    background: #405D9D;
+    border: none;
+}
+
+.btn-facebook:hover, .btn-facebook:focus {
+    background: #314879;
+}
+
+.btn-google {
+    background: #EA4335;
+    border: none;
+}
+
+.btn-google:hover, .btn-google:focus {
+    background: #cc3300;
+}
+
+/*body {*/
+/*    min-height: 100vh;*/
+/*}*/
+
+.form-control:not(select) {
+    padding: 0.5rem 0.5rem;
+}
+
+select.form-control {
+    height: 52px;
+    padding-left: 0.5rem;
+}
+
+.form-control::placeholder {
+    color: #ccc;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+.form-control:focus {
+    box-shadow: none;
+}
+
+.btn-yellow {
+  color: #fff;
+  background-color: #fed136;
+  border-color: #fed136;
+}
+
+.btn-yellow:hover {
+  color: #fff;
+  background-color: #fec810;
+  border-color: #fec503;
+}

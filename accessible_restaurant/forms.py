@@ -1,5 +1,10 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import (
+    UserCreationForm,
+    AuthenticationForm,
+    PasswordResetForm,
+    SetPasswordForm,
+)
 from django.db import transaction
 
 from accessible_restaurant.models import (
@@ -27,6 +32,45 @@ class UserSignUpForm(UserCreationForm):
             "password2",
         ]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["username"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Username",
+            }
+        )
+        self.fields["email"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Email Address",
+            }
+        )
+        self.fields["first_name"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "First Name",
+            }
+        )
+        self.fields["last_name"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Last Name",
+            }
+        )
+        self.fields["password1"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Password",
+            }
+        )
+        self.fields["password2"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "PasswordConfirmation",
+            }
+        )
+
     @transaction.atomic
     def save(self):
         user = super().save(commit=False)
@@ -43,6 +87,33 @@ class RestaurantSignUpForm(UserCreationForm):
         model = User
         fields = ["username", "email", "password1", "password2"]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["username"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Username",
+            }
+        )
+        self.fields["email"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Email Address",
+            }
+        )
+        self.fields["password1"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Password",
+            }
+        )
+        self.fields["password2"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "PasswordConfirmation",
+            }
+        )
+
     @transaction.atomic
     def save(self):
         user = super().save(commit=False)
@@ -52,6 +123,51 @@ class RestaurantSignUpForm(UserCreationForm):
         # TODO: create a restaurant_profile for newly registered restaurant user
 
         return user
+
+
+class UserLoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super(UserLoginForm, self).__init__(*args, **kwargs)
+        self.fields["username"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Username",
+            }
+        )
+        self.fields["password"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Password",
+            }
+        )
+
+
+class MyPasswordResetForm(PasswordResetForm):
+    def __init__(self, *args, **kwargs):
+        super(MyPasswordResetForm, self).__init__(*args, **kwargs)
+        self.fields["email"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Email Address",
+            }
+        )
+
+
+class MySetPasswordForm(SetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        super(MySetPasswordForm, self).__init__(*args, **kwargs)
+        self.fields["new_password1"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "New Password",
+            }
+        )
+        self.fields["new_password2"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "New Password Confirmation",
+            }
+        )
 
 
 class UserUpdateForm(forms.ModelForm):
