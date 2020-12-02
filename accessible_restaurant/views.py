@@ -1,3 +1,6 @@
+from sqlite3 import Error
+
+from django.core.exceptions import FieldDoesNotExist
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.shortcuts import redirect
@@ -79,7 +82,7 @@ def index_view_personalized(request):
             recommended_restaurants = get_user_preferences(user)[:3]
         else:
             recommended_restaurants = Restaurant.objects.all()[:3]
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist, Error, FieldDoesNotExist):
         recommended_restaurants = Restaurant.objects.all()[:3]
     context = {"recommended_restaurants": recommended_restaurants}
     return render(request, "home.html", context)
