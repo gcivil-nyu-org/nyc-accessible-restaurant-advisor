@@ -456,17 +456,17 @@ def restaurant_list_view(request, page):
 
     filters_applied = False
     if (
-            price1
-            or price2
-            or price3
-            or price4
-            or chinese
-            or korean
-            or salad
-            or pizza
-            or sandwiches
-            or brunch
-            or coffee
+        price1
+        or price2
+        or price3
+        or price4
+        or chinese
+        or korean
+        or salad
+        or pizza
+        or sandwiches
+        or brunch
+        or coffee
     ):
         filters_applied = True
 
@@ -634,8 +634,8 @@ def restaurant_detail_view(request, business_id):
         # if user likes the favorite
         if request.user.is_authenticated:
             isFavorite = (
-                    len(Favorites.objects.filter(user=request.user, restaurant=restaurant))
-                    > 0
+                len(Favorites.objects.filter(user=request.user, restaurant=restaurant))
+                > 0
             )
         else:
             isFavorite = False
@@ -721,8 +721,8 @@ def add_comment_view(request, business_id, review_id):
         # print(review.restaurant.user)
         if user.is_restaurant:
             if (
-                    review.restaurant.user is None
-                    or request.user.id != review.restaurant.user.id
+                review.restaurant.user is None
+                or request.user.id != review.restaurant.user.id
             ):
                 messages.warning(
                     request,

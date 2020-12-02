@@ -118,11 +118,11 @@ class TestForms(TestCase):
         form = UserProfileUpdateForm(
             data={
                 "photo": "photo",
-                # "phone": "1234567889",
+                "phone": 1234567889,
                 "address": "123 New York",
                 "borough": "Brooklyn",
                 "city": "New York",
-                # "zip_code": "11220",
+                "zip_code": 11220,
                 "state": "New York",
                 "auth_status": "uncertified",
             }

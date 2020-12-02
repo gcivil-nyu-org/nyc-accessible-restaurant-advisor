@@ -31,7 +31,7 @@ class User_Profile(models.Model):
             )
 
     phone = models.PositiveSmallIntegerField(
-        blank=True, validators=[validate_phone], default="0000000000"
+        blank=True, validators=[validate_phone], default=1234567889
     )  # Updated
 
     address = models.CharField(max_length=128, blank=True)
@@ -57,7 +57,7 @@ class User_Profile(models.Model):
             )
 
     zip_code = models.PositiveSmallIntegerField(
-        blank=True, validators=[validate_zip], default="00000"
+        blank=True, validators=[validate_zip], default=12345
     )  # Updated
 
     STATE_CHOICES = [
