@@ -278,7 +278,7 @@ class UserSignUpTest(TestCase):
     def test_can_view_page_correctly(self):
         response = self.client.get(self.usersignup_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/userRegister.html")
+        self.assertTemplateUsed(response, "accounts/userSignup.html")
 
     def test_can_register_user(self):
         response = self.client.post(self.usersignup_url, self.user, format="text/html")
@@ -300,7 +300,7 @@ class RestaurantSignUpTest(TestCase):
     def test_can_view_page_correctly(self):
         response = self.client.get(self.restaurantsignup_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/restaurantRegister.html")
+        self.assertTemplateUsed(response, "accounts/restaurantSignup.html")
 
     def test_can_register_user(self):
         response = self.client.post(
@@ -361,7 +361,7 @@ class TestViews(TestCase):
     def test_signup_view_GET(self):
         response = self.client.get(self.signup_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/register.html")
+        self.assertTemplateUsed(response, "accounts/signup.html")
 
     def test_email_sent_view_GET(self):
         response = self.client.get(self.emailsent_url)
@@ -474,7 +474,7 @@ class TestViews(TestCase):
         )
         response = self.client.get(self.review_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "review/write_review.html")
+        self.assertTemplateUsed(response, "review/writeReview.html")
 
     # def test_review_form_valid_view_GET(self):
     #     self.user = User.objects.create_user(
@@ -1020,7 +1020,7 @@ class TestManageCertificate(TestCase):
             category3="Juice Bars & Smoothies",
         )
 
-        # set up test file path and form data
+        # set up test file path
         self.certificate_file = settings.MEDIA_ROOT + "/documents/pdfs/test.pdf"
 
         return super().setUp()
@@ -1308,9 +1308,9 @@ class TestFaqContact(TestCase):
         get_response = self.client.get(self.faq_url)
         post_response = self.client.post(self.faq_url)
         self.assertEqual(post_response.status_code, 200)
-        self.assertTemplateUsed(post_response, "faq/faq.html")
+        self.assertTemplateUsed(post_response, "faq/faq_contact.html")
         self.assertEqual(get_response.status_code, 200)
-        self.assertTemplateUsed(get_response, "faq/faq.html")
+        self.assertTemplateUsed(get_response, "faq/faq_contact.html")
 
 
 class TestComment(TestCase):
@@ -1415,7 +1415,7 @@ class TestComment(TestCase):
         )
         response_view_add_review = self.client.get(self.review_add_url)
         self.assertEqual(response_view_add_review.status_code, 200)
-        self.assertTemplateUsed(response_view_add_review, "review/write_review.html")
+        self.assertTemplateUsed(response_view_add_review, "review/writeReview.html")
 
         # create a test review form
         form_review_data = {
@@ -1489,3 +1489,171 @@ class TestComment(TestCase):
             response_add_comment_2.url, "/restaurants/detail/zuD-iB7hV_dnf_JzBk_DCQ"
         )
         self.client.logout()
+
+
+class TestReview(TestCase):
+    def setUp(self):
+        # set up two urls
+        self.user_profile_url = reverse("accessible_restaurant:user_profile")
+        self.restaurant_profile_url = reverse(
+            "accessible_restaurant:restaurant_profile"
+        )
+
+        self.client = Client()
+
+        # create two types of user accounts
+        self.normal_user = User.objects.create_user(
+            username="normal_user",
+            email="test@test.com",
+            password="123456test",
+            is_user=True,
+        )
+        self.restaurant_user = User.objects.create_user(
+            username="rest_user",
+            email="test@test.com",
+            password="123456test",
+            is_restaurant=True,
+        )
+
+        # set up test image path
+        self.image_file = settings.MEDIA_ROOT + "/default.jpg"
+
+        return super().setUp()
+
+    def test_user_can_view_profile_correctly(self):
+        self.client.login(username="normal_user", password="123456test")
+        user_profile_response = self.client.get(
+            "%s?action=View+Profile" % self.user_profile_url
+        )
+        self.assertEqual(user_profile_response.status_code, 200)
+        self.assertTemplateUsed(user_profile_response, "profile/user_profile.html")
+        self.client.logout()
+
+    def test_user_can_edit_profile_correctly(self):
+        self.client.login(username="normal_user", password="123456test")
+        user_profile_response = self.client.get(
+            "%s?action=Edit+Profile" % self.user_profile_url
+        )
+        self.assertEqual(user_profile_response.status_code, 200)
+        self.assertTemplateUsed(user_profile_response, "profile/user_profile.html")
+
+        # User edit profile content
+        with open(self.image_file, "rb") as fp:
+            upload_user_form_data = {
+                "submit-info": True,
+                "username": "normal_user",
+                "first_name": "Normal",
+                "last_name": "User",
+                "photo": fp,
+                "phone": "1234567890",
+                "address": "6 Metrotech",
+                "city": "Brooklyn",
+                "zip_code": "11201",
+                "state": "NY",
+                "auth_status": "uncertified",
+            }
+            user_update_profile_response = self.client.post(
+                self.user_profile_url,
+                upload_user_form_data,
+                HTTP_ACCEPT="application/json",
+            )
+        self.assertEqual(user_update_profile_response.status_code, 302)
+        self.assertEqual(user_update_profile_response.url, "/accounts/user-profile/")
+        self.client.logout()
+
+    def test_restaurant_can_view_profile_correctly(self):
+        self.client.login(username="rest_user", password="123456test")
+        restaurant_profile_response = self.client.get(
+            "%s?action=View+Profile" % self.restaurant_profile_url
+        )
+        self.assertEqual(restaurant_profile_response.status_code, 200)
+        self.assertTemplateUsed(
+            restaurant_profile_response, "profile/restaurant_profile.html"
+        )
+        self.client.logout()
+
+    def test_restaurant_can_edit_profile_correctly(self):
+        self.client.login(username="rest_user", password="123456test")
+        restaurant_profile_response = self.client.get(
+            "%s?action=Edit+Profile" % self.restaurant_profile_url
+        )
+        self.assertEqual(restaurant_profile_response.status_code, 200)
+        self.assertTemplateUsed(
+            restaurant_profile_response, "profile/restaurant_profile.html"
+        )
+
+        # User edit profile content
+        with open(self.image_file, "rb") as fp:
+            upload_restaurant_form_data = {
+                "submit-info": True,
+                "username": "rest_user",
+                "first_name": "Rest",
+                "last_name": "User",
+                "restaurant_name": "Restaurant Test Name",
+                "photo": fp,
+                "phone": "1234567890",
+                "address": "6 Metrotech",
+                "city": "Brooklyn",
+                "zip_code": "11201",
+                "state": "NY",
+                "is_open": False,
+            }
+            restaurant_update_profile_response = self.client.post(
+                self.restaurant_profile_url,
+                upload_restaurant_form_data,
+                HTTP_ACCEPT="application/json",
+            )
+        self.assertEqual(restaurant_update_profile_response.status_code, 302)
+        self.assertEqual(
+            restaurant_update_profile_response.url, "/accounts/restaurant-profile/"
+        )
+        self.client.logout()
+
+
+class TestLogin(TestCase):
+    def setUp(self):
+        self.login_url = reverse("accessible_restaurant:login")
+        self.client = Client()
+
+        self.user = {
+            "username": "normal_user",
+            "password": "123456test",
+        }
+
+        User.objects.create_user(
+            username="normal_user",
+            email="test@test.com",
+            password="123456test",
+            is_user=True,
+        )
+
+        return super().setUp()
+
+    def test_can_login_successfully(self):
+        login_response = self.client.post(self.login_url, self.user, format="text/html")
+        self.assertEqual(login_response.status_code, 302)
+        self.assertEqual(login_response.url, "/")
+
+
+class TestResetPassword(TestCase):
+    def setUp(self):
+        self.reset_url = reverse("accessible_restaurant:password-reset")
+        self.client = Client()
+
+        self.user = {
+            "email": "test@test.com",
+        }
+
+        User.objects.create_user(
+            username="normal_user",
+            email="test@test.com",
+            password="123456test",
+            is_user=True,
+        )
+
+        return super().setUp()
+
+    def test_can_login_successfully(self):
+        reset_response = self.client.post(self.reset_url, self.user, format="text/html")
+        self.assertEqual(reset_response.status_code, 302)
+        self.assertEqual(reset_response.url, "/accounts/password-reset/done/")

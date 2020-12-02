@@ -9,6 +9,8 @@ from .models import (
     Comment,
     ApprovalPendingUsers,
     ApprovalPendingRestaurants,
+    FAQ,
+    Favorites,
 )
 from import_export.admin import ImportExportModelAdmin
 
@@ -21,6 +23,7 @@ admin.site.register(Review)
 # admin.site.register(Restaurant)
 admin.site.register(ApprovalPendingUsers)
 admin.site.register(ApprovalPendingRestaurants)
+admin.site.register(Favorites)
 
 
 @admin.register(Restaurant)
@@ -32,3 +35,8 @@ class ViewAdmin(ImportExportModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display = ("user", "review", "time", "text")
     search_fields = ("user", "review", "text")
+
+
+@admin.register(FAQ)
+class ViewAdmin(ImportExportModelAdmin):
+    pass
