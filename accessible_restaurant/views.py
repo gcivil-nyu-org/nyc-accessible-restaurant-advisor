@@ -74,17 +74,18 @@ def index_view(request):
 
 
 def index_view_personalized(request):
-    if request.user.is_user:
-        user = request.user
-        recommended_restaurants = get_user_preferences(user)[:3]
-    else:
+    try:
+        if request.user.is_user:
+            user = request.user
+            recommended_restaurants = get_user_preferences(user)[:3]
+        else:
+            recommended_restaurants = Restaurant.objects.all()[:3]
+    except (
+        TypeError,
+        ValueError,
+        AttributeError,
+    ):
         recommended_restaurants = Restaurant.objects.all()[:3]
-    # except (
-    #     TypeError,
-    #     ValueError,
-    #     # AttributeError,
-    # ):
-    #     recommended_restaurants = Restaurant.objects.all()[2:5]
     context = {"recommended_restaurants": recommended_restaurants}
     return render(request, "home.html", context)
 
