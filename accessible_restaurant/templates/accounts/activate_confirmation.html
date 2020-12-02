@@ -1,5 +1,4 @@
 {% extends "baseheader.html" %}
-{% load crispy_forms_tags %}
 
 {% block staticlink %}
     {% load static %}
@@ -11,7 +10,7 @@
     <script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
 {% endblock %}
 
-{% block title %} Email Confirmation {% endblock %}
+{% block title %} Email Activate Confirmation {% endblock %}
 
 {% block content %}
     <div class="container content">
@@ -19,7 +18,7 @@
         <div class="row h-100 align-items-center justify-content-center">
             <div class="col-md-12">
                 <div class="jumbotron text-center">
-                    <h2>Activation Success! <a href="{% url 'accessible_restaurant:login' %}"> Click here to go to login page</a></h2>
+                    <h2>Activation Success! <a href="{% url 'accessible_restaurant:login' %}">Log In Here</a></h2>
                 </div>
             </div>
         </div>

@@ -1020,7 +1020,7 @@ class TestManageCertificate(TestCase):
             category3="Juice Bars & Smoothies",
         )
 
-        # set up test file path and form data
+        # set up test file path
         self.certificate_file = settings.MEDIA_ROOT + "/documents/pdfs/test.pdf"
 
         return super().setUp()
@@ -1515,26 +1515,7 @@ class TestReview(TestCase):
             is_restaurant=True,
         )
 
-        # create two restaurants
-        self.Restaurant1 = Restaurant.objects.create(
-            business_id="De_10VF2CrC2moWaPA81mg",
-            name="Just Salad",
-            img_url="https://s3-media1.fl.yelpcdn.com/bphoto/xX9UzyMKSao3qfsufH9SnA/o.jpg",
-            rating="3.5",
-            latitude="40.669429",
-            longitude="-73.979494",
-            address="252 7th Ave",
-            city="Brooklyn",
-            zip_code="11215",
-            phone="+18666733757",
-            compliant=True,
-            price="$$",
-            category1="Salad",
-            category2="Wraps",
-            category3="Vegetarian",
-        )
-
-        # set up test file path and form data
+        # set up test image path
         self.image_file = settings.MEDIA_ROOT + "/default.jpg"
 
         return super().setUp()

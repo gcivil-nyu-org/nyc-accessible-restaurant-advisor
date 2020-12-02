@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
 from django.db import transaction
 
 from accessible_restaurant.models import (
@@ -133,6 +133,34 @@ class UserLoginForm(AuthenticationForm):
             {
                 "class": "form-control bg-white border-left-0 border-md",
                 "placeholder": "Password",
+            }
+        )
+
+
+class MyPasswordResetForm(PasswordResetForm):
+    def __init__(self, *args, **kwargs):
+        super(MyPasswordResetForm, self).__init__(*args, **kwargs)
+        self.fields["email"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Email Address"
+            }
+        )
+
+
+class MySetPasswordForm(SetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        super(MySetPasswordForm, self).__init__(*args, **kwargs)
+        self.fields["new_password1"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "New Password"
+            }
+        )
+        self.fields["new_password2"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "New Password Confirmation"
             }
         )
 
