@@ -1548,11 +1548,11 @@ class TestReview(TestCase):
                 "first_name": "Normal",
                 "last_name": "User",
                 "photo": fp,
-                # "phone": "1234567890",
+                "phone": "1234567890",
                 "address": "6 Metrotech",
                 "borough": "Brooklyn",
                 "city": "Brooklyn",
-                # "zip_code": "11201",
+                "zip_code": "11201",
                 "state": "New York",
                 "auth_status": "uncertified",
             }
