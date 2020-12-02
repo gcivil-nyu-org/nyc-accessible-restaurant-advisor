@@ -332,99 +332,105 @@ def get_user_preferences(user):
     if user_instance.is_user:
         user_zip_code = user_instance.uprofile.zip_code
         user_borough = user_instance.uprofile.borough
-    all_preferences = User_Preferences.objects.filter(user=user)
-    for preference in all_preferences:
-        user_dining1 = preference.dining_pref1
-        user_dining2 = preference.dining_pref2
-        user_dining3 = preference.dining_pref3
-        user_budget = preference.budget_pref
-        user_location = preference.location_pref
-        user_dietary = preference.dietary_pref
-        user_cuisine1 = preference.cuisine_pref1
-        user_cuisine2 = preference.cuisine_pref2
+        all_preferences = User_Preferences.objects.filter(user=user)
+        for preference in all_preferences:
+            user_dining1 = preference.dining_pref1
+            user_dining2 = preference.dining_pref2
+            user_dining3 = preference.dining_pref3
+            user_budget = preference.budget_pref
+            user_location = preference.location_pref
+            user_dietary = preference.dietary_pref
+            user_cuisine1 = preference.cuisine_pref1
+            user_cuisine2 = preference.cuisine_pref2
 
-    # Recommendation Process
+        # Recommendation Process
 
-    # 1. Limit possibilities to those with reviews above 20
-    restaurants = Restaurant.objects.all().filter(review_count__gt=20)
+        # 1. Limit possibilities to those with reviews above 20
+        restaurants = Restaurant.objects.all().filter(review_count__gt=20)
 
-    # 2. Limit possibilities to those with ratings at or above 4
-    restaurants = restaurants.filter(rating__gte=4)
+        # 2. Limit possibilities to those with ratings at or above 4
+        restaurants = restaurants.filter(rating__gte=4)
 
-    # 3. Rank each restaurant according to user preferences
-    ranked_restaurants = {}
-    for r in restaurants:
-        id = r.business_id
-        score = 0
-        main_category1 = r.main_category1
-        main_category2 = r.main_category2
-        main_category3 = r.main_category3
-        category1 = r.category1
-        category2 = r.category2
-        category3 = r.category3
-        price = r.price
-        borough = r.city
-        zip_code = r.zip_code
-        rating = r.rating
+        # 3. Rank each restaurant according to user preferences
+        ranked_restaurants = {}
+        for r in restaurants:
+            id = r.business_id
+            main_category1 = r.main_category1
+            main_category2 = r.main_category2
+            main_category3 = r.main_category3
+            category1 = r.category1
+            category2 = r.category2
+            category3 = r.category3
+            price = r.price
+            borough = r.city
+            zip_code = r.zip_code
+            rating = r.rating
 
-        dining_prefs = list(set([user_dining1, user_dining2, user_dining3]))
-        if main_category1 in dining_prefs:
-            score = score + 1
-        if main_category2 in dining_prefs:
-            score = score + 1
-        if main_category3 in dining_prefs:
-            score = score + 1
+            score = 0
 
-        if user_budget == price:
-            score = score + 1
+            all_options = [user_dining1, user_dining2, user_dining3]
+            dining_options = []
+            for d in all_options:
+                if d != "No Preference":
+                    dining_options.append(d)
 
-        if (user_location == "Near Home") and (user_zip_code == zip_code):
-            score = score + 1
-        elif (user_location == "Within My Borough") and (user_borough == borough):
-            score = score + 1
-        elif (user_location == "Outside My Borough") and (user_borough != borough):
-            score = score + 1
+            dining_prefs = list(set(dining_options))
+            if main_category1 in dining_prefs:
+                score = score + 1
+            if main_category2 in dining_prefs:
+                score = score + 1
+            if main_category3 in dining_prefs:
+                score = score + 1
 
-        if (
-            (user_dietary in category1)
-            or (user_dietary in category2)
-            or (user_dietary in category3)
-        ):
-            score = score + 1
+            if user_budget == price:
+                score = score + 1
 
-        if (
-            (user_cuisine1 in category1)
-            or (user_cuisine1 in category2)
-            or (user_cuisine1 in category3)
-        ):
-            score = score + 1
+            if (user_location == "Near Home") and (str(user_zip_code) == str(zip_code)):
+                score = score + 1
+            elif (user_location == "Within My Borough") and (user_borough == borough):
+                score = score + 1
+            elif (user_location == "Outside My Borough") and (user_borough != borough):
+                score = score + 1
 
-        if (
-            (user_cuisine2 in category1)
-            or (user_cuisine2 in category2)
-            or (user_cuisine2 in category3)
-        ):
-            score = score + 1
+            if (
+                (user_dietary in category1)
+                or (user_dietary in category2)
+                or (user_dietary in category3)
+            ):
+                score = score + 1
 
-        ranked_restaurants[id] = score
-        ranked_restaurants[id] = rating
+            if (
+                (user_cuisine1 in category1)
+                or (user_cuisine1 in category2)
+                or (user_cuisine1 in category3)
+            ):
+                score = score + 1
 
-    # Sort restaurants by highest score
-    ranked_restaurants_sorted = sorted(
-        ranked_restaurants.items(), key=lambda x: x[1], reverse=True
-    )
+            if (
+                (user_cuisine2 in category1)
+                or (user_cuisine2 in category2)
+                or (user_cuisine2 in category3)
+            ):
+                score = score + 1
 
-    # Get top three restaurants by id
-    id1 = ranked_restaurants_sorted[0][0]
-    id2 = ranked_restaurants_sorted[1][0]
-    id3 = ranked_restaurants_sorted[2][0]
+            ranked_restaurants[id] = score
 
-    recommended_restaurants = Restaurant.objects.all().filter(
-        Q(business_id__contains=id1)
-        | Q(business_id__contains=id2)
-        | Q(business_id__contains=id3)
-    )
-    return recommended_restaurants
+        # Sort restaurants by highest score
+        ranked_restaurants_sorted = sorted(
+            ranked_restaurants.items(), key=lambda x: x[1], reverse=True
+        )
+
+        # Get top three restaurants by id
+        id1 = ranked_restaurants_sorted[0][0]
+        id2 = ranked_restaurants_sorted[1][0]
+        id3 = ranked_restaurants_sorted[2][0]
+
+        recommended_restaurants = Restaurant.objects.all().filter(
+            Q(business_id__contains=id1)
+            | Q(business_id__contains=id2)
+            | Q(business_id__contains=id3)
+        )
+        return recommended_restaurants
 
 
 def get_user_favorite(user):
