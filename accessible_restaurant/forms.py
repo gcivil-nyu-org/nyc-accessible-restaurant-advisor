@@ -14,8 +14,9 @@ from accessible_restaurant.models import (
 )
 from django.utils.safestring import mark_safe
 
+
 class UserSignUpForm(UserCreationForm):
-    email = forms.EmailField(required = True)
+    email = forms.EmailField(required=True)
 
     class Meta(UserCreationForm):
         model = User
@@ -27,10 +28,9 @@ class UserSignUpForm(UserCreationForm):
             "password1",
             "password2",
         ]
-        
 
     @transaction.atomic
-    def save(self, commit = True):
+    def save(self, commit=True):
         user = super(UserSignUpForm, self).save(commit=False)
         user.is_user = True
         user.first_name = self.cleaned_data["first_name"]
@@ -202,7 +202,7 @@ class ReviewPostForm(forms.ModelForm):
             "accessible_restroom_rating",
             "accessible_path_rating",
             "review_context",
-            "images"
+            "images",
         ]
         widgets = {
             "rating": HorizontalRadioSelect(),
@@ -236,4 +236,3 @@ class ContactForm(forms.Form):
     Email = forms.EmailField(required=True)
     Subject = forms.CharField(required=True)
     Message = forms.CharField(widget=forms.Textarea, required=True)
-
