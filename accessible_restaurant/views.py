@@ -85,10 +85,7 @@ def index_view_personalized(request):
     except (
         TypeError,
         ValueError,
-        OverflowError,
-        User.DoesNotExist,
-        Error,
-        FieldDoesNotExist,
+        AttributeError,
     ):
         recommended_restaurants = Restaurant.objects.all()[:3]
     context = {"recommended_restaurants": recommended_restaurants}
