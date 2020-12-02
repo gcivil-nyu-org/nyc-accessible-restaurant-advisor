@@ -72,7 +72,9 @@ def index_view(request):
 
 def index_view_personalized(request):
     try:
-        if request.user.is_user:
+        if "AnonymousUser" == request.user:
+            recommended_restaurants = Restaurant.objects.all()[:3]
+        elif request.user.is_user:
             user = request.user
             recommended_restaurants = get_user_preferences(user)[:3]
         else:
