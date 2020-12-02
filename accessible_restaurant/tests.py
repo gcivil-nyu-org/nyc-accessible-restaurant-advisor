@@ -1608,3 +1608,52 @@ class TestReview(TestCase):
             restaurant_update_profile_response.url, "/accounts/restaurant-profile/"
         )
         self.client.logout()
+
+
+class TestLogin(TestCase):
+    def setUp(self):
+        self.login_url = reverse("accessible_restaurant:login")
+        self.client = Client()
+
+        self.user = {
+            "username": "normal_user",
+            "password": "123456test",
+        }
+
+        User.objects.create_user(
+            username="normal_user",
+            email="test@test.com",
+            password="123456test",
+            is_user=True,
+        )
+
+        return super().setUp()
+
+    def test_can_login_successfully(self):
+        login_response = self.client.post(self.login_url, self.user, format="text/html")
+        self.assertEqual(login_response.status_code, 302)
+        self.assertEqual(login_response.url, "/")
+
+
+class TestResetPassword(TestCase):
+    def setUp(self):
+        self.reset_url = reverse("accessible_restaurant:password-reset")
+        self.client = Client()
+
+        self.user = {
+            "email": "test@test.com",
+        }
+
+        User.objects.create_user(
+            username="normal_user",
+            email="test@test.com",
+            password="123456test",
+            is_user=True,
+        )
+
+        return super().setUp()
+
+    def test_can_login_successfully(self):
+        reset_response = self.client.post(self.reset_url, self.user, format="text/html")
+        self.assertEqual(reset_response.status_code, 302)
+        self.assertEqual(reset_response.url, "/accounts/password-reset/done/")
