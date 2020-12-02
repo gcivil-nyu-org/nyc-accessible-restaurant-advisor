@@ -4,7 +4,7 @@ from django.test import SimpleTestCase
 import accessible_restaurant
 import django
 from accessible_restaurant.views import (
-    index_view,
+    index_view_personalized,
     user_profile_view,
     emailsent_view,
     activate_account,
@@ -177,7 +177,7 @@ class TestUrls(SimpleTestCase):
     def test_index_url_is_resolved(self):
         url = reverse("accessible_restaurant:index")
         # print(resolve(url))
-        self.assertEquals(resolve(url).func, accessible_restaurant.views.index_view)
+        self.assertEquals(resolve(url).func, accessible_restaurant.views.index_view_personalized)
 
     def test_email_sent_url_is_resolved(self):
         url = reverse("accessible_restaurant:emailsent")
