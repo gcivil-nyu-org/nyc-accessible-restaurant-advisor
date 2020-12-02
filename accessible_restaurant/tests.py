@@ -118,11 +118,12 @@ class TestForms(TestCase):
         form = UserProfileUpdateForm(
             data={
                 "photo": "photo",
-                "phone": "1234567889",
+                "phone": 1234567889,
                 "address": "123 New York",
+                "borough": "Brooklyn",
                 "city": "New York",
-                "Zip Code": "11220",
-                "state": "NY",
+                "Zip Code": 11220,
+                "state": "New York",
                 "auth_status": "uncertified",
             }
         )
@@ -177,7 +178,9 @@ class TestUrls(SimpleTestCase):
     def test_index_url_is_resolved(self):
         url = reverse("accessible_restaurant:index")
         # print(resolve(url))
-        self.assertEquals(resolve(url).func, accessible_restaurant.views.index_view_personalized)
+        self.assertEquals(
+            resolve(url).func, accessible_restaurant.views.index_view_personalized
+        )
 
     def test_email_sent_url_is_resolved(self):
         url = reverse("accessible_restaurant:emailsent")
@@ -1545,11 +1548,12 @@ class TestReview(TestCase):
                 "first_name": "Normal",
                 "last_name": "User",
                 "photo": fp,
-                "phone": "1234567890",
+                "phone": 1234567890,
                 "address": "6 Metrotech",
+                "borough": "Brooklyn",
                 "city": "Brooklyn",
-                "zip_code": "11201",
-                "state": "NY",
+                "zip_code": 11201,
+                "state": "New York",
                 "auth_status": "uncertified",
             }
             user_update_profile_response = self.client.post(

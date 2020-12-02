@@ -1,6 +1,14 @@
 from django.conf import settings
 
-from .models import Restaurant, Review, User_Profile, User, Favorites, User_Preferences, Comment
+from .models import (
+    Restaurant,
+    Review,
+    User_Profile,
+    User,
+    Favorites,
+    User_Preferences,
+    Comment,
+)
 
 from django.db.models import Q
 from .models import Restaurant
@@ -205,7 +213,7 @@ def get_search_restaurant(keyword):
     words_list = context["words_list"]
 
     restaurants = Restaurant.objects.all()
-    word_results = Restaurant.objects.none()
+    results = Restaurant.objects.none()
 
     if len(words_list) > 0:
         for word in words_list:
@@ -215,11 +223,11 @@ def get_search_restaurant(keyword):
                 | Q(category2__icontains=word)
                 | Q(category3__icontains=word)
             )
-            word_results |= restaurants_word_filter
+            results |= restaurants_word_filter
 
         if len(codes_list) > 0:
             for zip_code in codes_list:
-                results = word_results.filter(zip_code__contains=zip_code)
+                results = results.filter(zip_code__contains=zip_code)
         return results
 
     else:
@@ -314,6 +322,7 @@ def get_user_reviews(user):
         review.comments_count = len(Comment.objects.filter(review=review.id))
         response.append(review.__dict__)
     return response
+
 
 def get_user_preferences(user):
     if not user:
