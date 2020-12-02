@@ -1,6 +1,7 @@
 from django.urls import include, path
 from django.contrib.auth import views as auth_views
 from . import views
+from .forms import UserLoginForm
 
 app_name = "accessible_restaurant"
 urlpatterns = [
@@ -8,7 +9,7 @@ urlpatterns = [
     path("about/", views.about_view, name="about"),
     path(
         "accounts/login",
-        auth_views.LoginView.as_view(template_name="accounts/signin.html"),
+        auth_views.LoginView.as_view(template_name="accounts/signin.html", authentication_form=UserLoginForm,),
         name="login",
     ),
     path(

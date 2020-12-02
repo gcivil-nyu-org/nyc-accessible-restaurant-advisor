@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.db import transaction
 
 from accessible_restaurant.models import (
@@ -118,6 +118,23 @@ class RestaurantSignUpForm(UserCreationForm):
         # TODO: create a restaurant_profile for newly registered restaurant user
 
         return user
+
+
+class UserLoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super(UserLoginForm, self).__init__(*args, **kwargs)
+        self.fields["username"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Username"
+            }
+        )
+        self.fields["password"].widget.attrs.update(
+            {
+                "class": "form-control bg-white border-left-0 border-md",
+                "placeholder": "Password",
+            }
+        )
 
 
 class UserUpdateForm(forms.ModelForm):
