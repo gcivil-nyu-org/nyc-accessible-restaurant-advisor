@@ -69,7 +69,7 @@ def index_view_personalized(request):
     if request.user.is_user:
         user = request.user
         recommended_restaurants = get_user_preferences(user)[:3]
-    elif request.user.is_restaurant:
+    else:
         recommended_restaurants = Restaurant.objects.all()[:3]
     context = {"recommended_restaurants": recommended_restaurants}
     return render(request, "home.html", context)
@@ -233,9 +233,11 @@ def user_profile_view(request):
             else:
                 u_form = UserUpdateForm(instance=request.user)
                 p_form = UserProfileUpdateForm(instance=request.user.uprofile)
-                preferences_form = UserPreferencesForm(instance=request.user.upreferences)
+                preferences_form = UserPreferencesForm(
+                    instance=request.user.upreferences
+                )
 
-        elif ("submit-info" in request.POST):
+        elif "submit-info" in request.POST:
             u_form = UserUpdateForm(request.POST, instance=request.user)
             p_form = UserProfileUpdateForm(
                 request.POST, request.FILES, instance=request.user.uprofile
@@ -254,7 +256,7 @@ def user_profile_view(request):
                 else:
                     auth_form = UserCertUpdateForm()
 
-        elif ("submit-preferences" in request.POST):
+        elif "submit-preferences" in request.POST:
             preferences_form = UserPreferencesForm(
                 request.POST, request.FILES, instance=request.user.upreferences
             )

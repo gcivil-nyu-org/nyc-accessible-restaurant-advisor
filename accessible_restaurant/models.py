@@ -25,86 +25,96 @@ class User_Profile(models.Model):
     def validate_phone(value):
         if len(str(value)) != 10:
             raise ValidationError(
-                _('%(value)s must be 10 digits.'),
-                params={'value': value},
+                _("%(value)s must be 10 digits."),
+                params={"value": value},
             )
-    phone = models.PositiveSmallIntegerField(blank=True, validators=[validate_phone])  # Updated
+
+    phone = models.PositiveSmallIntegerField(
+        blank=True, validators=[validate_phone], default=0000000000
+    )  # Updated
 
     address = models.CharField(max_length=128, blank=True)
 
     BOROUGH_CHOICES = [
-        ("Manhattan","Manhattan"),
-        ("Brooklyn","Brooklyn"),
-        ("Queens","Queens"),
-        ("The Bronx","The Bronx"),
+        ("Manhattan", "Manhattan"),
+        ("Brooklyn", "Brooklyn"),
+        ("Queens", "Queens"),
+        ("The Bronx", "The Bronx"),
         ("Staten Island", "Staten Island"),
-        ("Not Applicable", "Not Applicable")
+        ("Not Applicable", "Not Applicable"),
     ]
-    borough = models.CharField(max_length=128, choices=BOROUGH_CHOICES, default="None Selected")
+    borough = models.CharField(
+        max_length=128, choices=BOROUGH_CHOICES, default="None Selected"
+    )
     city = models.CharField(max_length=64, blank=True)  # choices
 
     def validate_zip(value):
         if len(str(value)) != 5:
             raise ValidationError(
-                _('%(value)s must be 5 digits.'),
-                params={'value': value},
+                _("%(value)s must be 5 digits."),
+                params={"value": value},
             )
-    zip_code = models.PositiveSmallIntegerField(blank=True, validators=[validate_zip]) # Updated
+
+    zip_code = models.PositiveSmallIntegerField(
+        blank=True, validators=[validate_zip], default=00000
+    )  # Updated
 
     STATE_CHOICES = [
-        ("Alabama","Alabama"),
-        ("Alaska","Alaska"),
-        ("Arizona","Arizona"),
-        ("Arkansas","Arkansas"),
-        ("California","California"),
-        ("Colorado","Colorado"),
-        ("Connecticut","Connecticut"),
-        ("Delaware","Delaware"),
-        ("District of Columbia","District of Columbia"),
-        ("Florida","Florida"),
-        ("Georgia","Georgia"),
-        ("Hawaii","Hawaii"),
-        ("Idaho","Idaho"),
-        ("Illinois","Illinois"),
-        ("Indiana","Indiana"),
-        ("Iowa","Iowa"),
-        ("Kansas","Kansas"),
-        ("Kentucky","Kentucky"),
-        ("Louisiana","Louisiana"),
-        ("Maine","Maine"),
-        ("Montana","Montana"),
-        ("Nebraska","Nebraska"),
-        ("Nevada","Nevada"),
-        ("New Hampshire","New Hampshire"),
-        ("New Jersey","New Jersey"),
-        ("New Mexico","New Mexico"),
-        ("New York","New York"),
-        ("North Carolina","North Carolina"),
-        ("North Dakota","North Dakota"),
-        ("Ohio","Ohio"),
-        ("Oklahoma","Oklahoma"),
-        ("Oregon","Oregon"),
-        ("Maryland","Maryland"),
-        ("Massachusetts","Massachusetts"),
-        ("Michigan","Michigan"),
-        ("Minnesota","Minnesota"),
-        ("Mississippi","Mississippi"),
-        ("Missouri","Missouri"),
-        ("Pennsylvania","Pennsylvania"),
-        ("Rhode Island","Rhode Island"),
-        ("South Carolina","South Carolina"),
-        ("South Dakota","South Dakota"),
-        ("Tennessee","Tennessee"),
-        ("Texas","Texas"),
-        ("Utah","Utah"),
-        ("Vermont","Vermont"),
-        ("Virginia","Virginia"),
-        ("Washington","Washington"),
-        ("West Virginia","West Virginia"),
-        ("Wisconsin","Wisconsin"),
-        ("Wyoming","Wyoming"),
+        ("Alabama", "Alabama"),
+        ("Alaska", "Alaska"),
+        ("Arizona", "Arizona"),
+        ("Arkansas", "Arkansas"),
+        ("California", "California"),
+        ("Colorado", "Colorado"),
+        ("Connecticut", "Connecticut"),
+        ("Delaware", "Delaware"),
+        ("District of Columbia", "District of Columbia"),
+        ("Florida", "Florida"),
+        ("Georgia", "Georgia"),
+        ("Hawaii", "Hawaii"),
+        ("Idaho", "Idaho"),
+        ("Illinois", "Illinois"),
+        ("Indiana", "Indiana"),
+        ("Iowa", "Iowa"),
+        ("Kansas", "Kansas"),
+        ("Kentucky", "Kentucky"),
+        ("Louisiana", "Louisiana"),
+        ("Maine", "Maine"),
+        ("Montana", "Montana"),
+        ("Nebraska", "Nebraska"),
+        ("Nevada", "Nevada"),
+        ("New Hampshire", "New Hampshire"),
+        ("New Jersey", "New Jersey"),
+        ("New Mexico", "New Mexico"),
+        ("New York", "New York"),
+        ("North Carolina", "North Carolina"),
+        ("North Dakota", "North Dakota"),
+        ("Ohio", "Ohio"),
+        ("Oklahoma", "Oklahoma"),
+        ("Oregon", "Oregon"),
+        ("Maryland", "Maryland"),
+        ("Massachusetts", "Massachusetts"),
+        ("Michigan", "Michigan"),
+        ("Minnesota", "Minnesota"),
+        ("Mississippi", "Mississippi"),
+        ("Missouri", "Missouri"),
+        ("Pennsylvania", "Pennsylvania"),
+        ("Rhode Island", "Rhode Island"),
+        ("South Carolina", "South Carolina"),
+        ("South Dakota", "South Dakota"),
+        ("Tennessee", "Tennessee"),
+        ("Texas", "Texas"),
+        ("Utah", "Utah"),
+        ("Vermont", "Vermont"),
+        ("Virginia", "Virginia"),
+        ("Washington", "Washington"),
+        ("West Virginia", "West Virginia"),
+        ("Wisconsin", "Wisconsin"),
+        ("Wyoming", "Wyoming"),
     ]
-    state = models.CharField(max_length=128, choices=STATE_CHOICES, default="None Selected")  # choices
+    state = models.CharField(
+        max_length=128, choices=STATE_CHOICES, default="None Selected"
+    )  # choices
     AUTH_STATUS_CHOICES = [
         ("certified", "Certified"),
         ("pending", "Pending"),
@@ -129,34 +139,44 @@ class User_Preferences(models.Model):
         ("Non-Alcoholic Drinks", "Non-Alcoholic Drinks"),
         ("Alcoholic Drinks", "Alcoholic Drinks"),
         ("Dessert", "Dessert"),
-        ("No Preference", "No Preference")
+        ("No Preference", "No Preference"),
     ]
-    dining_pref1 = models.CharField(max_length=20, choices=DINING, default="No Preference")
-    dining_pref2 = models.CharField(max_length=20, choices=DINING, default="No Preference")
-    dining_pref3 = models.CharField(max_length=20, choices=DINING, default="No Preference")
+    dining_pref1 = models.CharField(
+        max_length=20, choices=DINING, default="No Preference"
+    )
+    dining_pref2 = models.CharField(
+        max_length=20, choices=DINING, default="No Preference"
+    )
+    dining_pref3 = models.CharField(
+        max_length=20, choices=DINING, default="No Preference"
+    )
 
     BUDGET = [
         ("$", "$"),
         ("$$", "$$"),
         ("$$$", "$$$"),
         ("$$$$", "$$$$"),
-        ("No Preference","No Preference")
+        ("No Preference", "No Preference"),
     ]
-    budget_pref = models.CharField(max_length=15, choices=BUDGET, default="No Preference")
+    budget_pref = models.CharField(
+        max_length=15, choices=BUDGET, default="No Preference"
+    )
 
     LOCATION = [
         ("Near Home", "Near Home"),
         ("Within My Borough", "Within My Borough"),
         ("Outside My Borough", "Outside My Borough"),
-        ("No Preference", "No Preference")
+        ("No Preference", "No Preference"),
     ]
-    location_pref = models.CharField(max_length=20, choices=LOCATION, default="No Preference")
+    location_pref = models.CharField(
+        max_length=20, choices=LOCATION, default="No Preference"
+    )
 
     DIETARY = [
         ("Vegetarian", "Vegetarian"),
         ("Gluten-Free", "Gluten-Free"),
         ("Salads Available", "Salads Available"),
-        ("None", "None")
+        ("None", "None"),
     ]
     dietary_pref = models.CharField(max_length=20, choices=DIETARY, default="None")
 
@@ -170,10 +190,14 @@ class User_Preferences(models.Model):
         ("Mediterranean", "Mediterranean"),
         ("Middle Eastern", "Middle Eastern"),
         ("Southern", "Southern"),
-        ("No Preference","No Preference")
+        ("No Preference", "No Preference"),
     ]
-    cuisine_pref1 = models.CharField(max_length=16, choices=CUISINE, default="No Preference")
-    cuisine_pref2 = models.CharField(max_length=16, choices=CUISINE, default="No Preference")
+    cuisine_pref1 = models.CharField(
+        max_length=16, choices=CUISINE, default="No Preference"
+    )
+    cuisine_pref2 = models.CharField(
+        max_length=16, choices=CUISINE, default="No Preference"
+    )
 
     def __str__(self):
         return f"{self.user.username} User Preferences"
