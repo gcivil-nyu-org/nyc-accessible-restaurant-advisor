@@ -84,22 +84,20 @@
 /*}*/
 
 body{
-    /*background: -webkit-linear-gradient(left, #3931af, #00c6ff);*/
-        background: -webkit-linear-gradient(left, #d2f2d2, #d2f2d2);
+    background-color: #eee;
 }
 .emp-profile{
     padding: 3%;
-    margin-top: 3%;
-    margin-bottom: 3%;
+    margin-top: 5%;
+    margin-bottom: 5%;
     border-radius: 0.5rem;
-    background: #fff;
-    /*background: #d2f2d2;*/
+    /*background: #fff;*/
 }
 .profile-img{
     text-align: center;
 }
 .profile-img img{
-    width: 70%;
+    width: 40%;
     height: 200px;
     object-fit: cover;
 }
@@ -125,25 +123,30 @@ body{
 .profile-head h6{
     color: #0062cc;
 }
+
+/* View & Edit profile button */
 .profile-edit-btn{
     border: none;
     border-radius: 1.5rem;
-    width: 70%;
+    width: 80%;
     padding: 2%;
     font-weight: 600;
-    color: #6c757d;
+    /*color: #6c757d;*/
     cursor: pointer;
 }
-.proile-rating{
-    font-size: 12px;
-    color: #818182;
-    margin-top: 5%;
+
+.btn-yellow {
+  color: #fff;
+  background-color: #fed136;
+  border-color: #fed136;
 }
-.proile-rating span{
-    color: #495057;
-    font-size: 15px;
-    font-weight: 600;
+
+.btn-yellow:hover {
+  color: #fff;
+  background-color: #fec810;
+  border-color: #fec503;
 }
+
 .profile-head .nav-tabs{
     margin-top: 5%;
     margin-bottom:5%;
@@ -156,25 +159,7 @@ body{
     border: none;
     border-bottom:2px solid #0062cc;
 }
-.profile-work{
-    padding: 14%;
-    margin-top: -15%;
-}
-.profile-work p{
-    font-size: 12px;
-    color: #818182;
-    font-weight: 600;
-    margin-top: 10%;
-}
-.profile-work a{
-    text-decoration: none;
-    color: #495057;
-    font-weight: 600;
-    font-size: 14px;
-}
-.profile-work ul{
-    list-style: none;
-}
+
 .profile-tab label{
     font-weight: 600;
 }
@@ -188,3 +173,52 @@ body{
     color: #080808;
 }
 
+/* favorite restaurant list style */
+.card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.h-fixed {
+    width: 100%;
+    height: 93vh;
+}
+
+.phone-icon {
+    color: green;
+}
+
+.address-icon {
+    color: dodgerblue;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list-inline>li {
+    margin: -10px;
+}
+    .list-inline>li:first-child {
+
+    }
+
+.list-inline {
+    margin: 10px;
+}
+
+/* star color */
+.icon-star-full {
+    color: #dd4b39;
+}
+
+.icon-star-half {
+    color: #dd4b39;
+}
+
+.icon-star-null {
+    color: #757575;
+}

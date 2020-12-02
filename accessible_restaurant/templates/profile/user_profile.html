@@ -1,18 +1,16 @@
-{% extends "base.html" %}
+{% extends "baseheader.html" %}
 {% load crispy_forms_tags %}
 {% block staticlink %}
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/profile_style.css' %}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/profile_style.css' %}">
+    <script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
 {% endblock %}
 
 {% block title %} User Account Profile {% endblock %}
-
-{% block body %}<body class="subpage">{% endblock %}
 
 {% block content %}
 <!--    <div class="wrapper fl">-->
@@ -54,7 +52,7 @@
 <!--            </div>-->
 <!--        </div>-->
 <!--    </div>-->
-    <div class="container emp-profile">
+    <div class="container-fluid emp-profile">
             <div class="row">
                 <div class="col-md-4">
                     <div class="profile-img">
@@ -107,12 +105,12 @@
                     {% if profile_action == 'view' %}
                         <form method="get" action="{% url 'accessible_restaurant:user_profile' %}?{{ request.GET.urlencode }}">
                             {% csrf_token %}
-                            <input type="submit" class="profile-edit-btn" name="action" value="Edit Profile"/>
+                            <input type="submit" class="btn btn-yellow profile-edit-btn" name="action" value="Edit Profile"/>
                         </form>
                     {% else %}
                         <form method="get" action="{% url 'accessible_restaurant:user_profile' %}?{{ request.GET.urlencode }}">
                             {% csrf_token %}
-                            <input type="submit" class="profile-edit-btn" name="action" value="View Profile"/>
+                            <input type="submit" class="btn btn-yellow profile-edit-btn" name="action" value="View Profile"/>
                         </form>
                     {% endif %}
                 </div>
@@ -124,44 +122,55 @@
                     <div class="tab-content profile-tab" id="myTabContent">
                         <div class="tab-pane fade" id="favorite" role="tabpanel" aria-labelledby="favorite-tab">
                             {% for restaurant in user_favorite %}
-                                    <a href = '{% url "accessible_restaurant:detail" restaurant.business_id %}'>
-                                        <div class="box">
-                                            <div class="row">
-                                                <div class="4u 12u$(medium)">
-                                                    <span class="image fit"><img src="{{ restaurant.img_url }}" alt="" /></span>
-                                                </div>
-                                                <div class="8u 12u$(medium)">
-                                                    <header>
-                                                        <ul class="actions">
-                                                            <li><h3><strong>{{ restaurant.name }}</strong></h3></li>
+                                <div class="row">
+                                    <div class="col-9">
+                                        <div class="m-2 mt-4">
+                                            <div class="card mb-2">
+                                                <div class="row no-gutters">
+                                                    <div class="col-4 align-self-center">
+                                                        <img src="{{ restaurant.img_url }}" class="card-img m-4" alt="...">
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <div class="card-body mx-4">
                                                             {% if restaurant.compliant %}
-                                                                <li><h3><i class="icon far fa-check-circle"></i>compliant</h3></li>
+                                                                <h5 class="card-title">{{ restaurant.name }}&emsp;<span class="badge badge-pill badge-success">Compliant <i class="fas fa-wheelchair" aria-hidden="true"></i></span></h5>
                                                             {% else %}
-                                                                <li><h3><i class="icon far fa-times-circle"></i>compliant</h3></li>
+                                                                <h5 class="card-title">{{ restaurant.name }}&emsp;<span class="badge badge-pill badge-secondary">Not Compliant <i class="fas fa-wheelchair" aria-hidden="true"></i></span></h5>
                                                             {% endif %}
-                                                        </ul>
-                                                        <ul class="icons">
-                                                            {% for _ in restaurant.full %}
-                                                                <li><i class="icon fas fa-star"></i></li>
-                                                            {% endfor %}
-                                                            {% for _ in restaurant.half %}
-                                                                <li><i class="icon fas fa-star-half-alt"></i></li>
-                                                            {% endfor %}
-                                                            {% for _ in restaurant.null %}
-                                                                <li><i class="icon far fa-star"></i></li>
-                                                            {% endfor %}
-                                                        </ul>
-                                                    </header>
-                                                    <ul class="alt">
-                                                        <li>Price: {{ restaurant.price }}</li>
-                                                        <li>Category: {{ restaurant.category1 }} {{ restaurant.category2 }} {{ restaurant.category3 }}</li>
-                                                        <li><i class="icon fas fa-phone-square-alt"></i>{{ restaurant.phone }}</li>
-                                                        <li><i class="icon fas fa-map-marker-alt"></i>{{ restaurant.address }}, {{ restaurant.city }}, {{ restaurant.zip_code }}</li>
-                                                    </ul>
+                                                            <p class="card-text">
+                                                                <ul class="list-inline">
+                                                                    {% for _ in restaurant.full %}
+                                                                        <li class="list-inline-item">
+                                                                            <i class="icon-star-full fas fa-star"></i>
+                                                                        </li>
+                                                                    {% endfor %}
+                                                                    {% for _ in restaurant.half %}
+                                                                        <li class="list-inline-item">
+                                                                            <i class="icon-star-half fas fa-star-half-alt"></i>
+                                                                        </li>
+                                                                    {% endfor %}
+                                                                    {% for _ in restaurant.null %}
+                                                                        <li class="list-inline-item">
+                                                                            <i class="icon-star-null far fa-star"></i>
+                                                                        </li>
+                                                                    {% endfor %}
+                                                                </ul>
+                                                                <large class="text-muted">{{ restaurant.price }} {{ restaurant.category1 }} {{ restaurant.category2 }} {{ restaurant.category3 }}</large>
+                                                            </p>
+                                                            <p class="card-text">
+                                                                <ul>
+                                                                    <li><i class="phone-icon fas fa-phone-square-alt"></i>&emsp;{{ restaurant.phone }}</li>
+                                                                    <li><i class="address-icon fas fa-map-marker-alt"></i>&emsp;{{ restaurant.address }}, {{ restaurant.city }}, {{ restaurant.zip_code }}</li>
+                                                                </ul>
+                                                            </p>
+                                                            <a href="{% url 'accessible_restaurant:detail' restaurant.business_id %}" class="btn btn-light">Details</a>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </a>
+                                    </div>
+                                </div>
                             {% endfor %}
                         </div>
                         {% if profile_action == 'view' %}
@@ -265,7 +274,7 @@
                                         {% endfor %}
                                     {% endif %}
                                     <div class="submit-wrap">
-                                        <input type="submit" id="submit-info" name="submit-info" value="SUBMIT">
+                                        <input type="submit" id="submit-info" name="submit-info" value="UPDATE" class="btn btn-primary font-weight-bold">
                                     </div>
                                 </form>
                             </div>
@@ -300,7 +309,7 @@
                                         {% endif %}
                                     {% endfor %}
                                     <div class="submit-wrap">
-                                        <input type="submit" id="submit-certificate" name="submit-certificate" value="SUBMIT">
+                                        <input type="submit" id="submit-certificate" name="submit-certificate" value="UPLOAD" class="btn btn-primary font-weight-bold">
                                     </div>
                                 </form>
                                 {% if auth_form.errors %}
@@ -312,7 +321,6 @@
                                 {% endif %}
                             </div>
                         {% endif %}
-
                     </div>
                 </div>
             </div>
