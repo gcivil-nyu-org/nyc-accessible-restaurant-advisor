@@ -43,6 +43,7 @@ urlpatterns = [
         ),
         name="password_reset_complete",
     ),
+    path("accounts/", include("allauth.urls")),
 ]
 
 if settings.DEBUG:
