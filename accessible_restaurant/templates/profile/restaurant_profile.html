@@ -1,18 +1,16 @@
-{% extends "base.html" %}
+{% extends "baseheader.html" %}
 {% load crispy_forms_tags %}
 {% block staticlink %}
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/profile_style.css' %}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/profile_style.css' %}">
+    <script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
 {% endblock %}
 
 {% block title %} Restaurant Account Profile {% endblock %}
-
-{% block body %}<body class="subpage">{% endblock %}
 
 {% block content %}
 <!--    <div class="wrapper fl">-->
@@ -43,7 +41,7 @@
 <!--            </div>-->
 <!--        </div>-->
 <!--    </div>-->
-    <div class="container emp-profile">
+    <div class="container-fluid emp-profile">
             <div class="row">
                 <div class="col-md-4">
                     <div class="profile-img">
@@ -93,12 +91,12 @@
                     {% if profile_action == 'view' %}
                         <form method="get" action="{% url 'accessible_restaurant:restaurant_profile' %}?{{ request.GET.urlencode }}">
                             {% csrf_token %}
-                            <input type="submit" class="profile-edit-btn" name="action" value="Edit Profile"/>
+                            <input type="submit" class="btn btn-yellow profile-edit-btn" name="action" value="Edit Profile"/>
                         </form>
                     {% else %}
                         <form method="get" action="{% url 'accessible_restaurant:restaurant_profile' %}?{{ request.GET.urlencode }}">
                             {% csrf_token %}
-                            <input type="submit" class="profile-edit-btn" name="action" value="View Profile"/>
+                            <input type="submit" class="btn btn-yellow profile-edit-btn" name="action" value="View Profile"/>
                         </form>
                     {% endif %}
                 </div>
@@ -207,10 +205,9 @@
                                         {% endfor %}
                                     {% endif %}
                                     <div class="row">
-                                        <div class="col-md-3"></div>
-                                        <div class="col-md-6">
-                                        <input type="submit" id="submit-info" name="submit-info" value="SUBMIT">
-                                            </div>
+                                        <div class="submit-wrap">
+                                            <input type="submit" id="submit-info" name="submit-info" value="UPDATE" class="btn btn-primary font-weight-bold">
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -262,7 +259,7 @@
                                     {% endfor %}
 
                                     <div class="submit-wrap">
-                                        <input type="submit" id="submit-certificate" name="submit-certificate" value="SUBMIT">
+                                        <input type="submit" id="submit-certificate" name="submit-certificate" value="UPLOAD" class="btn btn-primary font-weight-bold">
                                     </div>
                                 </form>
                                 {% if auth_form.errors %}

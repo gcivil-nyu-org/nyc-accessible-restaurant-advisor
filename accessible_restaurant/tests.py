@@ -4,7 +4,7 @@ from django.test import SimpleTestCase
 import accessible_restaurant
 import django
 from accessible_restaurant.views import (
-    index_view,
+    index_view_personalized,
     user_profile_view,
     emailsent_view,
     activate_account,
@@ -118,11 +118,12 @@ class TestForms(TestCase):
         form = UserProfileUpdateForm(
             data={
                 "photo": "photo",
-                "phone": "1234567889",
+                "phone": 1234567889,
                 "address": "123 New York",
+                "borough": "Brooklyn",
                 "city": "New York",
-                "Zip Code": "11220",
-                "state": "NY",
+                "zip_code": 11220,
+                "state": "New York",
                 "auth_status": "uncertified",
             }
         )
@@ -177,7 +178,9 @@ class TestUrls(SimpleTestCase):
     def test_index_url_is_resolved(self):
         url = reverse("accessible_restaurant:index")
         # print(resolve(url))
-        self.assertEquals(resolve(url).func, accessible_restaurant.views.index_view)
+        self.assertEquals(
+            resolve(url).func, accessible_restaurant.views.index_view_personalized
+        )
 
     def test_email_sent_url_is_resolved(self):
         url = reverse("accessible_restaurant:emailsent")
@@ -278,7 +281,7 @@ class UserSignUpTest(TestCase):
     def test_can_view_page_correctly(self):
         response = self.client.get(self.usersignup_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/userRegister.html")
+        self.assertTemplateUsed(response, "accounts/userSignup.html")
 
     def test_can_register_user(self):
         response = self.client.post(self.usersignup_url, self.user, format="text/html")
@@ -300,7 +303,7 @@ class RestaurantSignUpTest(TestCase):
     def test_can_view_page_correctly(self):
         response = self.client.get(self.restaurantsignup_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/restaurantRegister.html")
+        self.assertTemplateUsed(response, "accounts/restaurantSignup.html")
 
     def test_can_register_user(self):
         response = self.client.post(
@@ -361,7 +364,7 @@ class TestViews(TestCase):
     def test_signup_view_GET(self):
         response = self.client.get(self.signup_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/register.html")
+        self.assertTemplateUsed(response, "accounts/signup.html")
 
     def test_email_sent_view_GET(self):
         response = self.client.get(self.emailsent_url)
@@ -1020,7 +1023,7 @@ class TestManageCertificate(TestCase):
             category3="Juice Bars & Smoothies",
         )
 
-        # set up test file path and form data
+        # set up test file path
         self.certificate_file = settings.MEDIA_ROOT + "/documents/pdfs/test.pdf"
 
         return super().setUp()
@@ -1515,26 +1518,7 @@ class TestReview(TestCase):
             is_restaurant=True,
         )
 
-        # create two restaurants
-        self.Restaurant1 = Restaurant.objects.create(
-            business_id="De_10VF2CrC2moWaPA81mg",
-            name="Just Salad",
-            img_url="https://s3-media1.fl.yelpcdn.com/bphoto/xX9UzyMKSao3qfsufH9SnA/o.jpg",
-            rating="3.5",
-            latitude="40.669429",
-            longitude="-73.979494",
-            address="252 7th Ave",
-            city="Brooklyn",
-            zip_code="11215",
-            phone="+18666733757",
-            compliant=True,
-            price="$$",
-            category1="Salad",
-            category2="Wraps",
-            category3="Vegetarian",
-        )
-
-        # set up test file path and form data
+        # set up test image path
         self.image_file = settings.MEDIA_ROOT + "/default.jpg"
 
         return super().setUp()
@@ -1566,9 +1550,10 @@ class TestReview(TestCase):
                 "photo": fp,
                 "phone": "1234567890",
                 "address": "6 Metrotech",
+                "borough": "Brooklyn",
                 "city": "Brooklyn",
                 "zip_code": "11201",
-                "state": "NY",
+                "state": "New York",
                 "auth_status": "uncertified",
             }
             user_update_profile_response = self.client.post(
@@ -1627,3 +1612,52 @@ class TestReview(TestCase):
             restaurant_update_profile_response.url, "/accounts/restaurant-profile/"
         )
         self.client.logout()
+
+
+class TestLogin(TestCase):
+    def setUp(self):
+        self.login_url = reverse("accessible_restaurant:login")
+        self.client = Client()
+
+        self.user = {
+            "username": "normal_user",
+            "password": "123456test",
+        }
+
+        User.objects.create_user(
+            username="normal_user",
+            email="test@test.com",
+            password="123456test",
+            is_user=True,
+        )
+
+        return super().setUp()
+
+    def test_can_login_successfully(self):
+        login_response = self.client.post(self.login_url, self.user, format="text/html")
+        self.assertEqual(login_response.status_code, 302)
+        self.assertEqual(login_response.url, "/")
+
+
+class TestResetPassword(TestCase):
+    def setUp(self):
+        self.reset_url = reverse("accessible_restaurant:password-reset")
+        self.client = Client()
+
+        self.user = {
+            "email": "test@test.com",
+        }
+
+        User.objects.create_user(
+            username="normal_user",
+            email="test@test.com",
+            password="123456test",
+            is_user=True,
+        )
+
+        return super().setUp()
+
+    def test_can_login_successfully(self):
+        reset_response = self.client.post(self.reset_url, self.user, format="text/html")
+        self.assertEqual(reset_response.status_code, 302)
+        self.assertEqual(reset_response.url, "/accounts/password-reset/done/")

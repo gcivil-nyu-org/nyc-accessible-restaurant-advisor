@@ -1,3 +1,6 @@
+from sqlite3 import Error
+
+from django.core.exceptions import FieldDoesNotExist
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.shortcuts import redirect
@@ -23,6 +26,7 @@ from .forms import (
     RestaurantSignUpForm,
     UserUpdateForm,
     UserProfileUpdateForm,
+    UserPreferencesForm,
     RestaurantProfileUpdateForm,
     ReviewPostForm,
     UserCertUpdateForm,
@@ -42,6 +46,7 @@ from .models import (
     ApprovalPendingUsers,
     ApprovalPendingRestaurants,
     User_Profile,
+    User_Preferences,
     Restaurant_Profile,
     FAQ,
     Favorites,
@@ -55,6 +60,7 @@ from .utils import (
     get_search_restaurant,
     get_public_user_detail,
     get_user_reviews,
+    get_user_preferences,
     get_user_favorite,
     get_user_profile_favorite,
 )
@@ -63,6 +69,25 @@ from .utils import (
 # Create your views here.
 def index_view(request):
     recommended_restaurants = Restaurant.objects.all()[:3]
+    context = {"recommended_restaurants": recommended_restaurants}
+    return render(request, "home.html", context)
+
+
+def index_view_personalized(request):
+    try:
+        if "AnonymousUser" == request.user:
+            recommended_restaurants = Restaurant.objects.all()[:3]
+        elif request.user.is_user:
+            user = request.user
+            recommended_restaurants = get_user_preferences(user)[:3]
+        else:
+            recommended_restaurants = Restaurant.objects.all()[:3]
+    except (
+        TypeError,
+        ValueError,
+        AttributeError,
+    ):
+        recommended_restaurants = Restaurant.objects.all()[:3]
     context = {"recommended_restaurants": recommended_restaurants}
     return render(request, "home.html", context)
 
@@ -77,7 +102,7 @@ def logout_view(request):
 
 def signup_view(request):
     if request.method == "GET":
-        return render(request, "accounts/register.html")
+        return render(request, "accounts/signup.html")
 
 
 def emailsent_view(request):
@@ -102,7 +127,7 @@ def activate_account(request, uidb64, token):
 class UserSignUpView(CreateView):
     model = User
     form_class = UserSignUpForm
-    template_name = "accounts/userRegister.html"
+    template_name = "accounts/userSignup.html"
 
     def get_context_data(self, **kwargs):
         kwargs["user_type"] = "user"
@@ -144,7 +169,7 @@ class UserSignUpView(CreateView):
 class RestaurantSignUpView(CreateView):
     model = User
     form_class = RestaurantSignUpForm
-    template_name = "accounts/restaurantRegister.html"
+    template_name = "accounts/restaurantSignup.html"
 
     def get_context_data(self, **kwargs):
         kwargs["user_type"] = "restaurant"
@@ -210,13 +235,16 @@ def user_profile_view(request):
             else:
                 u_form = UserUpdateForm(instance=request.user)
                 p_form = UserProfileUpdateForm(instance=request.user.uprofile)
+                preferences_form = UserPreferencesForm(
+                    instance=request.user.upreferences
+                )
 
         elif "submit-info" in request.POST:
             u_form = UserUpdateForm(request.POST, instance=request.user)
             p_form = UserProfileUpdateForm(
                 request.POST, request.FILES, instance=request.user.uprofile
             )
-
+            preferences_form = UserPreferencesForm(instance=request.user.upreferences)
             if u_form.is_valid() and p_form.is_valid():
                 u_form.save()
                 p_form.save()
@@ -230,9 +258,28 @@ def user_profile_view(request):
                 else:
                     auth_form = UserCertUpdateForm()
 
+        elif "submit-preferences" in request.POST:
+            preferences_form = UserPreferencesForm(
+                request.POST, request.FILES, instance=request.user.upreferences
+            )
+            u_form = UserUpdateForm(instance=request.user)
+            p_form = UserProfileUpdateForm(instance=request.user.uprofile)
+            if preferences_form.is_valid():
+                preferences_form.save()
+                messages.success(request, f'{"Your profile has been updated!"}')
+                return redirect("accessible_restaurant:user_profile")
+            else:
+                queue = ApprovalPendingUsers.objects.filter(user=request.user).count()
+                if queue > 0:
+                    q = ApprovalPendingUsers.objects.get(user=request.user)
+                    auth_form = UserCertUpdateForm(instance=q.user.auth)
+                else:
+                    auth_form = UserCertUpdateForm()
+
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = UserProfileUpdateForm(instance=request.user.uprofile)
+        preferences_form = UserPreferencesForm(instance=request.user.upreferences)
         queue = ApprovalPendingUsers.objects.filter(user=request.user).count()
         if queue > 0:
             q = ApprovalPendingUsers.objects.get(user=request.user)
@@ -259,6 +306,7 @@ def user_profile_view(request):
         "user_form": u_form,
         "profile_form": p_form,
         "auth_form": auth_form,
+        "preferences_form": preferences_form,
         "profile_action": profile_action,
         "user_favorite": response_favorite,
     }
