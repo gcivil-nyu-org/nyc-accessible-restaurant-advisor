@@ -350,6 +350,7 @@ def get_user_preferences(user):
 
         # 2. Limit possibilities to those with ratings at or above 4
         restaurants = restaurants.filter(rating__gte=4)
+        restaurants = restaurants.filter(compliant__exact=True)
 
         # 3. Rank each restaurant according to user preferences
         ranked_restaurants = {}

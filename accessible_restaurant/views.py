@@ -21,6 +21,8 @@ from django.conf import settings
 # from .token_generator import generate_token
 from django.core.mail import EmailMessage
 
+from django.db.models import Q
+
 from .forms import (
     UserSignUpForm,
     RestaurantSignUpForm,
@@ -79,13 +81,15 @@ def index_view_personalized(request):
             user = request.user
             recommended_restaurants = get_user_preferences(user)[:3]
         else:
-            recommended_restaurants = Restaurant.objects.all()[:3]
+            temp = Restaurant.objects.all().filter(Q(review_count__gt=20) & Q(rating__gte=4.0) & Q(compliant__exact=True)).order_by('-rating')
+            recommended_restaurants = temp[:3]
     except (
         TypeError,
         ValueError,
         AttributeError,
     ):
-        recommended_restaurants = Restaurant.objects.all()[:3]
+            temp = Restaurant.objects.all().filter(Q(review_count__gt=20) & Q(rating__gte=4.0) & Q(compliant__exact=True)).order_by('-rating')
+            recommended_restaurants = temp[:3]
     context = {"recommended_restaurants": recommended_restaurants}
     return render(request, "home.html", context)
 
