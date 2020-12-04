@@ -177,14 +177,14 @@ class TestForms(TestCase):
     def test_UserPreferencesForm_is_valid(self):
         form = UserPreferencesForm(
             data={
-                "dining_pref1":"Breakfast",
-                "dining_pref2":"Lunch",
-                "dining_pref3":"Dinner",
-                "budget_pref":"$",
-                "location_pref":"Near Home",
-                "dietary_pref":"Gluten-Free",
-                "cuisine_pref1":"Middle Eastern",
-                "cuisine_pref2":"Asian",
+                "dining_pref1": "Breakfast",
+                "dining_pref2": "Lunch",
+                "dining_pref3": "Dinner",
+                "budget_pref": "$",
+                "location_pref": "Near Home",
+                "dietary_pref": "Gluten-Free",
+                "cuisine_pref1": "Middle Eastern",
+                "cuisine_pref2": "Asian",
             }
         )
         self.assertTrue(form.is_valid())

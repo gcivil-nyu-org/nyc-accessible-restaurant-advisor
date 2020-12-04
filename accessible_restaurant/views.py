@@ -81,15 +81,29 @@ def index_view_personalized(request):
             user = request.user
             recommended_restaurants = get_user_preferences(user)[:3]
         else:
-            temp = Restaurant.objects.all().filter(Q(review_count__gt=20) & Q(rating__gte=4.0) & Q(compliant__exact=True)).order_by('-rating')
+            temp = (
+                Restaurant.objects.all()
+                .filter(
+                    Q(review_count__gt=20)
+                    & Q(rating__gte=4.0)
+                    & Q(compliant__exact=True)
+                )
+                .order_by("-rating")
+            )
             recommended_restaurants = temp[:3]
     except (
         TypeError,
         ValueError,
         AttributeError,
     ):
-            temp = Restaurant.objects.all().filter(Q(review_count__gt=20) & Q(rating__gte=4.0) & Q(compliant__exact=True)).order_by('-rating')
-            recommended_restaurants = temp[:3]
+        temp = (
+            Restaurant.objects.all()
+            .filter(
+                Q(review_count__gt=20) & Q(rating__gte=4.0) & Q(compliant__exact=True)
+            )
+            .order_by("-rating")
+        )
+        recommended_restaurants = temp[:3]
     context = {"recommended_restaurants": recommended_restaurants}
     return render(request, "home.html", context)
 
