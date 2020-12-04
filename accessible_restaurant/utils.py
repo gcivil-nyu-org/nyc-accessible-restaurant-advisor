@@ -365,7 +365,6 @@ def get_user_preferences(user):
             price = r.price
             borough = r.city
             zip_code = r.zip_code
-            rating = r.rating
 
             score = 0
 
