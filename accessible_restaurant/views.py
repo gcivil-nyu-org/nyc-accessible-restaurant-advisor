@@ -810,9 +810,20 @@ def faq_view(request):
             subject = form.data.get("Subject")
             from_email = form.data.get("Email")
             message = form.data.get("Message")
+            whole_message = render_to_string(
+                "accounts/request_received.html",
+                {
+                    "subject": subject,
+                    "message": message,
+                },
+            )
+            print(whole_message)
             try:
                 send_mail(
-                    subject, message, from_email, ["nyc.accessible.rest@gmail.com"]
+                    "Thank you for your feedback",
+                    whole_message,
+                    "nyc.accessible.rest@gmail.com",
+                    [from_email],
                 )
             except BadHeaderError:
                 return HttpResponse("Invalid header found.")

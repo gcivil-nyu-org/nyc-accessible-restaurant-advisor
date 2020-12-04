@@ -8,6 +8,12 @@
     vertical-align: middle;
 }
 
+.inlineDisplay h2,
+.inlineDisplay{
+    display: inline-block;
+    vertical-align: middle;
+}
+
 .like-icon {
     color: #dd4b39;
 }
