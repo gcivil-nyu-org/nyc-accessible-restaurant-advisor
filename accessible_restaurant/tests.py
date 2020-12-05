@@ -20,6 +20,7 @@ from accessible_restaurant.forms import (
     UserSignUpForm,
     RestaurantSignUpForm,
     UserProfileUpdateForm,
+    UserPreferencesForm,
     UserUpdateForm,
     RestaurantProfileUpdateForm,
     ReviewPostForm,
@@ -171,6 +172,21 @@ class TestForms(TestCase):
 
     def test_UserCertVerifyForm_is_valid(self):
         form = UserCertVerifyForm(data={"auth_status": "pending"})
+        self.assertTrue(form.is_valid())
+
+    def test_UserPreferencesForm_is_valid(self):
+        form = UserPreferencesForm(
+            data={
+                "dining_pref1": "Breakfast",
+                "dining_pref2": "Lunch",
+                "dining_pref3": "Dinner",
+                "budget_pref": "$",
+                "location_pref": "Near Home",
+                "dietary_pref": "Gluten-Free",
+                "cuisine_pref1": "Middle Eastern",
+                "cuisine_pref2": "Asian",
+            }
+        )
         self.assertTrue(form.is_valid())
 
 
