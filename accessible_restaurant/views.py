@@ -817,13 +817,15 @@ def faq_view(request):
                     "message": message,
                 },
             )
-            print(whole_message)
             try:
                 send_mail(
                     "Thank you for your feedback",
                     whole_message,
                     "nyc.accessible.rest@gmail.com",
                     [from_email],
+                )
+                messages.success(
+                    request, f'{"Your request has been sent successfully"}'
                 )
             except BadHeaderError:
                 return HttpResponse("Invalid header found.")
