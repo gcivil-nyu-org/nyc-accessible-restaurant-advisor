@@ -335,6 +335,7 @@ class Review(models.Model):
     accessible_table_rating = models.PositiveIntegerField(blank=True, default=0)
     accessible_restroom_rating = models.PositiveIntegerField(blank=True, default=0)
     accessible_path_rating = models.PositiveIntegerField(blank=True, default=0)
+    images = models.ImageField(null=True, blank=True, upload_to = 'images/')
 
     def __str__(self):
         return f"{self.user} review on {self.restaurant}"

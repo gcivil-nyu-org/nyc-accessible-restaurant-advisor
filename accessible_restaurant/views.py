@@ -690,8 +690,8 @@ def restaurant_detail_view(request, business_id):
 @user_passes_test(lambda u: not u.is_superuser)
 def write_review_view(request, business_id):
     if request.user.is_user:
-        if request.method == "GET":
-            review_form = ReviewPostForm(request.GET)
+        if request.method == "POST":
+            review_form = ReviewPostForm(request.POST, request.FILES)
             restaurant_instance = Restaurant.objects.get(business_id=business_id)
 
             if review_form.is_valid():
@@ -702,8 +702,8 @@ def write_review_view(request, business_id):
                 return redirect("accessible_restaurant:detail", business_id)
 
         else:
-            review_form = ReviewPostForm(request.GET)
-            # restaurant_instance = Restaurant.objects.get(business_id=business_id)
+            review_form = ReviewPostForm(request.POST)
+            restaurant_instance = Restaurant.objects.get(business_id=business_id)
 
         context = {
             "user": request.user,

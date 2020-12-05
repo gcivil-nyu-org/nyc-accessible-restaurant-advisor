@@ -395,7 +395,7 @@ class ReviewPostForm(forms.ModelForm):
             "accessible_restroom_rating",
             "accessible_path_rating",
             "review_context",
-            # "images",
+            "images",
         ]
         labels = {
             "review_context": "Review",

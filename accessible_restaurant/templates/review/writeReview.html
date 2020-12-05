@@ -24,7 +24,7 @@
                     <div class="card m-4">
                         <div class="card-body">
                             <div class="card-text">
-                                <form method="GET">
+                                <form method="POST" enctype = "multipart/form-data">
                                     {% csrf_token %}
                                     <div class="row">
                                         <div class="col-4">
@@ -97,7 +97,13 @@
                                             </div>
                                         </div>
                                     </div>
-
+                                    <div class="row justify-content-center">
+                                        <div class="mb-4 mx-4">
+                                            <!-- <input type="image" class="btn btn-yellow" id="submit-review" name="submit-review" value="Post Review"> -->
+                                            <p>{{ review_form.images }} multiple </p> 
+                                        </div>
+                                    </div>
+                                    <input type = "file" name = "images" multiple/>
                                     <div class="row justify-content-center">
                                         <div class="mb-4 mx-4">
                                             <input type="submit" class="btn btn-yellow" id="submit-review" name="submit-review" value="Post Review">

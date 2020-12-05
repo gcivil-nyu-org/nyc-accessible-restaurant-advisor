@@ -326,6 +326,11 @@
                                 <div class="reviews-members pt-4 pb-4">
                                     <div class="media">
                                         <a href="{% url 'accessible_restaurant:public_facing' review.user_id %}"><img alt="..." src="{{ review.photo.url }}" class="mr-3 rounded-pill"></a>
+                                        <img alt="..." src="{{ review.images.url }}" class="mr-3 rounded-pill">
+                                        <p> {{ review.photo.url }} </p>
+                                        <p> {{ review.images.url }} </p>
+
+                                        <br/> {{ review.images }}<br/>
                                         <div class="media-body">
                                             <div class="reviews-members-header">
                                                 <span class="star-rating float-right">
@@ -358,6 +363,9 @@
                                             </div>
                                             <div class="reviews-members-body">
                                                 <p> {{ review.review_context }} </p>
+                                            </div>
+                                            <div class="reviews-members-body">
+                                                <p> {{ review.images.url }} </p>
                                             </div>
                                             <div class="reviews-members-footer">
                                                 <a class="total-like" href="#collapseViewComment-{{ forloop.counter0 }}" data-toggle="collapse" aria-expanded="false" aria-controls="collapseViewComment-{{ forloop.counter0 }}"><i class="far fa-eye"></i> View Comments</a>
