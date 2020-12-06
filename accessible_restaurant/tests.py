@@ -133,14 +133,12 @@ class TestForms(TestCase):
     def test_RestaurantProfileUpdateForm_is_valid(self):
         form = RestaurantProfileUpdateForm(
             data={
-                "restaurant_name": "Pizza",
                 "photo": "Photo",
                 "phone": "1234567889",
                 "address": "345 NY",
                 "city": "Manhattan",
                 "zip_code": "11220",
                 "state": "NY",
-                "is_open": "True",
             }
         )
         self.assertTrue(form.is_valid())
@@ -333,9 +331,9 @@ class TestViews(TestCase):
     def setUp(self):
         self.client = Client()
         self.index_url = reverse("accessible_restaurant:index")
-        self.about_url = reverse("accessible_restaurant:about")
+        # self.about_url = reverse("accessible_restaurant:about")
         self.logout_url = reverse("accessible_restaurant:logout")
-        self.about_url = reverse("accessible_restaurant:about")
+        # self.about_url = reverse("accessible_restaurant:about")
         self.signup_url = reverse("accessible_restaurant:signup")
         self.emailsent_url = reverse("accessible_restaurant:emailsent")
         self.user_profile_url = reverse("accessible_restaurant:user_profile")
@@ -353,10 +351,10 @@ class TestViews(TestCase):
             "accessible_restaurant:write_review", args=["FaPtColHYcTnZAxtoM33cA"]
         )
 
-    def test_about_view(self):
-        response = self.client.get(self.about_url)
-        self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/about.html")
+    # def test_about_view(self):
+    #     response = self.client.get(self.about_url)
+    #     self.assertEquals(response.status_code, 200)
+    #     self.assertTemplateUsed(response, "accounts/about.html")
 
     def test_logout_view(self):
         response = self.client.get(self.logout_url)
@@ -372,10 +370,10 @@ class TestViews(TestCase):
         response = self.client.get(self.logout_url)
         self.assertEqual(response.status_code, 302)
 
-    def test_about_view_GET(self):
-        response = self.client.get(self.about_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/about.html")
+    # def test_about_view_GET(self):
+    #     response = self.client.get(self.about_url)
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, "accounts/about.html")
 
     def test_signup_view_GET(self):
         response = self.client.get(self.signup_url)
@@ -452,14 +450,12 @@ class TestViews(TestCase):
         )
         # self.client.login(username="huanjin", password="test123456")
         self.user.rprofile = Restaurant_Profile.objects.create(
-            restaurant_name="name",
             photo="default.jpg",
             phone="3474223609",
             address="35 River Drive South",
             city="Jersey City",
             zip_code="07310",
             state="NJ",
-            is_open=True,
         )
 
         response = self.client.post(self.resprofile_url)  # self.user.rprofile)
@@ -864,14 +860,12 @@ class TestModels(TestCase):
         )
         # self.client.login(username="huanjin", password="test123456")
         self.user.rprofile = Restaurant_Profile.objects.create(
-            restaurant_name="name",
             photo="default.jpg",
             phone="3474223609",
             address="35 River Drive South",
             city="Jersey City",
             zip_code="07310",
             state="NJ",
-            is_open=True,
         )
 
         self.assertEquals(self.user.rprofile.photo.height, 300)
@@ -1609,14 +1603,12 @@ class TestReview(TestCase):
                 "username": "rest_user",
                 "first_name": "Rest",
                 "last_name": "User",
-                "restaurant_name": "Restaurant Test Name",
                 "photo": fp,
                 "phone": "1234567890",
                 "address": "6 Metrotech",
                 "city": "Brooklyn",
                 "zip_code": "11201",
                 "state": "NY",
-                "is_open": False,
             }
             restaurant_update_profile_response = self.client.post(
                 self.restaurant_profile_url,

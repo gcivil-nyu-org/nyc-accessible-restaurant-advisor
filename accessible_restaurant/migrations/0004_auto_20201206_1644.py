@@ -6,21 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accessible_restaurant', '0003_auto_20201202_1045'),
+        ("accessible_restaurant", "0003_auto_20201202_1045"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='restaurant_profile',
-            name='is_open',
+            model_name="restaurant_profile",
+            name="is_open",
         ),
         migrations.RemoveField(
-            model_name='restaurant_profile',
-            name='restaurant_name',
+            model_name="restaurant_profile",
+            name="restaurant_name",
         ),
         migrations.AddField(
-            model_name='restaurant_profile',
-            name='auth_status',
+            model_name="restaurant_profile",
+            name="auth_status",
             field=models.BooleanField(default=False),
         ),
     ]

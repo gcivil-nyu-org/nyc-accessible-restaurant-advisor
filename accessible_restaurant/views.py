@@ -411,10 +411,12 @@ def restaurant_profile_view(request):
                 tmp_auth.user = request.user
                 tmp_auth.auth_status = "pending"
                 prev_auth_len = ApprovalPendingRestaurants.objects.filter(
-                    user=request.user, restaurant = tmp_auth.restaurant
+                    user=request.user, restaurant=tmp_auth.restaurant
                 ).count()
                 if prev_auth_len > 0:
-                    prev_auth = ApprovalPendingRestaurants.objects.get(user=request.user, restaurant = tmp_auth.restaurant)
+                    prev_auth = ApprovalPendingRestaurants.objects.get(
+                        user=request.user, restaurant=tmp_auth.restaurant
+                    )
                     prev_auth.auth_documents.delete()
                     prev_auth.delete()
                 auth_form.save()
