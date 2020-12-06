@@ -19,6 +19,20 @@
         <div class="col-12">
             <div class="content">
                 <!-- FAQs -->
+                {% if messages %}
+                <div class="col-12">
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>{{ message.tags }}: </strong>{{ message }}
+                            </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
                 <div class="card">
                     <div class="card-div d-flex flex-column">
                         <h3 class="font-weight-bold">Frequently Asked Questions</h3>
