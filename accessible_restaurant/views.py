@@ -479,6 +479,8 @@ def restaurant_list_view(request, page):
     sandwiches = request.GET.get("Sandwiches", "")
     brunch = request.GET.get("Brunch", "")
     coffee = request.GET.get("Coffee", "")
+    isCompliant = request.GET.get("isCompliant", "")
+    notCompliant = request.GET.get("notCompliant", "")
 
     filters_applied = False
     if (
@@ -493,12 +495,15 @@ def restaurant_list_view(request, page):
         or sandwiches
         or brunch
         or coffee
+        or isCompliant
+        or notCompliant
     ):
         filters_applied = True
 
     filters = {
         "prices": [price1, price2, price3, price4],
         "categories": [chinese, korean, salad, pizza, sandwiches, brunch, coffee],
+        "compliant": [isCompliant, notCompliant],
     }
 
     if keyword:
@@ -550,6 +555,8 @@ def restaurant_list_view(request, page):
         "Sandwiches": sandwiches,
         "Brunch": brunch,
         "Coffee": coffee,
+        "isCompliant": isCompliant,
+        "notCompliant": notCompliant,
         "filter_applied": filters_applied,
     }
     return render(request, "restaurants/listing.html", context)
