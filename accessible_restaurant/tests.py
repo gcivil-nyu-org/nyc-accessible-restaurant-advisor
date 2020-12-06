@@ -975,23 +975,23 @@ class TestManageCertificate(TestCase):
 
         # create three types of user accounts
         self.super_user = User.objects.create_superuser(
-            "admin", "shonna.x.tang@gmail.com", "accessible"
+            "admin", "test1@test.com", "accessible"
         )
         self.normal_user_1 = User.objects.create_user(
             username="normal_user_1",
-            email="shonna.x.tang@gmail.com",
+            email="test2@test.com",
             password="123456test",
             is_user=True,
         )
         self.normal_user_2 = User.objects.create_user(
             username="normal_user_2",
-            email="shonna.x.tang@gmail.com",
+            email="test3@test.com",
             password="123456test",
             is_user=True,
         )
         self.restaurant_user = User.objects.create_user(
             username="rest_user",
-            email="shonna.x.tang@gmail.com",
+            email="test4@test.com",
             password="123456test",
             is_restaurant=True,
         )
