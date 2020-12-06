@@ -108,10 +108,11 @@ def index_view_personalized(request):
     return render(request, "home.html", context)
 
 
-def about_view(request):
-    return render(request, "accounts/about.html")
+# def about_view(request):
+#     return render(request, "accounts/about.html")
 
 
+@login_required
 def logout_view(request):
     return render(request, "accounts/logout.html")
 
