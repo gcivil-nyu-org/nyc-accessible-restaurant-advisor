@@ -576,7 +576,7 @@ class TestRestaurantDetail(TestCase):
         return super().setUp()
 
     def test_can_view_restaurant_detail_page_correctly(self):
-        # self.client.login(username="huanjin", password="test123456")
+        self.client.login(username="huanjin", password="test123456")
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "restaurants/details.html")
