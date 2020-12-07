@@ -188,7 +188,28 @@
                             <div class="row">
                                 <div class="col-6">
                                     <div class="m-2">
-                                        <h6> Filter by price </h6>
+                                        <h6> Filter by compliant </h6>
+                                        <div class="form-check">
+                                            {% if isCompliant %}
+                                                <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="isCompliant" id="isCompliant" name="isCompliant">
+                                            {% else %}
+                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="$" id="isCompliant" name="isCompliant">
+                                            {% endif %}
+                                            <label class="form-check-label" for="isCompliant">
+                                            Compliant
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            {% if notCompliant %}
+                                                <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="notCompliant" id="notCompliant" name="notCompliant">
+                                            {% else %}
+                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="$$" id="notCompliant" name="notCompliant">
+                                            {% endif %}
+                                            <label class="form-check-label" for="notCompliant">
+                                            Not Compliant
+                                            </label>
+                                        </div>
+                                        <h6 class="mt-2"> Filter by price </h6>
                                         <div class="form-check">
                                             {% if price1 %}
                                                 <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="$" id="price1" name="price1">
