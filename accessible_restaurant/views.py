@@ -108,10 +108,11 @@ def index_view_personalized(request):
     return render(request, "home.html", context)
 
 
-def about_view(request):
-    return render(request, "accounts/about.html")
+# def about_view(request):
+#     return render(request, "accounts/about.html")
 
 
+@login_required
 def logout_view(request):
     return render(request, "accounts/logout.html")
 
@@ -225,6 +226,7 @@ class RestaurantSignUpView(CreateView):
 
 
 @login_required
+@user_passes_test(lambda u: u.is_user, login_url="/", redirect_field_name=None)
 def user_profile_view(request):
     if request.method == "POST":
         if "submit-certificate" in request.POST:
@@ -329,7 +331,8 @@ def user_profile_view(request):
     return render(request, "profile/user_profile.html", context)
 
 
-@user_passes_test(lambda u: u.is_superuser)
+@login_required
+@user_passes_test(lambda u: u.is_superuser, login_url="/", redirect_field_name=None)
 def authentication_view(request):
     if request.method == "POST":
         if "submit-user" in request.POST:
@@ -398,6 +401,7 @@ def authentication_view(request):
 
 
 @login_required
+@user_passes_test(lambda u: u.is_restaurant, login_url="/", redirect_field_name=None)
 def restaurant_profile_view(request):
     if request.method == "POST":
         if "submit-certificate" in request.POST:
@@ -406,7 +410,20 @@ def restaurant_profile_view(request):
                 tmp_auth = auth_form.save(commit=False)
                 tmp_auth.user = request.user
                 tmp_auth.auth_status = "pending"
+                prev_auth_len = ApprovalPendingRestaurants.objects.filter(
+                    user=request.user, restaurant=tmp_auth.restaurant
+                ).count()
+                if prev_auth_len > 0:
+                    prev_auth = ApprovalPendingRestaurants.objects.get(
+                        user=request.user, restaurant=tmp_auth.restaurant
+                    )
+                    prev_auth.auth_documents.delete()
+                    prev_auth.delete()
                 auth_form.save()
+                # update the auth_status in restaurant profile
+                tmp_rprofile = Restaurant_Profile.objects.get(user=request.user)
+                tmp_rprofile.auth_status = True
+                tmp_rprofile.save()
                 messages.success(
                     request, f'{"Your certificate has been sent to administrator!"}'
                 )
@@ -442,12 +459,18 @@ def restaurant_profile_view(request):
 
     restaurant_list = Restaurant.objects.filter(user=request.user)
 
+    auth_request = ApprovalPendingRestaurants.objects.filter(user=request.user)
+    auth_request_list = []
+    for req in auth_request:
+        auth_request_list.append(req.restaurant)
+
     context = {
         "user_form": u_form,
         "profile_form": p_form,
         "auth_form": auth_form,
         "profile_action": profile_action,
         "restaurant_list": restaurant_list,
+        "auth_request_list": auth_request_list,
     }
     return render(request, "profile/restaurant_profile.html", context)
 
@@ -478,6 +501,8 @@ def restaurant_list_view(request, page):
     sandwiches = request.GET.get("Sandwiches", "")
     brunch = request.GET.get("Brunch", "")
     coffee = request.GET.get("Coffee", "")
+    isCompliant = request.GET.get("isCompliant", "")
+    notCompliant = request.GET.get("notCompliant", "")
 
     filters_applied = False
     if (
@@ -492,12 +517,15 @@ def restaurant_list_view(request, page):
         or sandwiches
         or brunch
         or coffee
+        or isCompliant
+        or notCompliant
     ):
         filters_applied = True
 
     filters = {
         "prices": [price1, price2, price3, price4],
         "categories": [chinese, korean, salad, pizza, sandwiches, brunch, coffee],
+        "compliant": [isCompliant, notCompliant],
     }
 
     if keyword:
@@ -549,6 +577,8 @@ def restaurant_list_view(request, page):
         "Sandwiches": sandwiches,
         "Brunch": brunch,
         "Coffee": coffee,
+        "isCompliant": isCompliant,
+        "notCompliant": notCompliant,
         "filter_applied": filters_applied,
     }
     return render(request, "restaurants/listing.html", context)
@@ -703,7 +733,7 @@ def restaurant_detail_view(request, business_id):
 
 
 @login_required
-@user_passes_test(lambda u: not u.is_superuser)
+@user_passes_test(lambda u: not u.is_superuser, login_url="/", redirect_field_name=None)
 def write_review_view(request, business_id):
     if request.user.is_user:
         if request.method == "GET":
@@ -736,7 +766,7 @@ def write_review_view(request, business_id):
 
 
 @login_required
-@user_passes_test(lambda u: not u.is_superuser)
+@user_passes_test(lambda u: not u.is_superuser, login_url="/", redirect_field_name=None)
 def add_comment_view(request, business_id, review_id):
     if request.method == "POST":
         comment_form = CommentForm(request.POST)
