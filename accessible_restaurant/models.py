@@ -333,9 +333,36 @@ class Review(models.Model):
     accessible_table_rating = models.PositiveIntegerField(blank=True, default=0)
     accessible_restroom_rating = models.PositiveIntegerField(blank=True, default=0)
     accessible_path_rating = models.PositiveIntegerField(blank=True, default=0)
+    image1 = models.ImageField(null=True, blank=True, upload_to="images1/")
+    image2 = models.ImageField(null=True, blank=True, upload_to="images2/")
+    image3 = models.ImageField(null=True, blank=True, upload_to="images3/")
 
     def __str__(self):
         return f"{self.user} review on {self.restaurant}"
+
+    # def save(self, *args, **kwargs):
+    #     super(Review, self).save(*args, **kwargs)
+    #     if self.image1:
+    #         img1 = Image.open(self.image1.path)
+    #         img1 = img1.convert("RGB")
+    #         if img1.height > 300 or img1.width > 300:
+    #             output_size = (300, 300)
+    #             img1.thumbnail(output_size)
+    #             img1.save(self.image1.path)
+    #     if self.image2:
+    #         img2 = Image.open(self.image2.path)
+    #         img2 = img2.convert("RGB")
+    #         if img2.height > 300 or img2.width > 300:
+    #             output_size = (300, 300)
+    #             img2.thumbnail(output_size)
+    #             img2.save(self.image2.path)
+    #     if self.image3:
+    #         img3 = Image.open(self.image3.path)
+    #         img3 = img3.convert("RGB")
+    #         if img3.height > 300 or img3.width > 300:
+    #             output_size = (300, 300)
+    #             img3.thumbnail(output_size)
+    #             img3.save(self.image3.path)
 
 
 class Comment(models.Model):
@@ -368,3 +395,11 @@ class Favorites(models.Model):
 
     def __str__(self):
         return f"{self.user} likes {self.restaurant}"
+
+
+# class Images(models.Model):
+#     post = models.ForeignKey(Review, on_delete=models.CASCADE, related_name = "r_images")
+#     image  = models.ImageField(upload_to = "images_review/", blank = True, null=True)
+
+#     def __str__(self):
+#         return self.post.review_context + "Image"

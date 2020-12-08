@@ -52,6 +52,7 @@ from .models import (
     Restaurant_Profile,
     FAQ,
     Favorites,
+    # Images,
 )
 from .utils import (
     get_restaurant_list,
@@ -67,6 +68,7 @@ from .utils import (
     get_user_profile_favorite,
 )
 
+from django.forms import modelformset_factory
 
 # Create your views here.
 # def index_view(request):
@@ -696,6 +698,7 @@ def restaurant_detail_view(request, business_id):
             isFavorite = False
 
         context = {
+            # "review": Review.objects.all(),
             "restaurant": restaurant,
             "restaurant_data": restaurant_data,
             "restaurant_review": restaurant_reviews,
@@ -735,26 +738,39 @@ def restaurant_detail_view(request, business_id):
 @login_required
 @user_passes_test(lambda u: not u.is_superuser, login_url="/", redirect_field_name=None)
 def write_review_view(request, business_id):
+    # ImageFormSet = modelformset_factory(Images,
+    # form=ImageForm, extra=3)
     if request.user.is_user:
-        if request.method == "GET":
-            review_form = ReviewPostForm(request.GET)
+        if request.method == "POST":
+            review_form = ReviewPostForm(request.POST, request.FILES)
+            # formset = ImageFormSet(request.POST, request.FILES,
+            #    queryset=Images.objects.none())
             restaurant_instance = Restaurant.objects.get(business_id=business_id)
-
+            # formset = ImageFormset(request.POST or None, request.FILES or None)
             if review_form.is_valid():
                 temp = review_form.save(commit=False)
                 temp.user = request.user
                 temp.restaurant = restaurant_instance
                 review_form.save()
+                # for form in formset.cleaned_data:
+                #     image = form.get('image')
+                #     photo = Images(post=temp, image=image)
+                #     photo.save()
+                # messages.success(request,
+                #                 "Posted!")
+                # else:
+                #     print(review_form.errors, formset.errors)
                 return redirect("accessible_restaurant:detail", business_id)
-
         else:
-            review_form = ReviewPostForm(request.GET)
-            # restaurant_instance = Restaurant.objects.get(business_id=business_id)
 
+            review_form = ReviewPostForm(request.POST)
+            # formset = ImageFormSet(queryset=Images.objects.none())
+            restaurant_instance = Restaurant.objects.get(business_id=business_id)
         context = {
             "user": request.user,
             "restaurant": restaurant_instance,
             "review_form": review_form,
+            # "formset":formset,
         }
         return render(request, "review/writeReview.html", context)
     else:

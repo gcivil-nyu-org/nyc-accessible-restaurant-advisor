@@ -17,6 +17,7 @@ from accessible_restaurant.models import (
     ApprovalPendingRestaurants,
     Restaurant,
     Comment,
+    # Images,
 )
 from django.utils.safestring import mark_safe
 
@@ -132,6 +133,12 @@ class RestaurantSignUpForm(UserCreationForm):
         return user
 
 
+# class CustomAuthenticationForm(AuthenticationForm):
+#     def confirm_login_allowed(self, user):
+#         if not user.is_active or not user.is_validated:
+#             raise forms.ValidationError('There was a problem with your login.', code='invalid_login')
+
+
 class UserLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(UserLoginForm, self).__init__(*args, **kwargs)
@@ -158,6 +165,14 @@ class MyPasswordResetForm(PasswordResetForm):
                 "placeholder": "Email Address",
             }
         )
+
+
+# class PickyAuthenticationForm(PasswordResetForm):
+#     def confirm_login_allowed(self, user):
+#         if not user.is_active:
+#             raise forms.ValidationError("This account is inactive.",
+#                 code='inactive',
+#             )
 
 
 class MySetPasswordForm(SetPasswordForm):
@@ -391,7 +406,9 @@ class ReviewPostForm(forms.ModelForm):
             "accessible_restroom_rating",
             "accessible_path_rating",
             "review_context",
-            # "images",
+            "image1",
+            "image2",
+            "image3",
         ]
         labels = {
             "review_context": "Review",
@@ -405,6 +422,13 @@ class ReviewPostForm(forms.ModelForm):
                 }
             )
         }
+
+
+# class ImageForm(forms.ModelForm):
+#     image = forms.ImageField(label='Image')
+#     class Meta:
+#         model = Images
+#         fields = ('image', )
 
 
 class CommentForm(forms.ModelForm):
