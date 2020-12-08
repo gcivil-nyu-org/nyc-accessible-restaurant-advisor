@@ -92,12 +92,14 @@
                         </div>
 
                         <!-- Social Login -->
+                        {% load socialaccount %}
+                        <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
                         <div class="form-group col-lg-12 mx-auto">
-                            <a href="#" class="btn btn-primary btn-block py-2 btn-facebook">
+                            <a href="{% provider_login_url 'facebook' process="login" action='reauthenticate' %}" class="btn btn-primary btn-block py-2 btn-facebook">
                                 <i class="fa fa-facebook-f mr-2"></i>
                                 <span class="font-weight-bold">Continue with Facebook</span>
                             </a>
-                            <a href="#" class="btn btn-primary btn-block py-2 btn-google">
+                            <a href="{% provider_login_url 'google' process="login" action='reauthenticate' %}" class="btn btn-primary btn-block py-2 btn-google">
                                 <i class="fab fa-google mr-2"></i></i>
                                 <span class="font-weight-bold">Continue with Google</span>
                             </a>
