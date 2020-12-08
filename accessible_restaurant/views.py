@@ -69,10 +69,10 @@ from .utils import (
 
 
 # Create your views here.
-def index_view(request):
-    recommended_restaurants = Restaurant.objects.all()[:3]
-    context = {"recommended_restaurants": recommended_restaurants}
-    return render(request, "home.html", context)
+# def index_view(request):
+#     recommended_restaurants = Restaurant.objects.all()[:3]
+#     context = {"recommended_restaurants": recommended_restaurants}
+#     return render(request, "home.html", context)
 
 
 def index_view_personalized(request):
@@ -501,7 +501,7 @@ def restaurant_list_view(request, page):
     sandwiches = request.GET.get("Sandwiches", "")
     brunch = request.GET.get("Brunch", "")
     coffee = request.GET.get("Coffee", "")
-    isCompliant = request.GET.get("isCompliant", "")
+    allRestaurants = request.GET.get("allRestaurants", "")
     notCompliant = request.GET.get("notCompliant", "")
 
     filters_applied = False
@@ -517,7 +517,7 @@ def restaurant_list_view(request, page):
         or sandwiches
         or brunch
         or coffee
-        or isCompliant
+        or allRestaurants
         or notCompliant
     ):
         filters_applied = True
@@ -525,7 +525,7 @@ def restaurant_list_view(request, page):
     filters = {
         "prices": [price1, price2, price3, price4],
         "categories": [chinese, korean, salad, pizza, sandwiches, brunch, coffee],
-        "compliant": [isCompliant, notCompliant],
+        "compliant": [allRestaurants, notCompliant],
     }
 
     if keyword:
@@ -577,7 +577,7 @@ def restaurant_list_view(request, page):
         "Sandwiches": sandwiches,
         "Brunch": brunch,
         "Coffee": coffee,
-        "isCompliant": isCompliant,
+        "allRestaurants": allRestaurants,
         "notCompliant": notCompliant,
         "filter_applied": filters_applied,
     }

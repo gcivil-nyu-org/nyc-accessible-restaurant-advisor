@@ -253,14 +253,12 @@ def get_filter_restaurant(filters, restaurants):
             categories_flag = True
         else:
             categories[i] = "#"
-    if compliant[0] and compliant[1]:
-        pass
-    elif compliant[0] or compliant[1]:
+    if compliant[0] or compliant[1]:
         compliant_flag = True
 
     price1, price2, price3, price4 = prices
     chinese, korean, salad, pizza, sandwiches, brunch, coffee = categories
-    isCompliant, notCompliant = compliant
+    allRestaurants, notCompliant = compliant
 
     if price_flag:
         restaurants = restaurants.filter(
@@ -291,11 +289,10 @@ def get_filter_restaurant(filters, restaurants):
             | Q(category3__icontains=coffee)
         )
     if compliant_flag:
-        if isCompliant:
-            restaurants = restaurants.filter(Q(compliant=True))
-        elif notCompliant:
+        if notCompliant:
             restaurants = restaurants.filter(Q(compliant=False))
-
+    else:
+        restaurants = restaurants.filter(Q(compliant=True))
     return restaurants
 
 
