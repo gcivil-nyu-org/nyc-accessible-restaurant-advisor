@@ -1702,6 +1702,8 @@ class TestContactUs(TestCase):
             "Message": "Test Message",
         }
 
+        return super().setUp()
+
     def test_can_contact_us_successfully(self):
         contact_us_response = self.client.post(
             self.contact_us_url, self.message, format="text/html"
@@ -1713,6 +1715,8 @@ class TestContactUs(TestCase):
 class TestSort(TestCase):
     def setUp(self):
         self.browse_url = reverse("accessible_restaurant:browse", args=[0])
+
+        return super().setUp()
 
     def test_can_sort_properly(self):
         lowestPrice_response = self.client.get(
@@ -1735,3 +1739,106 @@ class TestSort(TestCase):
         )
         self.assertEqual(nearest_response.status_code, 200)
         self.assertTemplateUsed(nearest_response, "restaurants/listing.html")
+
+
+class TestIndexPage(TestCase):
+    def setUp(self):
+        Restaurant.objects.create(
+            business_id="jkl1ukPtVM2UZqMLSJdWFw",
+            name="Greenwich Steakhouse",
+            img_url="https://s3-media2.fl.yelpcdn.com/bphoto/uN7IpkwZrL7f2jYXbHPDIA/o.jpg",
+            rating="4.5",
+            latitude="40.73608",
+            longitude="-74.00058",
+            address="62 Greenwich Ave",
+            city="New York",
+            zip_code="10011",
+            compliant=True,
+            price="$$$$",
+            category1="Steakhouses",
+            category2="Seafood",
+            category3="Cocktail Bars",
+            main_category1="Lunch/Dinner",
+            main_category2="Lunch/Dinner",
+            main_category3="Drinks",
+            cuisine="",
+            review_count=100,
+        )
+
+        Restaurant.objects.create(
+            business_id="zuD-iB7hV_dnf_JzBk_DCQ",
+            name="Juku",
+            img_url="https://s3-media3.fl.yelpcdn.com/bphoto/y1sYBIZzPgPFot9OZeKV8Q/o.jpg",
+            rating="4",
+            latitude="40.71461",
+            longitude="-73.999528",
+            address="32 Mulberry St",
+            city="New York",
+            zip_code="10013",
+            phone="16465902111",
+            compliant=True,
+            price="$$$",
+            category1="Sushi Bars",
+            category2="Izakaya",
+            category3="Cocktail Bars",
+            main_category1="Lunch/Dinner",
+            main_category2="Lunch/Dinner",
+            main_category3="Drinks",
+            cuisine="Asian",
+            review_count=100,
+        )
+
+        Restaurant.objects.create(
+            business_id="4h4Tuuc56YPO6lWfZ1bdSQ",
+            name="Joe's Pizza",
+            img_url="https://s3-media3.fl.yelpcdn.com/bphoto/iiFPnKfxI2_UjJHbCd2iCQ/o.jpg",
+            rating="4",
+            latitude="40.71012977",
+            longitude="-74.00772069",
+            address="124 Fulton St",
+            city="New York",
+            zip_code="10038",
+            phone="12122670860",
+            compliant=True,
+            price="$",
+            category1="Pizza",
+            main_category1="Lunch/Dinner",
+            main_category2="",
+            main_category3="",
+            cuisine="European",
+            review_count=100,
+        )
+
+        self.index_url = reverse("accessible_restaurant:index")
+        self.client = Client()
+
+        self.user = User.objects.create_user(
+            username="normal_user",
+            email="test@test.com",
+            password="123456test",
+            is_user=True,
+        )
+
+        self.user.uprofile = User_Profile.objects.create(
+            photo="default.jpg",
+            phone="3474223609",
+            address="35 River Drive South",
+            city="Jersey City",
+            zip_code="07310",
+            state="NJ",
+        )
+
+        self.user.upreferences = User_Preferences.objects.create(
+            cuisine_pref1="European",
+            cuisine_pref2="Asian",
+            dining_pref1="Dinner",
+            dining_pref2="Lunch",
+        )
+
+        return super().setUp()
+
+    def test_can_view_index_correctly(self):
+        self.client.login(username="normal_user", password="123456test")
+        index_response = self.client.get(self.index_url)
+        self.assertEqual(index_response.status_code, 200)
+        self.assertTemplateUsed(index_response, "home.html")
