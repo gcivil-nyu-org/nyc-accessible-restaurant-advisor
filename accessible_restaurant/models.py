@@ -335,9 +335,9 @@ class Review(models.Model):
     accessible_table_rating = models.PositiveIntegerField(blank=True, default=0)
     accessible_restroom_rating = models.PositiveIntegerField(blank=True, default=0)
     accessible_path_rating = models.PositiveIntegerField(blank=True, default=0)
-    image1 = models.ImageField(null=True, blank=True, upload_to = 'images1/')
-    image2 = models.ImageField(null=True, blank=True, upload_to = 'images2/')
-    image3 = models.ImageField(null=True, blank=True, upload_to = 'images3/')
+    image1 = models.ImageField(null=True, blank=True, upload_to="images1/")
+    image2 = models.ImageField(null=True, blank=True, upload_to="images2/")
+    image3 = models.ImageField(null=True, blank=True, upload_to="images3/")
 
     def __str__(self):
         return f"{self.user} review on {self.restaurant}"
@@ -397,6 +397,7 @@ class Favorites(models.Model):
 
     def __str__(self):
         return f"{self.user} likes {self.restaurant}"
+
 
 # class Images(models.Model):
 #     post = models.ForeignKey(Review, on_delete=models.CASCADE, related_name = "r_images")

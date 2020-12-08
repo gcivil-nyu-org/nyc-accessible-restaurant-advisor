@@ -132,6 +132,7 @@ class RestaurantSignUpForm(UserCreationForm):
 
         return user
 
+
 # class CustomAuthenticationForm(AuthenticationForm):
 #     def confirm_login_allowed(self, user):
 #         if not user.is_active or not user.is_validated:
@@ -165,12 +166,14 @@ class MyPasswordResetForm(PasswordResetForm):
             }
         )
 
+
 # class PickyAuthenticationForm(PasswordResetForm):
 #     def confirm_login_allowed(self, user):
 #         if not user.is_active:
 #             raise forms.ValidationError("This account is inactive.",
 #                 code='inactive',
 #             )
+
 
 class MySetPasswordForm(SetPasswordForm):
     def __init__(self, *args, **kwargs):
@@ -424,11 +427,13 @@ class ReviewPostForm(forms.ModelForm):
             )
         }
 
+
 # class ImageForm(forms.ModelForm):
-#     image = forms.ImageField(label='Image')    
+#     image = forms.ImageField(label='Image')
 #     class Meta:
 #         model = Images
 #         fields = ('image', )
+
 
 class CommentForm(forms.ModelForm):
     class Meta:

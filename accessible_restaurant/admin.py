@@ -27,6 +27,7 @@ admin.site.register(ApprovalPendingRestaurants)
 admin.site.register(Favorites)
 # admin.site.register(Images)
 
+
 @admin.register(Restaurant)
 class ViewAdmin(ImportExportModelAdmin):
     pass

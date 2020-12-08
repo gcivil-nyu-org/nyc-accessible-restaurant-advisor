@@ -615,7 +615,6 @@ def restaurant_detail_view(request, business_id):
                 review["lnull"] = lr_null
                 username = review["username"]
                 photo = review["photo"]
-                
 
         for review in restaurant_reviews["reviews"]:
             r_full, r_half, r_null = star_list[float(review["rating"])]
@@ -694,12 +693,12 @@ def restaurant_detail_view(request, business_id):
 @user_passes_test(lambda u: not u.is_superuser)
 def write_review_view(request, business_id):
     # ImageFormSet = modelformset_factory(Images,
-                                        # form=ImageForm, extra=3)
+    # form=ImageForm, extra=3)
     if request.user.is_user:
         if request.method == "POST":
             review_form = ReviewPostForm(request.POST, request.FILES)
             # formset = ImageFormSet(request.POST, request.FILES,
-                            #    queryset=Images.objects.none())
+            #    queryset=Images.objects.none())
             restaurant_instance = Restaurant.objects.get(business_id=business_id)
             # formset = ImageFormset(request.POST or None, request.FILES or None)
             if review_form.is_valid():
@@ -713,13 +712,13 @@ def write_review_view(request, business_id):
                 #     photo.save()
                 # messages.success(request,
                 #                 "Posted!")
-            # else:
-            #     print(review_form.errors, formset.errors)
+                # else:
+                #     print(review_form.errors, formset.errors)
 
                 return redirect("accessible_restaurant:detail", business_id)
 
         else:
-            
+
             review_form = ReviewPostForm(request.POST)
             # formset = ImageFormSet(queryset=Images.objects.none())
             restaurant_instance = Restaurant.objects.get(business_id=business_id)
