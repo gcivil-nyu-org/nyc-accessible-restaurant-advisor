@@ -13,6 +13,16 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+os.environ["PATH"] = (
+    os.path.join(BASE_DIR, r"venv\Lib\site-packages\osgeo") + ";" + os.environ["PATH"]
+)
+os.environ["PROJ_LIB"] = (
+    os.path.join(BASE_DIR, r"env3\Lib\site-packages\osgeo\data\proj")
+    + ";"
+    + os.environ["PATH"]
+)
+GDAL_LIBRARY_PATH = os.path.join(BASE_DIR, r"venv\lib\site-packages\osgeo\gdal301.dll")
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -36,11 +46,28 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.gis",
+    "django.contrib.sites",
     "crispy_forms",
     "import_export",
     "django_filters",
     "leaflet",
     "storages",
+    # allauth related apps
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    # providers
+    "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.facebook",
+]
+
+SITE_ID = 1
+
+AUTH_USER_MODEL = "accessible_restaurant.User"
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
 MIDDLEWARE = [
@@ -174,3 +201,16 @@ GEOIP_PATH = os.path.join(BASE_DIR, "geoip")
 GDAL_LIBRARY_PATH = os.environ.get("GDAL_LIBRARY_PATH")
 # Leaflet parameters
 LEAFLET_CONFIG = {"SCALE": None, "RESET_VIEW": False}
+
+# Third party email configuration
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = "none"
+SOCIALACCOUNT_QUERY_EMAIL = False
+SOCIALACCOUNT_EMAIL_REQUIRED = False
+SOCIALACCOUNT_STORE_TOKENS = False
+
+# Third party account adpter
+ACCOUNT_ADAPTER = "nyc_accessible_restaurant_advisor.users.adapter.UserAccountAdapter"
+SOCIALACCOUNT_ADAPTER = (
+    "nyc_accessible_restaurant_advisor.users.adapter.CustomSocialAccountAdapter"
+)

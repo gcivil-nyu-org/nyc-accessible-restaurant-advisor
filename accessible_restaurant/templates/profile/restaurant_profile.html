@@ -90,12 +90,12 @@
                 <div class="col-md-2">
                     {% if profile_action == 'view' %}
                         <form method="get" action="{% url 'accessible_restaurant:restaurant_profile' %}?{{ request.GET.urlencode }}">
-                            {% csrf_token %}
+{#                            {% csrf_token %}#}
                             <input type="submit" class="btn btn-yellow profile-edit-btn" name="action" value="Edit Profile"/>
                         </form>
                     {% else %}
                         <form method="get" action="{% url 'accessible_restaurant:restaurant_profile' %}?{{ request.GET.urlencode }}">
-                            {% csrf_token %}
+{#                            {% csrf_token %}#}
                             <input type="submit" class="btn btn-yellow profile-edit-btn" name="action" value="View Profile"/>
                         </form>
                     {% endif %}
