@@ -1574,6 +1574,29 @@ class TestReview(TestCase):
             )
         self.assertEqual(user_update_profile_response.status_code, 302)
         self.assertEqual(user_update_profile_response.url, "/accounts/user-profile/")
+
+        # User edit preference content
+        upload_user_form_data = {
+            "submit-preferences": True,
+            "dining_pref1": "Breakfast",
+            "dining_pref2": "Lunch",
+            "dining_pref3": "Dinner",
+            "budget_pref": "$",
+            "location_pref": "Near Home",
+            "dietary_pref": "Vegetarian",
+            "cuisine_pref1": "Asian",
+            "cuisine_pref2": "American",
+        }
+        user_update_preferences_response = self.client.post(
+            self.user_profile_url,
+            upload_user_form_data,
+            HTTP_ACCEPT="application/json",
+        )
+        self.assertEqual(user_update_preferences_response.status_code, 302)
+        self.assertEqual(
+            user_update_preferences_response.url, "/accounts/user-profile/"
+        )
+
         self.client.logout()
 
     def test_restaurant_can_view_profile_correctly(self):
@@ -1688,7 +1711,7 @@ class TestLogout(TestCase):
 
     def test_can_login_successfully(self):
         self.client.login(username="normal_user", password="123456test")
-        logout_response = self.client.post(self.logout_url, format="text/html")
+        logout_response = self.client.get(self.logout_url)
         self.assertEqual(logout_response.status_code, 302)
         self.assertEqual(logout_response.url, "/")
 
