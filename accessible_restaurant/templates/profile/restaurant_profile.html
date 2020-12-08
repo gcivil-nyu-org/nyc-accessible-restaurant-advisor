@@ -140,10 +140,26 @@
                                         </div>
                                         <div class="col-md-5">
                                             <p>{{ field.value }}</p>
-                                            <p1 style="font-style: italic; font-size: x-small; color: #080808;">{{ field.help_text }} </p1>
+                                            <p style="font-style: italic; font-size: x-small; color: #080808;">{{ field.help_text }} </p>
                                         </div>
                                     </div>
                                 {% endfor %}
+                                {% if auth_request_list %}
+                                    <div class="row">
+                                        <div class="col-md-9">
+                                            <label>Documents are being reviewed:</label>
+                                        </div>
+                                    </div>
+                                    {% for restaurant in auth_request_list %}
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                            </div>
+                                            <div class="col-md-5">
+                                                <p>{{ restaurant.name }}, {{ restaurant.address }}, {{ restaurant.city }}</p>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
                             </div>
                         {% else %}
                             <div class="tab-pane fade show active" id="info-edit" role="tabpanel" aria-labelledby="info-tab-edit">

@@ -270,19 +270,15 @@ class RestaurantProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Restaurant_Profile
         fields = [
-            "restaurant_name",
             "photo",
             "phone",
             "address",
             "city",
             "zip_code",
             "state",
-            "is_open",
         ]
         labels = {
-            "restaurant_name": "Restaurant Name",
             "zip_code": "Zip Code",
-            "is_open": "Is Open",
         }
 
 

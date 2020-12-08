@@ -237,7 +237,6 @@ class Restaurant_Profile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, null=True, related_name="rprofile"
     )
-    restaurant_name = models.CharField(max_length=50)
     photo = models.ImageField(
         default="default.jpg", upload_to="restaurant_profile_pics"
     )
@@ -246,7 +245,6 @@ class Restaurant_Profile(models.Model):
     city = models.CharField(max_length=64, blank=True)
     zip_code = models.CharField(max_length=16, blank=True)
     state = models.CharField(max_length=32, blank=True)
-    is_open = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.user.username} Restaurant Profile"
