@@ -160,7 +160,7 @@
 <!--                </div>-->
 <!--            {% endif %}-->
             <form id="filterForm" method="get" action="{% url 'accessible_restaurant:browse' 0 %}?{{ request.GET.urlencode }}">
-                {% csrf_token %}
+{#                {% csrf_token %}#}
                 <div class="row">
                     <div class="input-group my-4">
                         <input class="form-control ml-4 mr-0" type="text" name="query" id="query" value="{{ request.GET.query }}" placeholder="Restaurant name, category, zip code, etc (use ',' between different types of keywords)" aria-label="Search">
