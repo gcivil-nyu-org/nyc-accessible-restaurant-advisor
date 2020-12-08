@@ -652,7 +652,7 @@ def restaurant_detail_view(request, business_id):
             isFavorite = False
 
         context = {
-            "review": Review.objects.all(),
+            # "review": Review.objects.all(),
             "restaurant": restaurant,
             "restaurant_data": restaurant_data,
             "restaurant_review": restaurant_reviews,
@@ -714,15 +714,12 @@ def write_review_view(request, business_id):
                 #                 "Posted!")
                 # else:
                 #     print(review_form.errors, formset.errors)
-
                 return redirect("accessible_restaurant:detail", business_id)
-
         else:
 
             review_form = ReviewPostForm(request.POST)
             # formset = ImageFormSet(queryset=Images.objects.none())
             restaurant_instance = Restaurant.objects.get(business_id=business_id)
-
         context = {
             "user": request.user,
             "restaurant": restaurant_instance,
