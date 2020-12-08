@@ -8,6 +8,7 @@ from .models import (
     Favorites,
     User_Preferences,
     Comment,
+    # Images,
 )
 
 from django.db.models import Q
@@ -106,6 +107,10 @@ def get_local_restaurant_reviews(business_id):
             review.auth_status = profile.auth_status
             review.username = user.username
             review.photo = photo
+            review.image1 = review.image1
+            review.image2 = review.image2
+            review.image3 = review.image3
+            # review.images_set = review.r_images.image
             review.comments_set = reversed(list(comments))
             # additional set for comments, one set can only use once.
             review.comments_set2 = reversed(list(comments))

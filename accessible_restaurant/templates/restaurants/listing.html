@@ -37,37 +37,40 @@
                 map: map,
                 anchorPoint: new google.maps.Point(0, -29)
             });
-            // if ({{user.uprofile.latitude}})
-            // const myLatLng = { lat: {{user.uprofile.latitude}},  lng: {{user.uprofile.longitude}} };
-            // new google.maps.Marker({
-            //     position: myLatLng,
-            //     map,
-            //     title: "Your location",
-            // });
+            
             const image = "https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/32x32/plain/disability.png";
             {% for restaurant in restaurants %}
                 var lat_restaurant = {{ restaurant.latitude }};
                 var long_restaurant = {{ restaurant.longitude }};
                 var restaurant_name = "{{ restaurant.name }}";
+                var restaurant_id = "{{restaurant.business_id}}"
                 console.log(restaurant_name);
+                var contentString = 
+                '<a href="{% url "accessible_restaurant:detail" restaurant.business_id %}" class="btn btn-light">{{restaurant.name}}</a>';
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString,
+                });
                 // console.log(typeof(lat_restaurant))
                 // lat_restaurant = int(lat_restaurant)
                 // var myLatLng1 = { lat: {{ restaurant.latitude }},  lng: {{ restaurant.longitude }} };
                 // long_restaurant = int(long_restaurant)
                 // console.log({{ restaurant.latitude }},{{ restaurant.longitude }})
-                addMarker({lat:lat_restaurant, lng:long_restaurant}, restaurant_name)
+                addMarker({lat:lat_restaurant, lng:long_restaurant}, restaurant_name, infowindow)
                 // addMarker({lat:40.709569, lng:-74.006834})
-
+                
             {% endfor %}
 
 
-            function addMarker(coords, restaurant_name){
+            function addMarker(coords, restaurant_name, infowindow){
                 var marker = new google.maps.Marker({
                     position:coords,
                     map,
                     title: restaurant_name,
                     icon: image
                 })
+                marker.addListener("click", () => {
+                    infowindow.open(map, marker);
+                });
             }
 
             autocomplete.addListener('place_changed', function() {
