@@ -326,11 +326,10 @@
                                 <div class="reviews-members pt-4 pb-4">
                                     <div class="media">
                                         <a href="{% url 'accessible_restaurant:public_facing' review.user_id %}"><img alt="..." src="{{ review.photo.url }}" class="mr-3 rounded-pill"></a>
-                                        <img alt="..." src="{{ review.images.url }}" class="mr-3 rounded-pill">
-                                        <p> {{ review.photo.url }} </p>
-                                        <p> {{ review.images.url }} </p>
+                                        
+                                       
 
-                                        <br/> {{ review.images }}<br/>
+                                        <!--<br/> {{ review.images }}<br/> -->
                                         <div class="media-body">
                                             <div class="reviews-members-header">
                                                 <span class="star-rating float-right">
@@ -364,6 +363,42 @@
                                             <div class="reviews-members-body">
                                                 <p> {{ review.review_context }} </p>
                                             </div>
+                                            <!-- <div class="row-gallery">
+                                                <div class="col-md-3">
+                                                    {%if review.image1%}
+                                                        <img alt="..." src="{{ review.image1.url }}">
+                                                        <p>{{ review.image1.url }}</p> -->
+                                                    <!-- {%endif%}
+                                                    {%if review.image2%}
+                                                        <img alt="..." src="{{ review.image2.url }}">
+                                                        <p>{{ review.image2.url }}</p> -->
+                                                    <!-- {%endif%}
+                                                    {%if review.image3%}
+                                                        <img alt="..." src="{{ review.image3.url }}">    -->
+                                                        <!-- <p>{{ review.image3.url }}</p> -->
+                                                    <!-- {%endif%}
+                                            </div> 
+                                            </div>  -->
+                                            <div class="row">
+                                                <div class="column">
+                                                {%if review.image1%}
+                                                        <img alt="..." src="{{ review.image1.url }}" style="width:100%">
+                                                        <!-- <p>{{ review.image1.url }}</p> -->
+                                                {%endif%}
+                                                </div>
+                                                <div class="column">
+                                                    {%if review.image2%}
+                                                        <img alt="..." src="{{ review.image2.url }}" style="width:100%">
+                                                        <!-- <p>{{ review.image1.url }}</p> -->
+                                                    {%endif%}
+                                                </div>
+                                                <div class="column">
+                                                    {%if review.image3%}
+                                                        <img alt="..." src="{{ review.image3.url }}" style="width:100%">
+                                                        <!-- <p>{{ review.image1.url }}</p> -->
+                                                    {%endif%}
+                                                </div>
+                                              </div>
                                             <div class="reviews-members-body">
                                                 <p> {{ review.images.url }} </p>
                                             </div>
