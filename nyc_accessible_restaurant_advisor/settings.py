@@ -149,7 +149,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
+DEBUG_PROPAGATE_EXCEPTIONS = True
+COMPRESS_ENABLED = os.environ.get("COMPRESS_ENABLED", False)
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 STATIC_URL = "/static/"
 
@@ -192,22 +194,6 @@ django_heroku.settings(locals(), test_runner=False)
 # Yelp parameters
 YELP_REST_ENDPOINT = "https://api.yelp.com/v3/businesses/"
 YELP_TOKEN = "PKbT9xaBBV7GvQU72SRGf-0JAz4-CvMu1zVOeKA2Bz5heJQAHoONKYNRX-AUYP0JwzL2da6aFBFKLPPZipnO5LFDsQlcq2QUJs_UhMhalZnv59QNaXK591UFIZKXX3Yx"
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-        },
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["console"],
-            "level": os.getenv("DJANGO_LOG_LEVEL", "DEBUG"),
-        },
-    },
-}
 
 LOGIN_REDIRECT_URL = "/"
 LOGIN_URL = "/accounts/login"
