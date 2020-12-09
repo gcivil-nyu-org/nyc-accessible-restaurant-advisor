@@ -16,6 +16,8 @@ Integration instance
         alt='Coverage Status' />
 </a>
 
+https://accessible-nyc-main.herokuapp.com
+
 Production instance
 
 <a href="https://travis-ci.com/github/gcivil-nyu-org/nyc-accessible-restaurant-advisor">
