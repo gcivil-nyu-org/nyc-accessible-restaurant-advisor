@@ -40,6 +40,7 @@ from accessible_restaurant.models import (
     ApprovalPendingUsers,
     ApprovalPendingRestaurants,
     User_Preferences,
+    Favorites,
 )
 import json
 
@@ -1055,6 +1056,16 @@ class TestManageCertificate(TestCase):
 
         # User upload disability certificate
         self.client.login(username="normal_user_1", password="123456test")
+        user_upload_certificate_response_0 = self.client.post(
+            self.user_profile_url,
+            {"submit-certificate": True},
+            HTTP_ACCEPT="application/json",
+        )
+        self.assertEqual(user_upload_certificate_response_0.status_code, 200)
+        self.assertTemplateUsed(
+            user_upload_certificate_response_0, "profile/user_profile.html"
+        )
+
         with open(self.certificate_file, "rb") as fp:
             upload_user_form_data_1 = {
                 "submit-certificate": True,
@@ -1131,6 +1142,18 @@ class TestManageCertificate(TestCase):
             restaurant_upload_certificate_response_2.url,
             "/accounts/restaurant-profile/",
         )
+
+        restaurant_upload_certificate_response_0 = self.client.post(
+            self.restaurant_profile_url,
+            {"submit-certificate": True},
+            HTTP_ACCEPT="application/json",
+        )
+        self.assertEqual(restaurant_upload_certificate_response_0.status_code, 200)
+        self.assertTemplateUsed(
+            restaurant_upload_certificate_response_0,
+            "profile/restaurant_profile.html",
+        )
+
         self.client.logout()
 
         # Admin check the user certificate ans restaurant business license
@@ -1289,6 +1312,11 @@ class TestPublicFacing(TestCase):
             accessible_path_rating="5",
         )
 
+        Favorites.objects.create(
+            user=self.user,
+            restaurant=self.restaurant,
+        )
+
         self.publicface_isuser_url = reverse(
             "accessible_restaurant:public_facing", args=[self.user.id]
         )
@@ -1441,18 +1469,18 @@ class TestComment(TestCase):
             "accessible_path_rating": 5,
             "review_context": "test adding review",
         }
-        response_add_review = self.client.get(
+        response_add_review = self.client.post(
             self.review_add_url,
             form_review_data,
             # HTTP_ACCEPT='application/json',
         )
-        self.assertEqual(response_add_review.status_code, 200)
-        # self.assertEqual(
-        #     response_add_review.url, "/restaurants/detail/jkl1ukPtVM2UZqMLSJdWFw"
-        # )
-        # self.assertEqual(
-        #     Review.objects.get(user=self.user1, restaurant=self.restaurant1).rating, 5
-        # )
+        self.assertEqual(response_add_review.status_code, 302)
+        self.assertEqual(
+            response_add_review.url, "/restaurants/detail/jkl1ukPtVM2UZqMLSJdWFw"
+        )
+        self.assertEqual(
+            Review.objects.get(user=self.user1, restaurant=self.restaurant1).rating, 5
+        )
         self.client.logout()
 
         # create new test review for testing comment
@@ -1575,6 +1603,16 @@ class TestReview(TestCase):
         self.assertEqual(user_update_profile_response.status_code, 302)
         self.assertEqual(user_update_profile_response.url, "/accounts/user-profile/")
 
+        user_update_profile_response_2 = self.client.post(
+            self.user_profile_url,
+            {"submit-info": True},
+            HTTP_ACCEPT="application/json",
+        )
+        self.assertEqual(user_update_profile_response_2.status_code, 200)
+        self.assertTemplateUsed(
+            user_update_profile_response_2, "profile/user_profile.html"
+        )
+
         # User edit preference content
         upload_user_form_data = {
             "submit-preferences": True,
@@ -1595,6 +1633,16 @@ class TestReview(TestCase):
         self.assertEqual(user_update_preferences_response.status_code, 302)
         self.assertEqual(
             user_update_preferences_response.url, "/accounts/user-profile/"
+        )
+
+        user_update_preferences_response = self.client.post(
+            self.user_profile_url,
+            {"submit-preferences": True},
+            HTTP_ACCEPT="application/json",
+        )
+        self.assertEqual(user_update_preferences_response.status_code, 200)
+        self.assertTemplateUsed(
+            user_update_preferences_response, "profile/user_profile.html"
         )
 
         self.client.logout()
@@ -1643,6 +1691,17 @@ class TestReview(TestCase):
         self.assertEqual(
             restaurant_update_profile_response.url, "/accounts/restaurant-profile/"
         )
+
+        restaurant_update_profile_response_2 = self.client.post(
+            self.restaurant_profile_url,
+            {"submit-info": True},
+            HTTP_ACCEPT="application/json",
+        )
+        self.assertEqual(restaurant_update_profile_response_2.status_code, 200)
+        self.assertTemplateUsed(
+            restaurant_update_profile_response_2, "profile/restaurant_profile.html"
+        )
+
         self.client.logout()
 
 
