@@ -32,7 +32,7 @@ SECRET_KEY = "j6^f1g$)jqbn*d-3n$!n2rk7*9r&@i-fsbd1p_=6^4&$lh@)^g"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -143,7 +143,6 @@ TIME_ZONE = "America/New_York"
 USE_I18N = True
 
 USE_L10N = True
-
 USE_TZ = True
 
 
