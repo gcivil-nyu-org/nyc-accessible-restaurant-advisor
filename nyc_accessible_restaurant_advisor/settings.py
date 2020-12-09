@@ -32,7 +32,7 @@ SECRET_KEY = "j6^f1g$)jqbn*d-3n$!n2rk7*9r&@i-fsbd1p_=6^4&$lh@)^g"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["accessible-nyc.herokuapp.com"]
+ALLOWED_HOSTS = ["accessible-nyc.herokuapp.com", "accessible-nyc-main.herokuapp.com"]
 
 
 # Application definition
