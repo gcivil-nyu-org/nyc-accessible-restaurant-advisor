@@ -28,7 +28,7 @@ Production instance
 </a>
 <a href='https://coveralls.io/github/gcivil-nyu-org/nyc-accessible-restaurant-advisor?branch=main'>
     <img
-        src="https://coveralls.io/repos/github/gcivil-nyu-org/nyc-accessible-restaurant-advisor/badge.svg?branch=main"
+        src="https://coveralls.io/repos/github/gcivil-nyu-org/nyc-accessible-restaurant-advisor/badge.svg?branch=main&servive=github"
         alt='Coverage Status' />
 </a>
 
