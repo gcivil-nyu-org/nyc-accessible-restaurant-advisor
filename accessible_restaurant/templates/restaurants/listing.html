@@ -191,22 +191,22 @@
                             <div class="row">
                                 <div class="col-6">
                                     <div class="m-2">
-                                        <h6> Filter by compliant </h6>
+                                        <h6> Filter by compliant <a href="#" data-toggle="tooltip" title="By default, only compliant restaurants are listed." data-placement="bottom"><i class="fas fa-question-circle"></i></a></h6>
                                         <div class="form-check">
-                                            {% if isCompliant %}
-                                                <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="isCompliant" id="isCompliant" name="isCompliant">
+                                            {% if allRestaurants %}
+                                                <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="allRestaurants" id="allRestaurants" name="allRestaurants">
                                             {% else %}
-                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="$" id="isCompliant" name="isCompliant">
+                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="allRestaurants" id="allRestaurants" name="allRestaurants">
                                             {% endif %}
-                                            <label class="form-check-label" for="isCompliant">
-                                            Compliant
+                                            <label class="form-check-label" for="allRestaurants">
+                                            All Restaurants
                                             </label>
                                         </div>
                                         <div class="form-check">
                                             {% if notCompliant %}
                                                 <input class="form-check-input" checked="checked" onchange="$('#filterForm').submit();" type="checkbox" value="notCompliant" id="notCompliant" name="notCompliant">
                                             {% else %}
-                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="$$" id="notCompliant" name="notCompliant">
+                                                <input class="form-check-input" onchange="$('#filterForm').submit();" type="checkbox" value="notCompliant" id="notCompliant" name="notCompliant">
                                             {% endif %}
                                             <label class="form-check-label" for="notCompliant">
                                             Not Compliant
