@@ -1,0 +1,96 @@
+{% extends "baseheader.html" %}
+{% load crispy_forms_tags %}
+
+{% block staticlink %}
+    {% load static %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'accessible_restaurant/faq_contact_style.css' %}">
+    <script src="https://kit.fontawesome.com/6a247440d5.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block title %} FAQs & Contact Us {% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="content">
+                <!-- FAQs -->
+                {% if messages %}
+                <div class="col-12">
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>{{ message.tags }}: </strong>{{ message }}
+                            </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                <div class="card">
+                    <div class="card-div d-flex flex-column">
+                        <h3 class="font-weight-bold">Frequently Asked Questions</h3>
+                        <span class="d-block text-center text-muted px-3">
+                            If you are new to our website or looking for answer to your questions, <br> this guide will help you to learn more about our service and features.
+                        </span>
+                    </div>
+                    <div class="card-div-2" id="accordionFAQ">
+                        {% for faq in faq_content %}
+                            <div class="px-1 mb-2">
+                                <div class="box d-flex justify-content-between align-items-center" data-toggle="collapse" data-target="#collapse-{{ forloop.counter0 }}" aria-expanded="false" aria-controls="collapse-{{ forloop.counter0 }}">
+                                    <div>
+                                        <i class="fa fa-file"></i>
+                                        <span>{{ faq.question }}</span>
+                                    </div>
+                                    <i class="fa fa-plus"></i>
+                                </div>
+                                <div id="collapse-{{ forloop.counter0 }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionFAQ">
+                                    <div class="card-body">
+                                        {{ faq.answer }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Contact Us -->
+                <div class="container contact p-4">
+                    <div class="text-center p-2">
+                        <h3 class="font-weight-bold text-uppercase">Contact Us</h3>
+                        <span class="text-muted">Not find the answer? Send your question to us!</span>
+                    </div>
+                    <form method="POST" id="contactForm" name="sentMessage">
+                        {% csrf_token %}
+                        <div class="row d-flex justify-content-center mb-5">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    {{ form.Subject.label }}
+                                    {{ form.Subject }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.Email.label }}
+                                    {{ form.Email }}
+                                </div>
+                                <div class="form-group form-group-textarea mb-md-0">
+                                    {{ form.Message.label }}
+                                    {{ form.Message }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn btn-yellow btn-md text-uppercase" id="sendMessageButton" type="submit">Send Message</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

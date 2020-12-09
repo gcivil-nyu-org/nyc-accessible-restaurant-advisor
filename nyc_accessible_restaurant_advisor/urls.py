@@ -18,6 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
+from accessible_restaurant.forms import MySetPasswordForm
 
 urlpatterns = [
     path("", include("accessible_restaurant.urls")),
@@ -25,7 +26,8 @@ urlpatterns = [
     path(
         "accounts/password-reset-confirm/<uidb64>/<token>/",
         auth_views.PasswordResetConfirmView.as_view(
-            template_name="accounts/password_reset_confirm.html"
+            template_name="accounts/passwordResetConfirm.html",
+            form_class=MySetPasswordForm,
         ),
         name="password_reset_confirm",
     ),
@@ -43,6 +45,7 @@ urlpatterns = [
         ),
         name="password_reset_complete",
     ),
+    path("accounts/", include("allauth.urls")),
 ]
 
 if settings.DEBUG:

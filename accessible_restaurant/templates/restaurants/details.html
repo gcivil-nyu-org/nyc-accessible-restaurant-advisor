@@ -25,7 +25,29 @@
     </header>
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
-            <h1 class="display-4">{{ restaurant.name }}</h1>
+            <div class="inlineTitle">
+                <h1 class="display-4">{{ restaurant.name }}</h1>
+                &emsp;
+                {% if user.is_authenticated %}
+                    {% if user.is_user %}
+                        {% if is_favorite %}
+                            <form class="form-validate" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-light" name="delete_favorite_form">
+                                    <i class="like-icon fas fa-heart"></i> Liked
+                                </button>
+                            </form>
+                        {% else %}
+                            <form class="form-validate" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-light" name="save_favorite_form"><i class="like-icon far fa-heart"></i> Like</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <button type="button" class="btn btn-light"><i class="like-icon far fa-heart"></i> Like</button>
+                {% endif %}
+            </div>
             <h5>
                 <ul>
                     <li><i class="address-icon fas fa-map-marker-alt"></i>&emsp;{{ restaurant.address }}, {{ restaurant.city }}, {{ restaurant.zip_code }}</li>
@@ -293,7 +315,9 @@
                     </div>
                     <!--/.Carousel Wrapper-->
                 </div>
-                <h2>Reviews</h2>
+                <div class="inlineDisplay">
+                    <h2>Reviews</h2>  <a href="#" data-toggle="tooltip" title="Review rating represents overall rating" data-placement="right"><i class="fas fa-question-circle"></i></a>
+                </div>
                 <hr>
                 <div class="col-12 mb-5">
                     <div class="bg-light rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
@@ -304,6 +328,10 @@
                                 <div class="reviews-members pt-4 pb-4">
                                     <div class="media">
                                         <a href="{% url 'accessible_restaurant:public_facing' review.user_id %}"><img alt="..." src="{{ review.photo.url }}" class="mr-3 rounded-pill"></a>
+                                        
+                                       
+
+                                        <!--<br/> {{ review.images }}<br/> -->
                                         <div class="media-body">
                                             <div class="reviews-members-header">
                                                 <span class="star-rating float-right">
@@ -332,10 +360,49 @@
                                                         <a href="#" data-toggle="tooltip" title="Users who are certified to have disability by system." data-placement="bottom"><i class="fas fa-question-circle"></i></a>
                                                     {% endif %}
                                                 </h6>
-                                                <p class="text-gray">{{ review.review_date | date:"Y-m-d H:m:s" }}</p>
+                                                <p class="text-gray">{{ review.review_date | date:"Y-m-d H:i:s" }}</p>
                                             </div>
                                             <div class="reviews-members-body">
                                                 <p> {{ review.review_context }} </p>
+                                            </div>
+                                            <!-- <div class="row-gallery">
+                                                <div class="col-md-3">
+                                                    {%if review.image1%}
+                                                        <img alt="..." src="{{ review.image1.url }}">
+                                                        <p>{{ review.image1.url }}</p> -->
+                                                    <!-- {%endif%}
+                                                    {%if review.image2%}
+                                                        <img alt="..." src="{{ review.image2.url }}">
+                                                        <p>{{ review.image2.url }}</p> -->
+                                                    <!-- {%endif%}
+                                                    {%if review.image3%}
+                                                        <img alt="..." src="{{ review.image3.url }}">    -->
+                                                        <!-- <p>{{ review.image3.url }}</p> -->
+                                                    <!-- {%endif%}
+                                            </div> 
+                                            </div>  -->
+                                            <div class="row">
+                                                <div class="column">
+                                                {%if review.image1%}
+                                                        <img alt="..." src="{{ review.image1.url }}" style="width:100%">
+                                                        <!-- <p>{{ review.image1.url }}</p> -->
+                                                {%endif%}
+                                                </div>
+                                                <div class="column">
+                                                    {%if review.image2%}
+                                                        <img alt="..." src="{{ review.image2.url }}" style="width:100%">
+                                                        <!-- <p>{{ review.image1.url }}</p> -->
+                                                    {%endif%}
+                                                </div>
+                                                <div class="column">
+                                                    {%if review.image3%}
+                                                        <img alt="..." src="{{ review.image3.url }}" style="width:100%">
+                                                        <!-- <p>{{ review.image1.url }}</p> -->
+                                                    {%endif%}
+                                                </div>
+                                              </div>
+                                            <div class="reviews-members-body">
+                                                <p> {{ review.images.url }} </p>
                                             </div>
                                             <div class="reviews-members-footer">
                                                 <a class="total-like" href="#collapseViewComment-{{ forloop.counter0 }}" data-toggle="collapse" aria-expanded="false" aria-controls="collapseViewComment-{{ forloop.counter0 }}"><i class="far fa-eye"></i> View Comments</a>
@@ -391,7 +458,7 @@
 <!--                                                                                    </span>-->
                                                                                 </div>
                                                                                 <div class="d-flex flex-row align-items-center">
-                                                                                    <span class="date">{{ comment.time | date:"Y-m-d H:m:s" }}</span>
+                                                                                    <span class="date">{{ comment.time | date:"Y-m-d H:i:s" }}</span>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
