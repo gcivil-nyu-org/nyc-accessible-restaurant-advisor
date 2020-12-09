@@ -2,6 +2,7 @@
 NYC-ACCESSIBLE-RESTAURANT-ADVISOR
 
 https://accessible-nyc.herokuapp.com
+
 Integration instance
 
 <a href="https://travis-ci.com/github/gcivil-nyu-org/nyc-accessible-restaurant-advisor">
