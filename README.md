@@ -12,7 +12,7 @@ Integration instance
 </a>
 <a href='https://coveralls.io/github/gcivil-nyu-org/nyc-accessible-restaurant-advisor?branch=develop'>
     <img
-        src="https://coveralls.io/repos/github/gcivil-nyu-org/nyc-accessible-restaurant-advisor/badge.svg?branch=develop&service=github"
+        src="https://coveralls.io/repos/github/gcivil-nyu-org/nyc-accessible-restaurant-advisor/badge.svg?branch=develop"
         alt='Coverage Status' />
 </a>
 
@@ -25,7 +25,7 @@ Production instance
 </a>
 <a href='https://coveralls.io/github/gcivil-nyu-org/nyc-accessible-restaurant-advisor?branch=main'>
     <img
-        src="https://coveralls.io/repos/github/gcivil-nyu-org/nyc-accessible-restaurant-advisor/badge.svg?branch=main&service=github"
+        src="https://coveralls.io/repos/github/gcivil-nyu-org/nyc-accessible-restaurant-advisor/badge.svg?branch=main"
         alt='Coverage Status' />
 </a>
 
